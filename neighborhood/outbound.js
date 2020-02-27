@@ -79,3 +79,5 @@ OutboundNeighborhoodIndex.prototype.assign = function(prop, results) {
 };
 
 exports.OutboundNeighborhoodIndex = OutboundNeighborhoodIndex;
+
+// NOTE: for weighted mixed beware of merging weights if twice the same neighbor
