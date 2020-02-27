@@ -1,5 +1,5 @@
 /**
- * Graphology Utils Unit Tests
- * ============================
+ * Graphology Indices Unit Tests
+ * ==============================
  */
-var assert = require('assert');
+// var assert = require('assert');

@@ -1,12 +1,10 @@
 {
   "name": "graphology-indices",
-  "version": "1.1.2",
+  "version": "0.1.0",
   "description": "Miscellaneous indices for graphology.",
   "main": "index.js",
   "files": [
-    "index.js",
-    "is-graph.js",
-    "is-graph-constructor.js"
+    "index.js"
   ],
   "scripts": {
     "lint": "eslint *.js",
@@ -33,14 +31,14 @@
   "homepage": "https://github.com/graphology/graphology-indices#readme",
   "devDependencies": {
     "@yomguithereal/eslint-config": "^4.0.0",
-    "eslint": "^4.0.0",
-    "graphology": "^0.10.1",
-    "mocha": "^3.0.2"
+    "eslint": "^6.8.0",
+    "graphology": "^0.16.0",
+    "mocha": "^7.1.0"
   },
   "eslintConfig": {
     "extends": "@yomguithereal/eslint-config"
   },
   "dependencies": {
-    "graphology-utils": "^1.1.2"
+    "graphology-utils": "^1.7.0"
   }
 }
