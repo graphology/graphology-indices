@@ -4,12 +4,14 @@
   "description": "Miscellaneous indices for graphology.",
   "main": "index.js",
   "files": [
-    "index.js"
+    "*.d.ts",
+    "index.js",
+    "neighborhood"
   ],
   "scripts": {
-    "lint": "eslint *.js",
+    "lint": "eslint '**/*.js'",
     "prepublish": "npm run lint && npm test",
-    "test": "mocha test.js"
+    "test": "mocha test"
   },
   "repository": {
     "type": "git",
@@ -36,9 +38,14 @@
     "mocha": "^7.1.0"
   },
   "eslintConfig": {
-    "extends": "@yomguithereal/eslint-config"
+    "extends": "@yomguithereal/eslint-config",
+    "globals": {
+      "Uint8Array": true
+    }
   },
   "dependencies": {
-    "graphology-utils": "^1.7.0"
+    "graphology-types": "^0.16.0",
+    "graphology-utils": "^1.7.0",
+    "mnemonist": "^0.32.0"
   }
 }
