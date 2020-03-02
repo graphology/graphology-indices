@@ -119,6 +119,9 @@ function WeightedOutboundNeighborhoodIndex(graph, weightAttribute) {
       neighbor = graph.opposite(node, edge);
       weight = graph.getEdgeAttribute(edge, weightAttribute);
 
+      if (typeof weight !== 'number')
+        weight = 1;
+
       // NOTE: for weighted mixed beware of merging weights if twice the same neighbor
       this.neighborhood[n] = ids[neighbor];
       this.weights[n++] = weight;
