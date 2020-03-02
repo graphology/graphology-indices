@@ -126,4 +126,9 @@ function WeightedOutboundNeighborhoodIndex(graph, weightAttribute) {
   }
 }
 
+WeightedOutboundNeighborhoodIndex.prototype.bounds = OutboundNeighborhoodIndex.prototype.bounds;
+WeightedOutboundNeighborhoodIndex.prototype.project = OutboundNeighborhoodIndex.prototype.project;
+WeightedOutboundNeighborhoodIndex.prototype.collect = OutboundNeighborhoodIndex.prototype.collect;
+WeightedOutboundNeighborhoodIndex.prototype.assign = OutboundNeighborhoodIndex.prototype.assign;
+
 exports.WeightedOutboundNeighborhoodIndex = WeightedOutboundNeighborhoodIndex;

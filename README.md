@@ -12,3 +12,4 @@ npm install graphology-indices
 
 ## Usage
 
+WIP...
