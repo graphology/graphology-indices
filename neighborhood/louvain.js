@@ -123,8 +123,8 @@ function LouvainIndex(graph, options) {
 LouvainIndex.prototype.moveNodeToCommunityUndirected = function(i, degree, currentCommunityDegree, targetCommunityDegree, targetCommunity) {
   var currentCommunity = this.belongings[i];
 
-  this.totalWeights[currentCommunity] -= currentCommunityDegree;
-  this.totalWeights[targetCommunity] += targetCommunityDegree * 2 + (targetCommunityDegree - degree);
+  this.totalWeights[currentCommunity] -= currentCommunityDegree + (degree - currentCommunityDegree);
+  this.totalWeights[targetCommunity] += targetCommunityDegree + (degree - targetCommunityDegree);
 
   this.internalWeights[currentCommunity] -= currentCommunityDegree * 2;
   this.internalWeights[targetCommunity] += targetCommunityDegree * 2;
