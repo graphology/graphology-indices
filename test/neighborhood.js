@@ -86,6 +86,23 @@ describe('Neighborhood Indices', function() {
         assert.strictEqual(graph.getNodeAttribute(node, 'result'), resultIndex[node]);
       });
     });
+
+    it('should work with nodes having no edges.', function() {
+      var graph = new Graph.UndirectedGraph();
+      graph.addNode(1);
+      graph.mergeEdge(2, 3);
+
+      var index = new OutboundNeighborhoodIndex(graph);
+
+      assert.deepEqual(index.project(), {
+        1: [],
+        2: ['3'],
+        3: ['2']
+      });
+      assert.deepEqual(index.neighborhood, new Uint8Array([2, 1]));
+      assert.deepEqual(index.starts, new Uint8Array([0, 0, 1]));
+      assert.deepEqual(index.stops, new Uint8Array([0, 1, 2]));
+    });
   });
 
   describe('WeightedOutboundNeighborhoodIndex', function() {
