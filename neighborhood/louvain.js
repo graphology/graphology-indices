@@ -43,16 +43,27 @@ function LouvainIndex(graph, options) {
 
   var PointerArray = typed.getPointerArray(upperBound);
 
+  // Properties
   this.M = 0;
+  this.type = type;
   this.graph = graph;
+  this.nodes = graph.nodes();
+
+  // Edge-level
   this.neighborhood = new PointerArray(upperBound);
   this.weights = new Float64Array(upperBound);
   this.outs = new BitSet(graph.directedSize * 2);
 
+  // Node-level
   this.starts = new PointerArray(graph.order);
   this.stops = new PointerArray(graph.order);
+  this.belongings = new PointerArray(graph.order);
 
-  this.nodes = graph.nodes();
+  // Community-level
+  this.internalWeights = new PointerArray(graph.order);
+  this.totalWeights = new PointerArray(type === 'undirected' ? graph.order : 0);
+  this.totalInWeights = new PointerArray(type === 'directed' ? graph.order : 0);
+  this.totalOutWeights = new PointerArray(type === 'directed' ? graph.order : 0);
 
   var ids = {};
 
@@ -69,6 +80,7 @@ function LouvainIndex(graph, options) {
 
     this.starts[i] = n;
     this.stops[i] = n + edges.length;
+    this.belongings[i] = i;
 
     for (j = 0, m = edges.length; j < m; j++) {
       edge = edges[j];
@@ -81,6 +93,9 @@ function LouvainIndex(graph, options) {
         if (graph.source(edge) === node) {
           this.outs.set(n);
           this.M += weight;
+
+          this.totalOutWeights[i] += weight;
+          this.totalInWeights[ids[neighbor]] += weight;
         }
       }
       else {
@@ -88,11 +103,14 @@ function LouvainIndex(graph, options) {
         // Doing only once per edge
         if (node < neighbor)
           this.M += weight;
+
+        this.totalWeights[i] += weight;
       }
 
-      // NOTE: for weighted mixed beware of merging weights if twice the same neighbor
       this.neighborhood[n] = ids[neighbor];
       this.weights[n] = weight;
+
+      // NOTE: we could handle self-loops here by incrementing `internalWeights`
 
       n++;
     }
