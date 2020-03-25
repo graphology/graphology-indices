@@ -4,6 +4,8 @@
  */
 var inferType = require('graphology-utils/infer-type');
 var typed = require('mnemonist/utils/typed-arrays');
+
+// NOTE: we could probably get rid of the bit set later
 var BitSet = require('mnemonist/bit-set');
 
 var DEFAULTS = {
