@@ -202,12 +202,15 @@ describe('Neighborhood Indices', function() {
       };
 
       // Null move of node '1'
-      index.moveNodeToCommunityUndirected(0, 2, 1, 1, 0);
+      index.moveNodeToCommunityUndirected(0, 2, 0, 0, 0);
 
       assert.deepEqual(before, {
         totalWeights: index.totalWeights,
         internalWeights: index.internalWeights
       });
+
+      // Moving node '1' to community of node '2'
+      // index.moveNodeToCommunityUndirected(0, 2, 0)
     });
   });
 });
