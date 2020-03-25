@@ -63,10 +63,10 @@ function LouvainIndex(graph, options) {
   this.belongings = new PointerArray(graph.order);
 
   // Community-level
-  this.internalWeights = new PointerArray(graph.order);
-  this.totalWeights = new PointerArray(type === 'undirected' ? graph.order : 0);
-  this.totalInWeights = new PointerArray(type === 'directed' ? graph.order : 0);
-  this.totalOutWeights = new PointerArray(type === 'directed' ? graph.order : 0);
+  this.internalWeights = new Float64Array(graph.order);
+  this.totalWeights = new Float64Array(type === 'undirected' ? graph.order : 0);
+  this.totalInWeights = new Float64Array(type === 'directed' ? graph.order : 0);
+  this.totalOutWeights = new Float64Array(type === 'directed' ? graph.order : 0);
 
   var ids = {};
 
@@ -124,7 +124,7 @@ LouvainIndex.prototype.moveNodeToCommunityUndirected = function(i, degree, curre
   var currentCommunity = this.belongings[i];
 
   this.totalWeights[currentCommunity] -= currentCommunityDegree;
-  this.totalWeights[targetCommunity] += targetCommunityDegree;
+  this.totalWeights[targetCommunity] += targetCommunityDegree * 2 + (targetCommunityDegree - degree);
 
   this.internalWeights[currentCommunity] -= currentCommunityDegree * 2;
   this.internalWeights[targetCommunity] += targetCommunityDegree * 2;
@@ -132,7 +132,7 @@ LouvainIndex.prototype.moveNodeToCommunityUndirected = function(i, degree, curre
   this.belongings[i] = targetCommunity;
 };
 
-// TODO: self loop values when zooming out?
+// TODO: self loop values when zooming out? should consider self internal weight when computing degrees
 
 LouvainIndex.prototype.bounds = function(i) {
   return [this.starts[i], this.stops[i]];
