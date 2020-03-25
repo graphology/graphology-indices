@@ -12,6 +12,8 @@ type LouvainIndexOptions = {
 export default class LouvainIndex {
   constructor(graph: Graph, options?: LouvainIndexOptions);
 
+  M: number;
+  C: number;
   graph: Graph;
   neighborhood: PointerArray;
   starts: PointerArray;

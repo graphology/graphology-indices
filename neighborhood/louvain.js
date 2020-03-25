@@ -46,6 +46,7 @@ function LouvainIndex(graph, options) {
   var PointerArray = typed.getPointerArray(upperBound);
 
   // Properties
+  this.C = graph.order;
   this.M = 0;
   this.type = type;
   this.graph = graph;
@@ -119,7 +120,6 @@ function LouvainIndex(graph, options) {
   }
 }
 
-// TODO: test community idempotency
 LouvainIndex.prototype.moveNodeToCommunityUndirected = function(i, degree, currentCommunityDegree, targetCommunityDegree, targetCommunity) {
   var currentCommunity = this.belongings[i];
 

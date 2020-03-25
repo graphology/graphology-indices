@@ -217,6 +217,15 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(Array.from(index.belongings), [1, 1, 2, 3, 4, 5]);
       assert.deepEqual(Array.from(index.internalWeights), [0, 2, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [2, 4, 3, 2, 1, 1]);
+
+      // Rolling back move
+      index.moveNodeToCommunityUndirected(0, 2, 1, 0, 0);
+
+      assert.deepEqual(before, {
+        belongings: index.belongings,
+        totalWeights: index.totalWeights,
+        internalWeights: index.internalWeights
+      });
     });
   });
 });
