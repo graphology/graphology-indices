@@ -4,12 +4,40 @@
  */
 var typed = require('mnemonist/utils/typed-arrays');
 
-function LouvainIndex(graph, weightAttribute) {
-  var upperBound = graph.directedSize + graph.undirectedSize * 2;
+var DEFAULTS = {
+  attributes: {
+    weight: 'weight'
+  },
+  weighted: false
+};
+
+function LouvainIndex(graph, options) {
+
+  // Solving options
+  options = options || {};
+  var attributes = options.attributes || {};
+
+  // Weight getters
+  var weighted = options.weighted === true;
+
+  var weightAttribute = attributes.weight || DEFAULTS.attributes.weight;
+
+  var getWeight = function(edge) {
+    if (!weighted)
+      return 1;
+
+    var weight = graph.getEdgeAttribute(edge, weightAttribute);
+
+    if (typeof weight !== 'number' || isNaN(weight))
+      return 1;
+
+    return weight;
+  };
+
+  // Building the index
+  var upperBound = graph.size * 2;
 
   var PointerArray = typed.getPointerArray(upperBound);
-
-  weightAttribute = weightAttribute || 'weight';
 
   // NOTE: directedSize + undirectedSize * 2 is an upper bound for
   // neighborhood size
@@ -33,7 +61,7 @@ function LouvainIndex(graph, weightAttribute) {
 
   for (i = 0, l = graph.order; i < l; i++) {
     node = this.nodes[i];
-    edges = graph.outboundEdges(node);
+    edges = graph.edges(node);
 
     this.starts[i] = n;
     this.stops[i] = n + edges.length;
@@ -41,10 +69,7 @@ function LouvainIndex(graph, weightAttribute) {
     for (j = 0, m = edges.length; j < m; j++) {
       edge = edges[j];
       neighbor = graph.opposite(node, edge);
-      weight = graph.getEdgeAttribute(edge, weightAttribute);
-
-      if (typeof weight !== 'number')
-        weight = 1;
+      weight = getWeight(edge);
 
       // NOTE: for weighted mixed beware of merging weights if twice the same neighbor
       this.neighborhood[n] = ids[neighbor];
@@ -52,5 +77,25 @@ function LouvainIndex(graph, weightAttribute) {
     }
   }
 }
+
+LouvainIndex.prototype.bounds = function(i) {
+  return [this.starts[i], this.stops[i]];
+};
+
+LouvainIndex.prototype.project = function() {
+  var self = this;
+
+  var projection = {};
+
+  self.nodes.forEach(function(node, i) {
+    projection[node] = Array.from(
+      self.neighborhood.slice(self.starts[i], self.stops[i])
+    ).map(function(j) {
+      return self.nodes[j];
+    });
+  });
+
+  return projection;
+};
 
 module.exports = LouvainIndex;

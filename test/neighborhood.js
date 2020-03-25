@@ -5,9 +5,45 @@
 var assert = require('assert');
 var Graph = require('graphology');
 var outbound = require('../neighborhood/outbound.js');
+var LouvainIndex = require('../neighborhood/louvain.js');
 
 var OutboundNeighborhoodIndex = outbound.OutboundNeighborhoodIndex;
 var WeightedOutboundNeighborhoodIndex = outbound.WeightedOutboundNeighborhoodIndex;
+
+var EDGES = [
+  [1, 2, 30], // source, target, weight
+  [1, 5],
+  [2, 3, 15],
+  [3, 4, 10],
+  [4, 2],
+  [5, 1, 5],
+  [6, 3, 100]
+];
+
+function fromEdges(GraphConstructor, edges) {
+  var g = new GraphConstructor();
+
+  // Adding nodes in order for easier testing
+  var nodes = new Set();
+
+  edges.forEach(function(data) {
+    nodes.add(data[0]);
+    nodes.add(data[1]);
+  });
+
+  Array.from(nodes).sort().forEach(function(node) {
+    g.addNode(node);
+  });
+
+  edges.forEach(function(data) {
+    if (data.length === 3)
+      g.mergeEdge(data[0], data[1], {weight: data[2]});
+    else
+      g.mergeEdge(data[0], data[1]);
+  });
+
+  return g;
+}
 
 describe('Neighborhood Indices', function() {
   describe('OutboundNeighborhoodIndex', function() {
@@ -92,6 +128,44 @@ describe('Neighborhood Indices', function() {
       graph.forEachNode(function(node) {
         assert.strictEqual(graph.getNodeAttribute(node, 'result'), resultIndex[node]);
       });
+    });
+  });
+
+  describe('LouvainIndex', function() {
+    it('should properly index the given undirected graph.', function() {
+      var graph = fromEdges(Graph.UndirectedGraph, EDGES);
+
+      var index = new LouvainIndex(graph, {weighted: true});
+
+      assert.deepEqual(index.project(), {
+        1: ['2', '5'],
+        2: ['1', '3', '4'],
+        3: ['2', '4', '6'],
+        4: ['2', '3'],
+        5: ['1'],
+        6: ['3']
+      });
+
+      assert.deepEqual(index.neighborhood, new Uint8Array([1, 4, 0, 2, 3, 1, 3, 5, 1, 2, 0, 2]));
+      assert.deepEqual(index.weights, new Float64Array([30, 5, 30, 15, 1, 15, 10, 100, 1, 10, 5, 100]));
+    });
+
+    it('should properly index the given directed graph.', function() {
+      var graph = fromEdges(Graph.DirectedGraph, EDGES);
+
+      var index = new LouvainIndex(graph, {weighted: true});
+
+      assert.deepEqual(index.project(), {
+        1: ['5', '2', '5'],
+        2: ['1', '4', '3'],
+        3: ['2', '6', '4'],
+        4: ['3', '2'],
+        5: ['1', '1'],
+        6: ['3']
+      });
+
+      assert.deepEqual(index.neighborhood, new Uint8Array([4, 1, 4, 0, 3, 2, 1, 5, 3, 2, 1, 0, 0, 2]));
+      assert.deepEqual(index.weights, new Float64Array([5, 30, 1, 30, 1, 15, 15, 100, 10, 10, 1, 1, 5, 100]));
     });
   });
 });
