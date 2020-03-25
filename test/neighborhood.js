@@ -197,6 +197,7 @@ describe('Neighborhood Indices', function() {
       var index = new LouvainIndex(graph);
 
       var before = {
+        belongings: index.belongings.slice(),
         totalWeights: index.totalWeights.slice(),
         internalWeights: index.internalWeights.slice()
       };
@@ -205,12 +206,17 @@ describe('Neighborhood Indices', function() {
       index.moveNodeToCommunityUndirected(0, 2, 0, 0, 0);
 
       assert.deepEqual(before, {
+        belongings: index.belongings,
         totalWeights: index.totalWeights,
         internalWeights: index.internalWeights
       });
 
       // Moving node '1' to community of node '2'
-      // index.moveNodeToCommunityUndirected(0, 2, 0)
+      index.moveNodeToCommunityUndirected(0, 2, 0, 1, 1);
+
+      assert.deepEqual(Array.from(index.belongings), [1, 1, 2, 3, 4, 5]);
+      assert.deepEqual(Array.from(index.internalWeights), [0, 2, 0, 0, 0, 0]);
+      assert.deepEqual(Array.from(index.totalWeights), [2, 4, 3, 2, 1, 1]);
     });
   });
 });
