@@ -226,6 +226,22 @@ describe('Neighborhood Indices', function() {
         totalWeights: index.totalWeights,
         internalWeights: index.internalWeights
       });
+
+      // node '3' to community '1'
+      index.moveNodeToCommunityUndirected(2, 3, 0, 1, 1);
+
+      assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 4, 5]);
+      assert.deepEqual(Array.from(index.internalWeights), [0, 2, 0, 0, 0, 0]);
+      assert.deepEqual(Array.from(index.totalWeights), [2, 4, 3, 2, 1, 1]);
+
+      // node '5' to community '0'
+      index.moveNodeToCommunityUndirected(4, 1, 0, 1, 0);
+
+      assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 0, 5]);
+      assert.deepEqual(Array.from(index.internalWeights), [2, 2, 0, 0, 0, 0]);
+      assert.deepEqual(Array.from(index.totalWeights), [3, 4, 3, 2, 1, 1]);
+
+      // console.log(index);
     });
   });
 });

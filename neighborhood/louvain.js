@@ -132,6 +132,8 @@ LouvainIndex.prototype.moveNodeToCommunityUndirected = function(i, degree, curre
   this.belongings[i] = targetCommunity;
 };
 
+// TODO: self loop values when zooming out?
+
 LouvainIndex.prototype.bounds = function(i) {
   return [this.starts[i], this.stops[i]];
 };
