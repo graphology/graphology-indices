@@ -2,7 +2,9 @@
  * Graphology Louvain Indices
  * ===========================
  */
+var inferType = require('graphology-utils/infer-type');
 var typed = require('mnemonist/utils/typed-arrays');
+var BitSet = require('mnemonist/bit-set');
 
 var DEFAULTS = {
   attributes: {
@@ -16,6 +18,8 @@ function LouvainIndex(graph, options) {
   // Solving options
   options = options || {};
   var attributes = options.attributes || {};
+
+  var type = inferType(graph);
 
   // Weight getters
   var weighted = options.weighted === true;
@@ -39,11 +43,10 @@ function LouvainIndex(graph, options) {
 
   var PointerArray = typed.getPointerArray(upperBound);
 
-  // NOTE: directedSize + undirectedSize * 2 is an upper bound for
-  // neighborhood size
   this.graph = graph;
   this.neighborhood = new PointerArray(upperBound);
   this.weights = new Float64Array(upperBound);
+  this.outs = new BitSet(graph.directedSize * 2);
 
   this.starts = new PointerArray(graph.order);
   this.stops = new PointerArray(graph.order);
@@ -73,7 +76,12 @@ function LouvainIndex(graph, options) {
 
       // NOTE: for weighted mixed beware of merging weights if twice the same neighbor
       this.neighborhood[n] = ids[neighbor];
-      this.weights[n++] = weight;
+      this.weights[n] = weight;
+
+      if (type === 'directed' && graph.source(edge) === node)
+        this.outs.set(n);
+
+      n++;
     }
   }
 }

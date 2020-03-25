@@ -136,6 +136,7 @@ describe('Neighborhood Indices', function() {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
 
       var index = new LouvainIndex(graph, {weighted: true});
+      // console.log(index);
 
       assert.deepEqual(index.project(), {
         1: ['2', '5'],
@@ -154,6 +155,7 @@ describe('Neighborhood Indices', function() {
       var graph = fromEdges(Graph.DirectedGraph, EDGES);
 
       var index = new LouvainIndex(graph, {weighted: true});
+      // console.log(index);
 
       assert.deepEqual(index.project(), {
         1: ['5', '2', '5'],
