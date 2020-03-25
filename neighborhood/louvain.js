@@ -43,6 +43,7 @@ function LouvainIndex(graph, options) {
 
   var PointerArray = typed.getPointerArray(upperBound);
 
+  this.M = 0;
   this.graph = graph;
   this.neighborhood = new PointerArray(upperBound);
   this.weights = new Float64Array(upperBound);
@@ -74,12 +75,24 @@ function LouvainIndex(graph, options) {
       neighbor = graph.opposite(node, edge);
       weight = getWeight(edge);
 
+      if (type === 'directed') {
+
+        // Doing this only when the edge is going out
+        if (graph.source(edge) === node) {
+          this.outs.set(n);
+          this.M += weight;
+        }
+      }
+      else {
+
+        // Doing only once per edge
+        if (node < neighbor)
+          this.M += weight;
+      }
+
       // NOTE: for weighted mixed beware of merging weights if twice the same neighbor
       this.neighborhood[n] = ids[neighbor];
       this.weights[n] = weight;
-
-      if (type === 'directed' && graph.source(edge) === node)
-        this.outs.set(n);
 
       n++;
     }

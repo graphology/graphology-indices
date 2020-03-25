@@ -155,6 +155,8 @@ describe('Neighborhood Indices', function() {
       var index = new LouvainIndex(graph, {weighted: true});
       // console.log(index);
 
+      assert.strictEqual(index.M, 161);
+
       assert.deepEqual(index.project(), {
         1: ['2', '5'],
         2: ['1', '3', '4'],
@@ -174,6 +176,8 @@ describe('Neighborhood Indices', function() {
       var index = new LouvainIndex(graph, {weighted: true});
       // console.log(index);
 
+      assert.strictEqual(index.M, 162);
+
       assert.deepEqual(index.project(), {
         1: ['5', '2', '5'],
         2: ['1', '4', '3'],
@@ -185,6 +189,7 @@ describe('Neighborhood Indices', function() {
 
       assert.deepEqual(index.neighborhood, new Uint8Array([4, 1, 4, 0, 3, 2, 1, 5, 3, 2, 1, 0, 0, 2]));
       assert.deepEqual(index.weights, new Float64Array([5, 30, 1, 30, 1, 15, 15, 100, 10, 10, 1, 1, 5, 100]));
+      assert.deepEqual(Array.from(index.outs), [0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1]);
     });
   });
 });
