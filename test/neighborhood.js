@@ -191,5 +191,23 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(index.weights, new Float64Array([5, 30, 1, 30, 1, 15, 15, 100, 10, 10, 1, 1, 5, 100]));
       assert.deepEqual(Array.from(index.outs), [0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1]);
     });
+
+    it('should be possible to move a node from one community to the other.', function() {
+      var graph = fromEdges(Graph.UndirectedGraph, EDGES);
+      var index = new LouvainIndex(graph);
+
+      var before = {
+        totalWeights: index.totalWeights.slice(),
+        internalWeights: index.internalWeights.slice()
+      };
+
+      // Null move of node '1'
+      index.moveNodeToCommunityUndirected(0, 2, 1, 1, 0);
+
+      assert.deepEqual(before, {
+        totalWeights: index.totalWeights,
+        internalWeights: index.internalWeights
+      });
+    });
   });
 });

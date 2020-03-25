@@ -119,6 +119,19 @@ function LouvainIndex(graph, options) {
   }
 }
 
+// TODO: test community idempotency
+LouvainIndex.prototype.moveNodeToCommunityUndirected = function(i, degree, currentCommunityDegree, targetCommunityDegree, targetCommunity) {
+  var currentCommunity = this.belongings[i];
+
+  this.totalWeights[currentCommunity] -= currentCommunityDegree;
+  this.totalWeights[targetCommunity] += targetCommunityDegree;
+
+  this.internalWeights[currentCommunity] -= currentCommunityDegree;
+  this.internalWeights[targetCommunity] += targetCommunityDegree;
+
+  this.belongings[i] = targetCommunity;
+};
+
 LouvainIndex.prototype.bounds = function(i) {
   return [this.starts[i], this.stops[i]];
 };
