@@ -243,7 +243,6 @@ DirectedLouvainIndex.prototype.moveNodeToCommunity = function(
 ) {
   var currentCommunity = this.belongings[i];
 
-  // TODO: isn't there some in/out inversion shenanigans to handle here?
   this.totalInWeights[currentCommunity] -= currentCommunityInDegree + (inDegree - currentCommunityInDegree);
   this.totalInWeights[targetCommunity] += targetCommunityInDegree + (inDegree - targetCommunityInDegree);
 
