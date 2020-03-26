@@ -4,6 +4,8 @@
  */
 var typed = require('mnemonist/utils/typed-arrays');
 
+var INSPECT = Symbol.for('nodejs.util.inspect.custom');
+
 var DEFAULTS = {
   attributes: {
     weight: 'weight'
@@ -92,7 +94,7 @@ function UndirectedLouvainIndex(graph, options) {
       this.weights[n] = weight;
 
       // NOTE: we could handle self-loops here by incrementing `internalWeights`
-      // or using #.loops
+      // and using #.loops
 
       n++;
     }
@@ -225,7 +227,7 @@ UndirectedLouvainIndex.prototype.project = function() {
   return projection;
 };
 
-UndirectedLouvainIndex.prototype.inspect = function() {
+UndirectedLouvainIndex.prototype[INSPECT] = function() {
   var proxy = {};
 
   // Trick so that node displays the name of the constructor
@@ -257,9 +259,6 @@ UndirectedLouvainIndex.prototype.inspect = function() {
 
   return proxy;
 };
-
-if (typeof Symbol !== 'undefined')
-  UndirectedLouvainIndex.prototype[Symbol.for('nodejs.util.inspect.custom')] = UndirectedLouvainIndex.prototype.inspect;
 
 function DirectedLouvainIndex(graph, options) {
 
@@ -347,7 +346,7 @@ function DirectedLouvainIndex(graph, options) {
       this.weights[n] = weight;
 
       // NOTE: we could handle self-loops here by incrementing `internalWeights`
-      // or using #.loops
+      // and using #.loops
 
       n++;
     }
@@ -381,6 +380,39 @@ DirectedLouvainIndex.prototype.moveNodeToCommunity = function(
   this.internalWeights[targetCommunity] += targetCommunityInDegree + targetCommunityOutDegree;
 
   this.belongings[i] = targetCommunity;
+};
+
+DirectedLouvainIndex.prototype[INSPECT] = function() {
+  var proxy = {};
+
+  // Trick so that node displays the name of the constructor
+  Object.defineProperty(proxy, 'constructor', {
+    value: DirectedLouvainIndex,
+    enumerable: false
+  });
+
+  proxy.C = this.C;
+  proxy.M = this.M;
+  proxy.E = this.E;
+  proxy.level = this.level;
+  proxy.nodes = this.nodes;
+
+  var eTruncated = ['neighborhood', 'weights', 'outs'];
+  var cTruncated = ['loops', 'starts', 'belongings', 'internalWeights', 'totalInWeights', 'totalOutWeights'];
+
+  var self = this;
+
+  eTruncated.forEach(function(key) {
+    proxy[key] = self[key].slice(0, proxy.E);
+  });
+
+  cTruncated.forEach(function(key) {
+    proxy[key] = self[key].slice(0, proxy.C);
+  });
+
+  proxy.dendrogram = this.dendrogram;
+
+  return proxy;
 };
 
 exports.UndirectedLouvainIndex = UndirectedLouvainIndex;
