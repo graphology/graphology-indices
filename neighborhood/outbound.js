@@ -14,8 +14,7 @@ function OutboundNeighborhoodIndex(graph) {
   this.graph = graph;
   this.neighborhood = new PointerArray(upperBound);
 
-  this.starts = new PointerArray(graph.order);
-  this.stops = new PointerArray(graph.order);
+  this.starts = new PointerArray(graph.order + 1);
 
   this.nodes = graph.nodes();
 
@@ -33,15 +32,17 @@ function OutboundNeighborhoodIndex(graph) {
     neighbors = graph.outboundNeighbors(node);
 
     this.starts[i] = n;
-    this.stops[i] = n + neighbors.length;
 
     for (j = 0, m = neighbors.length; j < m; j++)
       this.neighborhood[n++] = ids[neighbors[j]];
   }
+
+  // NOTE: we keep one more index as upper bound to simplify iteration
+  this.starts[i] = upperBound;
 }
 
 OutboundNeighborhoodIndex.prototype.bounds = function(i) {
-  return [this.starts[i], this.stops[i]];
+  return [this.starts[i], this.starts[i + 1]];
 };
 
 OutboundNeighborhoodIndex.prototype.project = function() {
@@ -51,7 +52,7 @@ OutboundNeighborhoodIndex.prototype.project = function() {
 
   self.nodes.forEach(function(node, i) {
     projection[node] = Array.from(
-      self.neighborhood.slice(self.starts[i], self.stops[i])
+      self.neighborhood.slice(self.starts[i], self.starts[i + 1])
     ).map(function(j) {
       return self.nodes[j];
     });
@@ -93,8 +94,7 @@ function WeightedOutboundNeighborhoodIndex(graph, weightAttribute) {
   this.neighborhood = new PointerArray(upperBound);
   this.weights = new Float64Array(upperBound);
 
-  this.starts = new PointerArray(graph.order);
-  this.stops = new PointerArray(graph.order);
+  this.starts = new PointerArray(graph.order + 1);
 
   this.nodes = graph.nodes();
 
@@ -112,7 +112,6 @@ function WeightedOutboundNeighborhoodIndex(graph, weightAttribute) {
     edges = graph.outboundEdges(node);
 
     this.starts[i] = n;
-    this.stops[i] = n + edges.length;
 
     for (j = 0, m = edges.length; j < m; j++) {
       edge = edges[j];
@@ -127,6 +126,9 @@ function WeightedOutboundNeighborhoodIndex(graph, weightAttribute) {
       this.weights[n++] = weight;
     }
   }
+
+  // NOTE: we keep one more index as upper bound to simplify iteration
+  this.starts[i] = upperBound;
 }
 
 WeightedOutboundNeighborhoodIndex.prototype.bounds = OutboundNeighborhoodIndex.prototype.bounds;

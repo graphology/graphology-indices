@@ -114,6 +114,12 @@ UndirectedLouvainIndex.prototype.moveNodeToCommunity = function(
   this.belongings[i] = targetCommunity;
 };
 
+UndirectedLouvainIndex.prototype.zoomOut = function() {
+
+};
+
+// TODO: we can get rid of stops
+
 // TODO: self loop values when zooming out? should consider self internal weight when computing degrees
 
 UndirectedLouvainIndex.prototype.bounds = function(i) {

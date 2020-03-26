@@ -103,8 +103,7 @@ describe('Neighborhood Indices', function() {
         3: ['2']
       });
       assert.deepEqual(index.neighborhood, new Uint8Array([2, 1]));
-      assert.deepEqual(index.starts, new Uint8Array([0, 0, 1]));
-      assert.deepEqual(index.stops, new Uint8Array([0, 1, 2]));
+      assert.deepEqual(index.starts, new Uint8Array([0, 0, 1, 2]));
     });
   });
 
