@@ -444,6 +444,50 @@ describe('Neighborhood Indices', function() {
         new Uint8Array([0, 1, 1, 1, 0, 1]),
         new Uint8Array([0, 0, 0, 0, 0, 0])
       ]);
+
+      assert.deepEqual(index.collect(), {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0
+      });
+
+      assert.deepEqual(index.collect(0), {
+        1: 0,
+        2: 1,
+        3: 2,
+        4: 3,
+        5: 4,
+        6: 5
+      });
+
+      assert.deepEqual(index.collect(1), {
+        1: 0,
+        2: 1,
+        3: 1,
+        4: 1,
+        5: 0,
+        6: 1
+      });
+
+      index.assign('community', 1);
+
+      var o = {};
+
+      graph.forEachNode(function(n, attr) {
+        o[n] = attr.community;
+      });
+
+      assert.deepEqual(o, {
+        1: 0,
+        2: 1,
+        3: 1,
+        4: 1,
+        5: 0,
+        6: 1
+      });
     });
 
     it('should be possible to zoom out in the directed case.', function() {
@@ -495,6 +539,50 @@ describe('Neighborhood Indices', function() {
         new Uint8Array([0, 1, 1, 1, 0, 1]),
         new Uint8Array([0, 0, 0, 0, 0, 0])
       ]);
+
+      assert.deepEqual(index.collect(), {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0
+      });
+
+      assert.deepEqual(index.collect(0), {
+        1: 0,
+        2: 1,
+        3: 2,
+        4: 3,
+        5: 4,
+        6: 5
+      });
+
+      assert.deepEqual(index.collect(1), {
+        1: 0,
+        2: 1,
+        3: 1,
+        4: 1,
+        5: 0,
+        6: 1
+      });
+
+      index.assign('community', 1);
+
+      var o = {};
+
+      graph.forEachNode(function(n, attr) {
+        o[n] = attr.community;
+      });
+
+      assert.deepEqual(o, {
+        1: 0,
+        2: 1,
+        3: 1,
+        4: 1,
+        5: 0,
+        6: 1
+      });
     });
   });
 });

@@ -235,6 +235,34 @@ UndirectedLouvainIndex.prototype.project = function() {
   return projection;
 };
 
+UndirectedLouvainIndex.prototype.collect = function(level) {
+  if (arguments.length < 1)
+    level = this.level;
+
+  var o = {};
+
+  var mapping = this.dendrogram[level];
+
+  var i, l;
+
+  for (i = 0, l = mapping.length; i < l; i++)
+    o[this.nodes[i]] = mapping[i];
+
+  return o;
+};
+
+UndirectedLouvainIndex.prototype.assign = function(prop, level) {
+  if (arguments.length < 2)
+    level = this.level;
+
+  var mapping = this.dendrogram[level];
+
+  var i, l;
+
+  for (i = 0, l = mapping.length; i < l; i++)
+    this.graph.setNodeAttribute(this.nodes[i], prop, mapping[i]);
+};
+
 UndirectedLouvainIndex.prototype[INSPECT] = function() {
   var proxy = {};
 
@@ -557,6 +585,9 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
 
   this.level++;
 };
+
+DirectedLouvainIndex.prototype.collect = UndirectedLouvainIndex.prototype.collect;
+DirectedLouvainIndex.prototype.assign = UndirectedLouvainIndex.prototype.assign;
 
 DirectedLouvainIndex.prototype[INSPECT] = function() {
   var proxy = {};
