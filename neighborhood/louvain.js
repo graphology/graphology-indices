@@ -290,7 +290,7 @@ function DirectedLouvainIndex(graph, options) {
   // Properties
   this.C = graph.order;
   this.M = 0;
-  this.E = graph.size;
+  this.E = graph.size * 2;
   this.level = 0;
   this.graph = graph;
   this.nodes = graph.nodes();
@@ -298,11 +298,11 @@ function DirectedLouvainIndex(graph, options) {
   // Edge-level
   this.neighborhood = new PointerArray(upperBound);
   this.weights = new Float64Array(upperBound);
-  this.outs = new Uint8Array(upperBound); // TODO: use bitset or alternative optimization?
 
   // Node-level
   this.loops = new PointerArray(graph.order);
   this.starts = new PointerArray(graph.order + 1);
+  this.offsets = new PointerArray(graph.order);
   this.belongings = new PointerArray(graph.order);
   this.dendrogram = [];
 
@@ -322,7 +322,9 @@ function DirectedLouvainIndex(graph, options) {
 
   for (i = 0, l = graph.order; i < l; i++) {
     node = this.nodes[i];
-    edges = graph.edges(node);
+
+    // Starting with outgoing edges
+    edges = graph.outEdges(node);
 
     this.starts[i] = n;
     this.belongings[i] = i;
@@ -332,14 +334,10 @@ function DirectedLouvainIndex(graph, options) {
       neighbor = graph.opposite(node, edge);
       weight = getWeight(edge);
 
-      // Doing this only when the edge is going out
-      if (graph.source(edge) === node) {
-        this.outs[n] = 1;
-        this.M += weight;
-
-        this.totalOutWeights[i] += weight;
-        this.totalInWeights[ids[neighbor]] += weight;
-      }
+      // Doing this three things only when the edge is going out
+      this.M += weight;
+      this.totalOutWeights[i] += weight;
+      this.totalInWeights[ids[neighbor]] += weight;
 
       this.neighborhood[n] = ids[neighbor];
       this.weights[n] = weight;
@@ -349,13 +347,70 @@ function DirectedLouvainIndex(graph, options) {
 
       n++;
     }
+
+    // Recording offset and continuing with ingoing edges
+    this.offsets[i] = n;
+
+    edges = graph.inEdges(node);
+
+    for (j = 0, m = edges.length; j < m; j++) {
+      edge = edges[j];
+      neighbor = graph.opposite(node, edge);
+      weight = getWeight(edge);
+
+      this.neighborhood[n] = ids[neighbor];
+      this.weights[n] = weight;
+
+      n++;
+    }
   }
 
   this.starts[i] = upperBound;
 }
 
 DirectedLouvainIndex.prototype.bounds = UndirectedLouvainIndex.prototype.bounds;
+
+DirectedLouvainIndex.prototype.inBounds = function(i) {
+  return [this.offsets[i], this.starts[i + 1]];
+};
+
+DirectedLouvainIndex.prototype.outBounds = function(i) {
+  return [this.starts[i], this.offsets[i]];
+};
+
 DirectedLouvainIndex.prototype.project = UndirectedLouvainIndex.prototype.project;
+
+DirectedLouvainIndex.prototype.projectIn = function() {
+  var self = this;
+
+  var projection = {};
+
+  self.nodes.forEach(function(node, i) {
+    projection[node] = Array.from(
+      self.neighborhood.slice(self.offsets[i], self.starts[i + 1])
+    ).map(function(j) {
+      return self.nodes[j];
+    });
+  });
+
+  return projection;
+};
+
+DirectedLouvainIndex.prototype.projectOut = function() {
+  var self = this;
+
+  var projection = {};
+
+  self.nodes.forEach(function(node, i) {
+    projection[node] = Array.from(
+      self.neighborhood.slice(self.starts[i], self.offsets[i])
+    ).map(function(j) {
+      return self.nodes[j];
+    });
+  });
+
+  return projection;
+};
 
 DirectedLouvainIndex.prototype.moveNodeToCommunity = function(
   i,
@@ -498,8 +553,8 @@ DirectedLouvainIndex.prototype[INSPECT] = function() {
   proxy.nodes = this.nodes;
   proxy.starts = this.starts.slice(0, proxy.C + 1);
 
-  var eTruncated = ['neighborhood', 'weights', 'outs'];
-  var cTruncated = ['loops', 'belongings', 'internalWeights', 'totalInWeights', 'totalOutWeights'];
+  var eTruncated = ['neighborhood', 'weights'];
+  var cTruncated = ['offsets', 'loops', 'belongings', 'internalWeights', 'totalInWeights', 'totalOutWeights'];
 
   var self = this;
 
