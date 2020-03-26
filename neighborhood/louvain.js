@@ -108,13 +108,14 @@ UndirectedLouvainIndex.prototype.moveNodeToCommunity = function(
   targetCommunityDegree,
   targetCommunity
 ) {
-  var currentCommunity = this.belongings[i];
+  var currentCommunity = this.belongings[i],
+      loops = this.loops[i];
 
-  this.totalWeights[currentCommunity] -= currentCommunityDegree + (degree - currentCommunityDegree);
-  this.totalWeights[targetCommunity] += targetCommunityDegree + (degree - targetCommunityDegree);
+  this.totalWeights[currentCommunity] -= currentCommunityDegree + (degree - currentCommunityDegree) + loops;
+  this.totalWeights[targetCommunity] += targetCommunityDegree + (degree - targetCommunityDegree) + loops;
 
-  this.internalWeights[currentCommunity] -= currentCommunityDegree * 2;
-  this.internalWeights[targetCommunity] += targetCommunityDegree * 2;
+  this.internalWeights[currentCommunity] -= currentCommunityDegree * 2 + loops;
+  this.internalWeights[targetCommunity] += targetCommunityDegree * 2 + loops;
 
   this.belongings[i] = targetCommunity;
 };

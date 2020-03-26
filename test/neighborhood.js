@@ -401,6 +401,7 @@ describe('Neighborhood Indices', function() {
       index.zoomOut();
 
       assert.strictEqual(index.C, 2);
+      assert.strictEqual(index.E, 2);
       assert.strictEqual(index.level, 1);
       assert.deepEqual(index.neighborhood.slice(0, index.C), new Uint8Array([1, 0]));
       assert.deepEqual(index.weights.slice(0, index.C), new Float64Array([1, 1]));
@@ -412,6 +413,15 @@ describe('Neighborhood Indices', function() {
 
       // Once more
       index.moveNodeToCommunity(0, 1, 0, 1, 1);
+
+      assert.deepEqual(index.totalWeights.slice(0, index.C), new Float64Array([0, 12]));
+      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([0, 12]));
+
+      index.zoomOut();
+
+      assert.strictEqual(index.C, 1);
+      assert.strictEqual(index.E, 0);
+      assert.strictEqual(index.level, 2);
     });
 
     it.skip('should be possible to zoom out in the directed case.', function() {
