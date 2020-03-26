@@ -7,14 +7,15 @@ var typed = require('mnemonist/utils/typed-arrays');
 function OutboundNeighborhoodIndex(graph) {
   var upperBound = graph.directedSize + graph.undirectedSize * 2;
 
-  var PointerArray = typed.getPointerArray(upperBound);
+  var NeighborhoodPointerArray = typed.getPointerArray(upperBound);
+  var NodesPointerArrray = typed.getPointerArray(graph.order);
 
   // NOTE: directedSize + undirectedSize * 2 is an upper bound for
   // neighborhood size
   this.graph = graph;
-  this.neighborhood = new PointerArray(upperBound);
+  this.neighborhood = new NodesPointerArrray(upperBound);
 
-  this.starts = new PointerArray(graph.order + 1);
+  this.starts = new NeighborhoodPointerArray(graph.order + 1);
 
   this.nodes = graph.nodes();
 
@@ -84,17 +85,18 @@ exports.OutboundNeighborhoodIndex = OutboundNeighborhoodIndex;
 function WeightedOutboundNeighborhoodIndex(graph, weightAttribute) {
   var upperBound = graph.directedSize + graph.undirectedSize * 2;
 
-  var PointerArray = typed.getPointerArray(upperBound);
+  var NeighborhoodPointerArray = typed.getPointerArray(upperBound);
+  var NodesPointerArrray = typed.getPointerArray(graph.order);
 
   weightAttribute = weightAttribute || 'weight';
 
   // NOTE: directedSize + undirectedSize * 2 is an upper bound for
   // neighborhood size
   this.graph = graph;
-  this.neighborhood = new PointerArray(upperBound);
+  this.neighborhood = new NodesPointerArrray(upperBound);
   this.weights = new Float64Array(upperBound);
 
-  this.starts = new PointerArray(graph.order + 1);
+  this.starts = new NeighborhoodPointerArray(graph.order + 1);
 
   this.nodes = graph.nodes();
 
