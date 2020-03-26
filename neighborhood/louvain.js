@@ -39,7 +39,8 @@ function UndirectedLouvainIndex(graph, options) {
   // Building the index
   var upperBound = graph.size * 2;
 
-  var PointerArray = typed.getPointerArray(upperBound);
+  var NeighborhoodPointerArray = typed.getPointerArray(upperBound);
+  var NodesPointerArray = typed.getPointerArray(graph.order);
 
   // Properties
   this.C = graph.order;
@@ -50,13 +51,13 @@ function UndirectedLouvainIndex(graph, options) {
   this.nodes = graph.nodes();
 
   // Edge-level
-  this.neighborhood = new PointerArray(upperBound);
+  this.neighborhood = new NodesPointerArray(upperBound);
   this.weights = new Float64Array(upperBound);
 
   // Node-level
   this.loops = new Float64Array(graph.order);
-  this.starts = new PointerArray(graph.order + 1);
-  this.belongings = new PointerArray(graph.order);
+  this.starts = new NeighborhoodPointerArray(graph.order + 1);
+  this.belongings = new NodesPointerArray(graph.order);
   this.dendrogram = [];
 
   // Community-level
@@ -294,7 +295,8 @@ function DirectedLouvainIndex(graph, options) {
   // Building the index
   var upperBound = graph.size * 2;
 
-  var PointerArray = typed.getPointerArray(upperBound);
+  var NeighborhoodPointerArray = typed.getPointerArray(upperBound);
+  var NodesPointerArray = typed.getPointerArray(graph.order);
 
   // Properties
   this.C = graph.order;
@@ -305,14 +307,14 @@ function DirectedLouvainIndex(graph, options) {
   this.nodes = graph.nodes();
 
   // Edge-level
-  this.neighborhood = new PointerArray(upperBound);
+  this.neighborhood = new NodesPointerArray(upperBound);
   this.weights = new Float64Array(upperBound);
 
   // Node-level
-  this.loops = new PointerArray(graph.order);
-  this.starts = new PointerArray(graph.order + 1);
-  this.offsets = new PointerArray(graph.order);
-  this.belongings = new PointerArray(graph.order);
+  this.loops = new Float64Array(graph.order);
+  this.starts = new NeighborhoodPointerArray(graph.order + 1);
+  this.offsets = new NeighborhoodPointerArray(graph.order);
+  this.belongings = new NodesPointerArray(graph.order);
   this.dendrogram = [];
 
   // Community-level
