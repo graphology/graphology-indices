@@ -42,6 +42,7 @@ function UndirectedLouvainIndex(graph, options) {
   // Properties
   this.C = graph.order;
   this.M = 0;
+  this.E = graph.size * 2;
   this.level = 0;
   this.graph = graph;
   this.nodes = graph.nodes();
@@ -171,6 +172,7 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
 
   // Rewriting neighborhood
   this.C = C;
+  this.E = E;
 
   var data;
 
@@ -222,6 +224,42 @@ UndirectedLouvainIndex.prototype.project = function() {
   return projection;
 };
 
+UndirectedLouvainIndex.prototype.inspect = function() {
+  var proxy = {};
+
+  // Trick so that node displays the name of the constructor
+  Object.defineProperty(proxy, 'constructor', {
+    value: UndirectedLouvainIndex,
+    enumerable: false
+  });
+
+  proxy.C = this.C;
+  proxy.M = this.M;
+  proxy.E = this.E;
+  proxy.level = this.level;
+  proxy.nodes = this.nodes;
+
+  var eTruncated = ['neighborhood', 'weights'];
+  var cTruncated = ['loops', 'starts', 'belongings', 'internalWeights', 'totalWeights'];
+
+  var self = this;
+
+  eTruncated.forEach(function(key) {
+    proxy[key] = self[key].slice(0, proxy.E);
+  });
+
+  cTruncated.forEach(function(key) {
+    proxy[key] = self[key].slice(0, proxy.C);
+  });
+
+  proxy.dendrogram = this.dendrogram;
+
+  return proxy;
+};
+
+if (typeof Symbol !== 'undefined')
+  UndirectedLouvainIndex.prototype[Symbol.for('nodejs.util.inspect.custom')] = UndirectedLouvainIndex.prototype.inspect;
+
 function DirectedLouvainIndex(graph, options) {
 
   // Solving options
@@ -253,6 +291,7 @@ function DirectedLouvainIndex(graph, options) {
   // Properties
   this.C = graph.order;
   this.M = 0;
+  this.E = graph.size;
   this.level = 0;
   this.graph = graph;
   this.nodes = graph.nodes();

@@ -41,6 +41,7 @@
     "extends": "@yomguithereal/eslint-config",
     "globals": {
       "Set": true,
+      "Symbol": true,
       "Uint8Array": true,
       "Float64Array": true
     }
