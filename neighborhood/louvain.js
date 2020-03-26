@@ -51,6 +51,7 @@ function UndirectedLouvainIndex(graph, options) {
   this.weights = new Float64Array(upperBound);
 
   // Node-level
+  this.loops = new Float64Array(graph.order);
   this.starts = new PointerArray(graph.order + 1);
   this.belongings = new PointerArray(graph.order);
   this.dendrogram = [];
@@ -90,6 +91,7 @@ function UndirectedLouvainIndex(graph, options) {
       this.weights[n] = weight;
 
       // NOTE: we could handle self-loops here by incrementing `internalWeights`
+      // or using #.loops
 
       n++;
     }
@@ -182,6 +184,7 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
 
     this.totalWeights[ci] = data.totalWeights;
     this.internalWeights[ci] = data.internalWeights;
+    this.loops[ci] = data.internalWeights;
 
     this.starts[ci] = n;
     this.belongings[ci] = ci;
@@ -260,6 +263,7 @@ function DirectedLouvainIndex(graph, options) {
   this.outs = new Uint8Array(upperBound); // TODO: use bitset or alternative optimization?
 
   // Node-level
+  this.loops = new PointerArray(graph.order);
   this.starts = new PointerArray(graph.order + 1);
   this.belongings = new PointerArray(graph.order);
   this.dendrogram = new PointerArray(graph.order);
@@ -303,6 +307,7 @@ function DirectedLouvainIndex(graph, options) {
       this.weights[n] = weight;
 
       // NOTE: we could handle self-loops here by incrementing `internalWeights`
+      // or using #.loops
 
       n++;
     }

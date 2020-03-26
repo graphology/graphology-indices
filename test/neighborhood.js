@@ -409,6 +409,9 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(index.dendrogram, [new Uint8Array([0, 1, 1, 1, 0, 1])]);
       assert.deepEqual(index.totalWeights.slice(0, index.C), new Float64Array([3, 9]));
       assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 8]));
+
+      // Once more
+      index.moveNodeToCommunity(0, 1, 0, 1, 1);
     });
 
     it.skip('should be possible to zoom out in the directed case.', function() {
