@@ -212,7 +212,7 @@ describe('Neighborhood Indices', function() {
       }))));
     });
 
-    it('should be possible to move a node from one community to the other.', function() {
+    it('should be possible to move a node from one community to the other in the undirected case.', function() {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
       var index = new UndirectedLouvainIndex(graph);
 
@@ -281,6 +281,79 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(Array.from(index.belongings), [0, 1, 0, 1, 0, 1]);
       assert.deepEqual(Array.from(index.internalWeights), [2, 2, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [6, 6, 0, 0, 0, 0]);
+    });
+
+    it('should be possible to move a node from one community to the other in the directed case.', function() {
+      var graph = fromEdges(Graph.DirectedGraph, EDGES);
+      var index = new DirectedLouvainIndex(graph);
+
+      var before = {
+        belongings: index.belongings.slice(),
+        totalInWeights: index.totalInWeights.slice(),
+        totalOutWeights: index.totalOutWeights.slice(),
+        internalWeights: index.internalWeights.slice()
+      };
+
+      // Null move of node '1'
+      index.moveNodeToCommunity(0, 1, 2, 0, 1, 0, 1, 0);
+
+      assert.deepEqual(before, {
+        belongings: index.belongings,
+        totalInWeights: index.totalInWeights,
+        totalOutWeights: index.totalOutWeights,
+        internalWeights: index.internalWeights
+      });
+
+      // // Moving node '1' to community of node '2'
+      // index.moveNodeToCommunity(0, 2, 0, 1, 1);
+
+      // assert.deepEqual(Array.from(index.belongings), [1, 1, 2, 3, 4, 5]);
+      // assert.deepEqual(Array.from(index.internalWeights), [0, 2, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.totalWeights), [0, 5, 3, 2, 1, 1]);
+
+      // // Rolling back move
+      // index.moveNodeToCommunity(0, 2, 1, 0, 0);
+
+      // assert.deepEqual(before, {
+      //   belongings: index.belongings,
+      //   totalWeights: index.totalWeights,
+      //   internalWeights: index.internalWeights
+      // });
+
+      // // node '3' to community '1'
+      // index.moveNodeToCommunity(2, 3, 0, 1, 1);
+
+      // assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 4, 5]);
+      // assert.deepEqual(Array.from(index.internalWeights), [0, 2, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.totalWeights), [2, 6, 0, 2, 1, 1]);
+
+      // // node '5' to community '0'
+      // index.moveNodeToCommunity(4, 1, 0, 1, 0);
+
+      // assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 0, 5]);
+      // assert.deepEqual(Array.from(index.internalWeights), [2, 2, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.totalWeights), [3, 6, 0, 2, 0, 1]);
+
+      // // node '6' to community '1'
+      // index.moveNodeToCommunity(5, 1, 0, 1, 1);
+
+      // assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 0, 1]);
+      // assert.deepEqual(Array.from(index.internalWeights), [2, 4, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.totalWeights), [3, 7, 0, 2, 0, 0]);
+
+      // // node '4' to community '1'
+      // index.moveNodeToCommunity(3, 2, 0, 2, 1);
+
+      // assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 1, 0, 1]);
+      // assert.deepEqual(Array.from(index.internalWeights), [2, 8, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.totalWeights), [3, 9, 0, 0, 0, 0]);
+
+      // // Supplementary node '3' to community '0'
+      // index.moveNodeToCommunity(2, 3, 3, 0, 0);
+
+      // assert.deepEqual(Array.from(index.belongings), [0, 1, 0, 1, 0, 1]);
+      // assert.deepEqual(Array.from(index.internalWeights), [2, 2, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.totalWeights), [6, 6, 0, 0, 0, 0]);
     });
   });
 });
