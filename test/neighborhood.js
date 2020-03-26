@@ -378,5 +378,59 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(Array.from(index.totalInWeights), [4, 3, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalOutWeights), [4, 3, 0, 0, 0, 0]);
     });
+
+    it('should be possible to zoom out in the undirected case.', function() {
+      var graph = fromEdges(Graph.UndirectedGraph, EDGES);
+      var index = new UndirectedLouvainIndex(graph);
+
+      // node '1', '5' => community '4' (0)
+      // node '2', '3', '4', '6' => community '2' (1)
+
+      // node '2' to community '2'
+      index.moveNodeToCommunity(1, 3, 0, 1, 2);
+
+      // node '1' to community '4'
+      index.moveNodeToCommunity(0, 2, 0, 1, 4);
+
+      // node '6' to community '2'
+      index.moveNodeToCommunity(5, 1, 0, 1, 2);
+
+      // node '4' to community '2'
+      index.moveNodeToCommunity(3, 2, 0, 2, 2);
+
+      index.zoomOut();
+
+      assert.strictEqual(index.C, 2);
+      assert.strictEqual(index.level, 1);
+      assert.deepEqual(index.neighborhood.slice(0, index.C), new Uint8Array([1, 0]));
+      assert.deepEqual(index.weights.slice(0, index.C), new Float64Array([1, 1]));
+      assert.deepEqual(index.starts.slice(0, index.C + 1), new Uint8Array([0, 1, 2]));
+      assert.deepEqual(index.belongings.slice(0, index.C), new Uint8Array([0, 1]));
+      assert.deepEqual(index.dendrogram, [new Uint8Array([0, 1, 1, 1, 0, 1])]);
+      assert.deepEqual(index.totalWeights.slice(0, index.C), new Float64Array([3, 9]));
+      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 8]));
+    });
+
+    it.skip('should be possible to zoom out in the directed case.', function() {
+      var graph = fromEdges(Graph.DirectedGraph, EDGES);
+      var index = new DirectedLouvainIndex(graph);
+
+      // node '1', '5' => community '0'
+      // node '2', '3', '4', '6' => community '1'
+
+      // node '3' to community '1'
+      index.moveNodeToCommunity(2, 2, 1, 0, 0, 1, 0, 1);
+
+      // node '5' to community '0'
+      index.moveNodeToCommunity(4, 1, 1, 0, 0, 1, 1, 0);
+
+      // node '6' to community '1'
+      index.moveNodeToCommunity(5, 0, 1, 0, 0, 0, 1, 1);
+
+      // node '4' to community '1'
+      index.moveNodeToCommunity(3, 1, 1, 0, 0, 1, 1, 1);
+
+      index.zoomOut();
+    });
   });
 });

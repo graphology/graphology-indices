@@ -42,6 +42,7 @@ function UndirectedLouvainIndex(graph, options) {
   // Properties
   this.C = graph.order;
   this.M = 0;
+  this.level = 0;
   this.graph = graph;
   this.nodes = graph.nodes();
 
@@ -52,6 +53,7 @@ function UndirectedLouvainIndex(graph, options) {
   // Node-level
   this.starts = new PointerArray(graph.order + 1);
   this.belongings = new PointerArray(graph.order);
+  this.dendrogram = [];
 
   // Community-level
   this.internalWeights = new Float64Array(graph.order);
@@ -115,12 +117,87 @@ UndirectedLouvainIndex.prototype.moveNodeToCommunity = function(
 };
 
 UndirectedLouvainIndex.prototype.zoomOut = function() {
+  var inducedGraph = {},
+      newLabels = {};
 
+  var C = 0,
+      E = 0;
+
+  var i, j, l, m, n, ci, cj, adj;
+
+  // Renumbering communities
+  for (i = 0, l = this.C; i < l; i++) {
+    ci = this.belongings[i];
+
+    if (!(ci in newLabels)) {
+      newLabels[ci] = C;
+      inducedGraph[C] = {
+        adj: {},
+        totalWeights: this.totalWeights[ci],
+        internalWeights: this.internalWeights[ci]
+      };
+      C++;
+    }
+
+    // We do this to otpimize the number of lookups in next loop
+    this.belongings[i] = newLabels[ci];
+  }
+
+  // Actualizing dendrogram
+  this.dendrogram.push(this.belongings.slice(0, this.C));
+
+  // Building induced graph matrix
+  for (i = 0, l = this.C; i < l; i++) {
+    ci = this.belongings[i];
+
+    adj = inducedGraph[ci].adj;
+
+    for (j = this.starts[i], m = this.starts[i + 1]; j < m; j++) {
+      n = this.neighborhood[j];
+      cj = this.belongings[n];
+
+      if (ci === cj)
+        continue;
+
+      if (!(cj in adj))
+        adj[cj] = 0;
+
+      adj[cj] += this.weights[n];
+      E++;
+    }
+  }
+
+  // Rewriting neighborhood
+  this.C = C;
+
+  var data;
+
+  n = 0;
+
+  for (ci in inducedGraph) {
+    data = inducedGraph[ci];
+    adj = data.adj;
+
+    ci = +ci;
+
+    this.totalWeights[ci] = data.totalWeights;
+    this.internalWeights[ci] = data.internalWeights;
+
+    this.starts[ci] = n;
+    this.belongings[ci] = ci;
+
+    for (cj in adj) {
+      this.neighborhood[n] = cj;
+      this.weights[n] = adj[cj];
+
+      n++;
+    }
+  }
+
+  this.starts[C] = E;
+
+  this.level++;
 };
-
-// TODO: we can get rid of stops
-
-// TODO: self loop values when zooming out? should consider self internal weight when computing degrees
 
 UndirectedLouvainIndex.prototype.bounds = function(i) {
   return [this.starts[i], this.starts[i + 1]];
@@ -173,6 +250,7 @@ function DirectedLouvainIndex(graph, options) {
   // Properties
   this.C = graph.order;
   this.M = 0;
+  this.level = 0;
   this.graph = graph;
   this.nodes = graph.nodes();
 
@@ -184,6 +262,7 @@ function DirectedLouvainIndex(graph, options) {
   // Node-level
   this.starts = new PointerArray(graph.order + 1);
   this.belongings = new PointerArray(graph.order);
+  this.dendrogram = new PointerArray(graph.order);
 
   // Community-level
   this.internalWeights = new Float64Array(graph.order);

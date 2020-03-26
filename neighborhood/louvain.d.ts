@@ -14,6 +14,7 @@ export class UndirectedLouvainIndex {
 
   M: number;
   C: number;
+  level: number;
   graph: Graph;
   neighborhood: PointerArray;
   starts: PointerArray;
@@ -29,6 +30,7 @@ export class UndirectedLouvainIndex {
     targetCommunityDegree: number,
     targetCommunity: number
   ): void;
+  zoomOut(): void;
 }
 
 export class DirectedLouvainIndex {
@@ -36,6 +38,7 @@ export class DirectedLouvainIndex {
 
   M: number;
   C: number;
+  level: number;
   graph: Graph;
   neighborhood: PointerArray;
   starts: PointerArray;
@@ -54,4 +57,5 @@ export class DirectedLouvainIndex {
     targetCommunityOutDegree: number,
     targetCommunity: number
   ): void;
+  zoomOut(): void;
 }
