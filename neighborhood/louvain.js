@@ -101,6 +101,7 @@ function UndirectedLouvainIndex(graph, options) {
   }
 
   this.starts[i] = upperBound;
+  this.dendrogram.push(this.belongings.slice());
 }
 
 UndirectedLouvainIndex.prototype.moveNodeToCommunity = function(
@@ -126,6 +127,8 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
   var inducedGraph = {},
       newLabels = {};
 
+  var N = this.nodes.length;
+
   var C = 0,
       E = 0;
 
@@ -150,7 +153,13 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
   }
 
   // Actualizing dendrogram
-  this.dendrogram.push(this.belongings.slice(0, this.C));
+  var currentLevel = this.dendrogram[this.level],
+      nextLevel = new (typed.getPointerArray(C))(N);
+
+  for (i = 0; i < N; i++)
+    nextLevel[i] = this.belongings[currentLevel[i]];
+
+  this.dendrogram.push(nextLevel);
 
   // Building induced graph matrix
   for (i = 0, l = this.C; i < l; i++) {
@@ -366,6 +375,7 @@ function DirectedLouvainIndex(graph, options) {
   }
 
   this.starts[i] = upperBound;
+  this.dendrogram.push(this.belongings.slice());
 }
 
 DirectedLouvainIndex.prototype.bounds = UndirectedLouvainIndex.prototype.bounds;
@@ -441,6 +451,8 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
   var inducedGraph = {},
       newLabels = {};
 
+  var N = this.nodes.length;
+
   var C = 0,
       E = 0;
 
@@ -466,8 +478,13 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
     this.belongings[i] = newLabels[ci];
   }
 
-  // Actualizing dendrogram
-  this.dendrogram.push(this.belongings.slice(0, this.C));
+  var currentLevel = this.dendrogram[this.level],
+      nextLevel = new (typed.getPointerArray(C))(N);
+
+  for (i = 0; i < N; i++)
+    nextLevel[i] = this.belongings[currentLevel[i]];
+
+  this.dendrogram.push(nextLevel);
 
   // Building induced graph matrix
   for (i = 0, l = this.C; i < l; i++) {
