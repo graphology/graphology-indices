@@ -461,18 +461,19 @@ describe('Neighborhood Indices', function() {
       // node '4' to community '2'
       index.moveNodeToCommunity(3, 1, 1, 0, 0, 1, 1, 2);
 
-      // index.zoomOut();
+      index.zoomOut();
 
-      // assert.strictEqual(index.C, 2);
-      // assert.strictEqual(index.E, 2);
-      // assert.strictEqual(index.level, 1);
-      // assert.deepEqual(index.neighborhood.slice(0, index.C), new Uint8Array([1, 0]));
-      // assert.deepEqual(index.weights.slice(0, index.C), new Float64Array([1, 1]));
-      // assert.deepEqual(index.starts.slice(0, index.C + 1), new Uint8Array([0, 1, 2]));
-      // assert.deepEqual(index.belongings.slice(0, index.C), new Uint8Array([0, 1]));
-      // assert.deepEqual(index.dendrogram, [new Uint8Array([0, 1, 1, 1, 0, 1])]);
-      // assert.deepEqual(index.totalWeights.slice(0, index.C), new Float64Array([3, 9]));
-      // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 8]));
+      assert.strictEqual(index.C, 2);
+      assert.strictEqual(index.E, 2);
+      assert.strictEqual(index.level, 1);
+      assert.deepEqual(index.neighborhood.slice(0, index.C), new Uint8Array([1, 0]));
+      assert.deepEqual(index.weights.slice(0, index.C), new Float64Array([1, 1]));
+      assert.deepEqual(index.starts.slice(0, index.C + 1), new Uint8Array([0, 1, 2]));
+      assert.deepEqual(index.belongings.slice(0, index.C), new Uint8Array([0, 1]));
+      assert.deepEqual(index.dendrogram, [new Uint8Array([0, 1, 1, 1, 0, 1])]);
+      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([2, 5]));
+      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([3, 4]));
+      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 4]));
 
       // // Once more
       // index.moveNodeToCommunity(0, 1, 0, 1, 1);

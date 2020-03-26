@@ -443,7 +443,7 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
   var C = 0,
       E = 0;
 
-  var i, j, l, m, n, ci, cj, data, out, adj, inAdj, outAdj;
+  var i, j, l, m, n, ci, cj, data, offset, out, adj, inAdj, outAdj;
 
   // Renumbering communities
   for (i = 0, l = this.C; i < l; i++) {
@@ -471,6 +471,7 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
   // Building induced graph matrix
   for (i = 0, l = this.C; i < l; i++) {
     ci = this.belongings[i];
+    offset = this.offsets[i];
 
     data = inducedGraph[ci];
     inAdj = data.inAdj;
@@ -479,7 +480,7 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
     for (j = this.starts[i], m = this.starts[i + 1]; j < m; j++) {
       n = this.neighborhood[j];
       cj = this.belongings[n];
-      out = this.outs[n];
+      out = j < offset;
 
       adj = out === 0 ? inAdj : outAdj;
 
@@ -518,15 +519,15 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
     for (cj in inAdj) {
       this.neighborhood[n] = cj;
       this.weights[n] = inAdj[cj];
-      this.outs[n] = 0;
 
       n++;
     }
 
+    this.offsets[ci] = n;
+
     for (cj in outAdj) {
       this.neighborhood[n] = cj;
       this.weights[n] = outAdj[cj];
-      this.outs[n] = 1;
 
       n++;
     }
