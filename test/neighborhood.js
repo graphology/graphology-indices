@@ -440,6 +440,7 @@ describe('Neighborhood Indices', function() {
       assert.strictEqual(index.C, 1);
       assert.strictEqual(index.E, 0);
       assert.strictEqual(index.level, 2);
+      assert.deepEqual(index.dendrogram, [new Uint8Array([0, 1, 1, 1, 0, 1]), new Uint8Array([0, 0])]);
     });
 
     it('should be possible to zoom out in the directed case.', function() {
@@ -475,17 +476,19 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([3, 4]));
       assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 4]));
 
-      // // Once more
-      // index.moveNodeToCommunity(0, 1, 0, 1, 1);
+      // Once more
+      index.moveNodeToCommunity(0, 0, 1, 0, 0, 0, 1, 1);
 
-      // assert.deepEqual(index.totalWeights.slice(0, index.C), new Float64Array([0, 12]));
-      // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([0, 12]));
+      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([0, 7]));
+      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([0, 7]));
+      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([0, 7]));
 
-      // index.zoomOut();
+      index.zoomOut();
 
-      // assert.strictEqual(index.C, 1);
-      // assert.strictEqual(index.E, 0);
-      // assert.strictEqual(index.level, 2);
+      assert.strictEqual(index.C, 1);
+      assert.strictEqual(index.E, 0);
+      assert.strictEqual(index.level, 2);
+      assert.deepEqual(index.dendrogram, [new Uint8Array([0, 1, 1, 1, 0, 1]), new Uint8Array([0, 0])]);
     });
   });
 });

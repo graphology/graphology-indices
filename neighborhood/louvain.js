@@ -422,16 +422,17 @@ DirectedLouvainIndex.prototype.moveNodeToCommunity = function(
   targetCommunityOutDegree,
   targetCommunity
 ) {
-  var currentCommunity = this.belongings[i];
+  var currentCommunity = this.belongings[i],
+      loops = this.loops[i];
 
-  this.totalInWeights[currentCommunity] -= currentCommunityInDegree + (inDegree - currentCommunityInDegree);
-  this.totalInWeights[targetCommunity] += targetCommunityInDegree + (inDegree - targetCommunityInDegree);
+  this.totalInWeights[currentCommunity] -= currentCommunityInDegree + (inDegree - currentCommunityInDegree) + loops;
+  this.totalInWeights[targetCommunity] += targetCommunityInDegree + (inDegree - targetCommunityInDegree) + loops;
 
-  this.totalOutWeights[currentCommunity] -= currentCommunityOutDegree + (outDegree - currentCommunityOutDegree);
-  this.totalOutWeights[targetCommunity] += targetCommunityOutDegree + (outDegree - targetCommunityOutDegree);
+  this.totalOutWeights[currentCommunity] -= currentCommunityOutDegree + (outDegree - currentCommunityOutDegree) + loops;
+  this.totalOutWeights[targetCommunity] += targetCommunityOutDegree + (outDegree - targetCommunityOutDegree) + loops;
 
-  this.internalWeights[currentCommunity] -= currentCommunityInDegree + currentCommunityOutDegree;
-  this.internalWeights[targetCommunity] += targetCommunityInDegree + targetCommunityOutDegree;
+  this.internalWeights[currentCommunity] -= currentCommunityInDegree + currentCommunityOutDegree + loops;
+  this.internalWeights[targetCommunity] += targetCommunityInDegree + targetCommunityOutDegree + loops;
 
   this.belongings[i] = targetCommunity;
 };
