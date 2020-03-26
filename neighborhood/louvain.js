@@ -4,8 +4,6 @@
  */
 var typed = require('mnemonist/utils/typed-arrays');
 
-// TODO: separate directed from undirected index!
-
 var DEFAULTS = {
   attributes: {
     weight: 'weight'
