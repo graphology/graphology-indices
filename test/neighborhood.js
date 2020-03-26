@@ -281,6 +281,14 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(Array.from(index.belongings), [0, 1, 0, 1, 0, 1]);
       assert.deepEqual(Array.from(index.internalWeights), [2, 2, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [6, 6, 0, 0, 0, 0]);
+
+      // Supplementary node '2' to community '0'
+      index.moveNodeToCommunity(2, 3, 0, 3, 1);
+      index.moveNodeToCommunity(1, 3, 2, 1, 0);
+
+      assert.deepEqual(Array.from(index.belongings), [0, 0, 1, 1, 0, 1]);
+      assert.deepEqual(Array.from(index.internalWeights), [4, 4, 0, 0, 0, 0]);
+      assert.deepEqual(Array.from(index.totalWeights), [6, 6, 0, 0, 0, 0]);
     });
 
     it('should be possible to move a node from one community to the other in the directed case.', function() {
@@ -359,6 +367,15 @@ describe('Neighborhood Indices', function() {
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 0, 1, 0, 1]);
       assert.deepEqual(Array.from(index.internalWeights), [2, 1, 0, 0, 0, 0]);
+      assert.deepEqual(Array.from(index.totalInWeights), [4, 3, 0, 0, 0, 0]);
+      assert.deepEqual(Array.from(index.totalOutWeights), [4, 3, 0, 0, 0, 0]);
+
+      // Supplementary node '2' to community '0'
+      index.moveNodeToCommunity(2, 2, 1, 0, 0, 2, 1, 1);
+      index.moveNodeToCommunity(1, 2, 1, 1, 1, 0, 1, 0);
+
+      assert.deepEqual(Array.from(index.belongings), [0, 0, 1, 1, 0, 1]);
+      assert.deepEqual(Array.from(index.internalWeights), [3, 2, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalInWeights), [4, 3, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalOutWeights), [4, 3, 0, 0, 0, 0]);
     });
