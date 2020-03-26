@@ -50,8 +50,7 @@ function UndirectedLouvainIndex(graph, options) {
   this.weights = new Float64Array(upperBound);
 
   // Node-level
-  this.starts = new PointerArray(graph.order);
-  this.stops = new PointerArray(graph.order);
+  this.starts = new PointerArray(graph.order + 1);
   this.belongings = new PointerArray(graph.order);
 
   // Community-level
@@ -72,7 +71,6 @@ function UndirectedLouvainIndex(graph, options) {
     edges = graph.edges(node);
 
     this.starts[i] = n;
-    this.stops[i] = n + edges.length;
     this.belongings[i] = i;
 
     for (j = 0, m = edges.length; j < m; j++) {
@@ -94,6 +92,8 @@ function UndirectedLouvainIndex(graph, options) {
       n++;
     }
   }
+
+  this.starts[i] = upperBound;
 }
 
 UndirectedLouvainIndex.prototype.moveNodeToCommunity = function(
@@ -123,7 +123,7 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
 // TODO: self loop values when zooming out? should consider self internal weight when computing degrees
 
 UndirectedLouvainIndex.prototype.bounds = function(i) {
-  return [this.starts[i], this.stops[i]];
+  return [this.starts[i], this.starts[i + 1]];
 };
 
 UndirectedLouvainIndex.prototype.project = function() {
@@ -133,7 +133,7 @@ UndirectedLouvainIndex.prototype.project = function() {
 
   self.nodes.forEach(function(node, i) {
     projection[node] = Array.from(
-      self.neighborhood.slice(self.starts[i], self.stops[i])
+      self.neighborhood.slice(self.starts[i], self.starts[i + 1])
     ).map(function(j) {
       return self.nodes[j];
     });
@@ -182,8 +182,7 @@ function DirectedLouvainIndex(graph, options) {
   this.outs = new Uint8Array(upperBound); // TODO: use bitset or alternative optimization?
 
   // Node-level
-  this.starts = new PointerArray(graph.order);
-  this.stops = new PointerArray(graph.order);
+  this.starts = new PointerArray(graph.order + 1);
   this.belongings = new PointerArray(graph.order);
 
   // Community-level
@@ -205,7 +204,6 @@ function DirectedLouvainIndex(graph, options) {
     edges = graph.edges(node);
 
     this.starts[i] = n;
-    this.stops[i] = n + edges.length;
     this.belongings[i] = i;
 
     for (j = 0, m = edges.length; j < m; j++) {
@@ -230,6 +228,8 @@ function DirectedLouvainIndex(graph, options) {
       n++;
     }
   }
+
+  this.starts[i] = upperBound;
 }
 
 DirectedLouvainIndex.prototype.bounds = UndirectedLouvainIndex.prototype.bounds;
