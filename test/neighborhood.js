@@ -443,11 +443,11 @@ describe('Neighborhood Indices', function() {
       // node '4' to community '2'
       index.moveNodeToCommunity(3, 1, 1, 0, 0, 1, 1, 2);
 
-      // index.zoomOut();
+      index.zoomOut();
 
-      // assert.strictEqual(index.C, 2);
-      // assert.strictEqual(index.E, 2);
-      // assert.strictEqual(index.level, 1);
+      assert.strictEqual(index.C, 2);
+      assert.strictEqual(index.E, 2);
+      assert.strictEqual(index.level, 1);
       // assert.deepEqual(index.neighborhood.slice(0, index.C), new Uint8Array([1, 0]));
       // assert.deepEqual(index.weights.slice(0, index.C), new Float64Array([1, 1]));
       // assert.deepEqual(index.starts.slice(0, index.C + 1), new Uint8Array([0, 1, 2]));

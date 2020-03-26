@@ -129,7 +129,7 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
   var C = 0,
       E = 0;
 
-  var i, j, l, m, n, ci, cj, adj;
+  var i, j, l, m, n, ci, cj, data, adj;
 
   // Renumbering communities
   for (i = 0, l = this.C; i < l; i++) {
@@ -176,8 +176,6 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
   // Rewriting neighborhood
   this.C = C;
   this.E = E;
-
-  var data;
 
   n = 0;
 
@@ -241,9 +239,10 @@ UndirectedLouvainIndex.prototype[INSPECT] = function() {
   proxy.E = this.E;
   proxy.level = this.level;
   proxy.nodes = this.nodes;
+  proxy.starts = this.starts.slice(0, proxy.C + 1);
 
   var eTruncated = ['neighborhood', 'weights'];
-  var cTruncated = ['loops', 'starts', 'belongings', 'internalWeights', 'totalWeights'];
+  var cTruncated = ['loops', 'belongings', 'internalWeights', 'totalWeights'];
 
   var self = this;
 
@@ -305,7 +304,7 @@ function DirectedLouvainIndex(graph, options) {
   this.loops = new PointerArray(graph.order);
   this.starts = new PointerArray(graph.order + 1);
   this.belongings = new PointerArray(graph.order);
-  this.dendrogram = new PointerArray(graph.order);
+  this.dendrogram = [];
 
   // Community-level
   this.internalWeights = new Float64Array(graph.order);
@@ -382,6 +381,107 @@ DirectedLouvainIndex.prototype.moveNodeToCommunity = function(
   this.belongings[i] = targetCommunity;
 };
 
+DirectedLouvainIndex.prototype.zoomOut = function() {
+  var inducedGraph = {},
+      newLabels = {};
+
+  var C = 0,
+      E = 0;
+
+  var i, j, l, m, n, ci, cj, data, out, adj, inAdj, outAdj;
+
+  // Renumbering communities
+  for (i = 0, l = this.C; i < l; i++) {
+    ci = this.belongings[i];
+
+    if (!(ci in newLabels)) {
+      newLabels[ci] = C;
+      inducedGraph[C] = {
+        inAdj: {},
+        outAdj: {},
+        totalInWeights: this.totalInWeights[ci],
+        totalOutWeights: this.totalOutWeights[ci],
+        internalWeights: this.internalWeights[ci]
+      };
+      C++;
+    }
+
+    // We do this to otpimize the number of lookups in next loop
+    this.belongings[i] = newLabels[ci];
+  }
+
+  // Actualizing dendrogram
+  this.dendrogram.push(this.belongings.slice(0, this.C));
+
+  // Building induced graph matrix
+  for (i = 0, l = this.C; i < l; i++) {
+    ci = this.belongings[i];
+
+    data = inducedGraph[ci];
+    inAdj = data.inAdj;
+    outAdj = data.outAdj;
+
+    for (j = this.starts[i], m = this.starts[i + 1]; j < m; j++) {
+      n = this.neighborhood[j];
+      cj = this.belongings[n];
+      out = this.outs[n];
+
+      adj = out === 0 ? inAdj : outAdj;
+
+      if (ci === cj)
+        continue;
+
+      if (!(cj in adj))
+        adj[cj] = 0;
+
+      adj[cj] += this.weights[n];
+      E++;
+    }
+  }
+
+  // Rewriting neighborhood
+  this.C = C;
+  this.E = E;
+
+  n = 0;
+
+  for (ci in inducedGraph) {
+    data = inducedGraph[ci];
+    inAdj = data.inAdj;
+    outAdj = data.outAdj;
+
+    ci = +ci;
+
+    this.totalInWeights[ci] = data.totalInWeights;
+    this.totalOutWeights[ci] = data.totalOutWeights;
+    this.internalWeights[ci] = data.internalWeights;
+    this.loops[ci] = data.internalWeights;
+
+    this.starts[ci] = n;
+    this.belongings[ci] = ci;
+
+    for (cj in inAdj) {
+      this.neighborhood[n] = cj;
+      this.weights[n] = inAdj[cj];
+      this.outs[n] = 0;
+
+      n++;
+    }
+
+    for (cj in outAdj) {
+      this.neighborhood[n] = cj;
+      this.weights[n] = outAdj[cj];
+      this.outs[n] = 1;
+
+      n++;
+    }
+  }
+
+  this.starts[C] = E;
+
+  this.level++;
+};
+
 DirectedLouvainIndex.prototype[INSPECT] = function() {
   var proxy = {};
 
@@ -396,9 +496,10 @@ DirectedLouvainIndex.prototype[INSPECT] = function() {
   proxy.E = this.E;
   proxy.level = this.level;
   proxy.nodes = this.nodes;
+  proxy.starts = this.starts.slice(0, proxy.C + 1);
 
   var eTruncated = ['neighborhood', 'weights', 'outs'];
-  var cTruncated = ['loops', 'starts', 'belongings', 'internalWeights', 'totalInWeights', 'totalOutWeights'];
+  var cTruncated = ['loops', 'belongings', 'internalWeights', 'totalInWeights', 'totalOutWeights'];
 
   var self = this;
 
