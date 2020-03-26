@@ -9,7 +9,7 @@ type LouvainIndexOptions = {
   weighted: boolean
 }
 
-export default class LouvainIndex {
+export class UndirectedLouvainIndex {
   constructor(graph: Graph, options?: LouvainIndexOptions);
 
   M: number;
@@ -22,11 +22,36 @@ export default class LouvainIndex {
 
   bounds(index: number): [number, number];
   project(): {[key: string]: Array<string>};
-  moveNodeToCommunityUndirected(
+  moveNodeToCommunity(
     index: number,
     degree: number,
     currentCommunityDegree: number,
     targetCommunityDegree: number,
+    targetCommunity: number
+  ): void;
+}
+
+export class DirectedLouvainIndex {
+  constructor(graph: Graph, options?: LouvainIndexOptions);
+
+  M: number;
+  C: number;
+  graph: Graph;
+  neighborhood: PointerArray;
+  starts: PointerArray;
+  stops: PointerArray;
+  nodes: Array<string>;
+
+  bounds(index: number): [number, number];
+  project(): {[key: string]: Array<string>};
+  moveNodeToCommunity(
+    index: number,
+    inDegree: number,
+    outDegree: number,
+    currentCommunityInDegree: number,
+    currentCommunityOutDegree: number,
+    targetCommunityInDegree: number,
+    targetCommunityOutDegree: number,
     targetCommunity: number
   ): void;
 }

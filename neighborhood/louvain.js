@@ -98,7 +98,13 @@ function UndirectedLouvainIndex(graph, options) {
   }
 }
 
-UndirectedLouvainIndex.prototype.moveNodeToCommunity = function(i, degree, currentCommunityDegree, targetCommunityDegree, targetCommunity) {
+UndirectedLouvainIndex.prototype.moveNodeToCommunity = function(
+  i,
+  degree,
+  currentCommunityDegree,
+  targetCommunityDegree,
+  targetCommunity
+) {
   var currentCommunity = this.belongings[i];
 
   this.totalWeights[currentCommunity] -= currentCommunityDegree + (degree - currentCommunityDegree);
@@ -224,6 +230,31 @@ function DirectedLouvainIndex(graph, options) {
 
 DirectedLouvainIndex.prototype.bounds = UndirectedLouvainIndex.prototype.bounds;
 DirectedLouvainIndex.prototype.project = UndirectedLouvainIndex.prototype.project;
+
+DirectedLouvainIndex.prototype.moveNodeToCommunity = function(
+  i,
+  inDegree,
+  outDegree,
+  currentCommunityInDegree,
+  currentCommunityOutDegree,
+  targetCommunityInDegree,
+  targetCommunityOutDegree,
+  targetCommunity
+) {
+  var currentCommunity = this.belongings[i];
+
+  // TODO: isn't there some in/out inversion shenanigans to handle here?
+  this.totalInWeights[currentCommunity] -= currentCommunityInDegree + (inDegree - currentCommunityInDegree);
+  this.totalInWeights[targetCommunity] += targetCommunityInDegree + (inDegree - targetCommunityInDegree);
+
+  this.totalOutWeights[currentCommunity] -= currentCommunityOutDegree + (outDegree - currentCommunityOutDegree);
+  this.totalOutWeights[targetCommunity] += targetCommunityOutDegree + (outDegree - targetCommunityOutDegree);
+
+  this.internalWeights[currentCommunity] -= currentCommunityInDegree + currentCommunityOutDegree;
+  this.internalWeights[targetCommunity] += targetCommunityInDegree + targetCommunityOutDegree;
+
+  this.belongings[i] = targetCommunity;
+};
 
 exports.UndirectedLouvainIndex = UndirectedLouvainIndex;
 exports.DirectedLouvainIndex = DirectedLouvainIndex;
