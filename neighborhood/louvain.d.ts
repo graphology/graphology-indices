@@ -33,6 +33,7 @@ export class UndirectedLouvainIndex {
     targetCommunity: number
   ): void;
   zoomOut(): void;
+  computeModularity(): number;
 }
 
 export class DirectedLouvainIndex {
@@ -61,4 +62,5 @@ export class DirectedLouvainIndex {
     targetCommunity: number
   ): void;
   zoomOut(): void;
+  computeModularity(): number;
 }

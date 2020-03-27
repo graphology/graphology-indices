@@ -2,7 +2,7 @@
  * Graphology Indices Unit Tests
  * ==============================
  */
-var assert = require('assert');
+var assert = require('chai').assert;
 var Graph = require('graphology');
 var outbound = require('../neighborhood/outbound.js');
 var louvain = require('../neighborhood/louvain.js');
@@ -419,9 +419,11 @@ describe('Neighborhood Indices', function() {
       index.moveNodeToCommunity(3, 2, 0, 2, 2);
 
       assert.deepEqual(index.counts, new Uint8Array([0, 0, 4, 0, 2, 0]));
+      assert.closeTo(index.computeModularity(), 0.2083, 0.001);
 
       index.zoomOut();
 
+      assert.closeTo(index.computeModularity(), 0.2083, 0.001);
       assert.deepEqual(index.counts.slice(0, index.C), new Uint8Array([2, 4]));
 
       assert.strictEqual(index.C, 2);
@@ -521,9 +523,11 @@ describe('Neighborhood Indices', function() {
       index.moveNodeToCommunity(3, 1, 1, 0, 0, 1, 1, 2);
 
       assert.deepEqual(index.counts, new Uint8Array([0, 0, 4, 0, 2, 0]));
+      assert.closeTo(index.computeModularity(), 0.3265, 0.001);
 
       index.zoomOut();
 
+      assert.closeTo(index.computeModularity(), 0.3265, 0.001);
       assert.deepEqual(index.counts.slice(0, index.C), new Uint8Array([2, 4]));
 
       assert.strictEqual(index.C, 2);
