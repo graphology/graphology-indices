@@ -21,7 +21,6 @@ export class UndirectedLouvainIndex {
   graph: Graph;
   neighborhood: PointerArray;
   starts: PointerArray;
-  stops: PointerArray;
   nodes: Array<string>;
 
   bounds(index: number): [number, number];
@@ -46,7 +45,7 @@ export class DirectedLouvainIndex {
   graph: Graph;
   neighborhood: PointerArray;
   starts: PointerArray;
-  stops: PointerArray;
+  offsets: PointerArray;
   nodes: Array<string>;
 
   bounds(index: number): [number, number];
