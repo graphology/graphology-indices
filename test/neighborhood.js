@@ -399,7 +399,9 @@ describe('Neighborhood Indices', function() {
 
     it('should be possible to zoom out in the undirected case.', function() {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
-      var index = new UndirectedLouvainIndex(graph, {keepDendrogram: true});
+      var index = new UndirectedLouvainIndex(graph, {keepDendrogram: true, keepCounts: true});
+
+      assert.deepEqual(index.counts, new Uint8Array([1, 1, 1, 1, 1, 1]));
 
       // node '1', '5' => community '4' (0)
       // node '2', '3', '4', '6' => community '2' (1)
@@ -416,7 +418,11 @@ describe('Neighborhood Indices', function() {
       // node '4' to community '2'
       index.moveNodeToCommunity(3, 2, 0, 2, 2);
 
+      assert.deepEqual(index.counts, new Uint8Array([0, 0, 4, 0, 2, 0]));
+
       index.zoomOut();
+
+      assert.deepEqual(index.counts.slice(0, index.C), new Uint8Array([2, 4]));
 
       assert.strictEqual(index.C, 2);
       assert.strictEqual(index.E, 2);
@@ -439,6 +445,8 @@ describe('Neighborhood Indices', function() {
       assert.strictEqual(index.C, 1);
       assert.strictEqual(index.E, 0);
       assert.strictEqual(index.level, 2);
+
+      assert.deepEqual(index.counts.slice(0, index.C), new Uint8Array([6]));
 
       assert.deepEqual(index.dendrogram, [
         new Uint8Array([0, 1, 2, 3, 4, 5]),
@@ -493,7 +501,9 @@ describe('Neighborhood Indices', function() {
 
     it('should be possible to zoom out in the directed case.', function() {
       var graph = fromEdges(Graph.DirectedGraph, EDGES);
-      var index = new DirectedLouvainIndex(graph, {keepDendrogram: true});
+      var index = new DirectedLouvainIndex(graph, {keepDendrogram: true, keepCounts: true});
+
+      assert.deepEqual(index.counts, new Uint8Array([1, 1, 1, 1, 1, 1]));
 
       // node '1', '5' => community '4' (0)
       // node '2', '3', '4', '6' => community '2' (1)
@@ -510,7 +520,11 @@ describe('Neighborhood Indices', function() {
       // node '4' to community '2'
       index.moveNodeToCommunity(3, 1, 1, 0, 0, 1, 1, 2);
 
+      assert.deepEqual(index.counts, new Uint8Array([0, 0, 4, 0, 2, 0]));
+
       index.zoomOut();
+
+      assert.deepEqual(index.counts.slice(0, index.C), new Uint8Array([2, 4]));
 
       assert.strictEqual(index.C, 2);
       assert.strictEqual(index.E, 2);
@@ -535,6 +549,9 @@ describe('Neighborhood Indices', function() {
       assert.strictEqual(index.C, 1);
       assert.strictEqual(index.E, 0);
       assert.strictEqual(index.level, 2);
+
+      assert.deepEqual(index.counts.slice(0, index.C), new Uint8Array([6]));
+
       assert.deepEqual(index.dendrogram, [
         new Uint8Array([0, 1, 2, 3, 4, 5]),
         new Uint8Array([0, 1, 1, 1, 0, 1]),
