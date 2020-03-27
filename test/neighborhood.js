@@ -399,7 +399,7 @@ describe('Neighborhood Indices', function() {
 
     it('should be possible to zoom out in the undirected case.', function() {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
-      var index = new UndirectedLouvainIndex(graph);
+      var index = new UndirectedLouvainIndex(graph, {keepDendrogram: true});
 
       // node '1', '5' => community '4' (0)
       // node '2', '3', '4', '6' => community '2' (1)
@@ -439,6 +439,7 @@ describe('Neighborhood Indices', function() {
       assert.strictEqual(index.C, 1);
       assert.strictEqual(index.E, 0);
       assert.strictEqual(index.level, 2);
+
       assert.deepEqual(index.dendrogram, [
         new Uint8Array([0, 1, 2, 3, 4, 5]),
         new Uint8Array([0, 1, 1, 1, 0, 1]),
@@ -476,7 +477,7 @@ describe('Neighborhood Indices', function() {
 
       var o = {};
 
-      graph.forEachNode(function(n, attr) {
+      graph.forEachNode(function(n, attr) {
         o[n] = attr.community;
       });
 
@@ -492,7 +493,7 @@ describe('Neighborhood Indices', function() {
 
     it('should be possible to zoom out in the directed case.', function() {
       var graph = fromEdges(Graph.DirectedGraph, EDGES);
-      var index = new DirectedLouvainIndex(graph);
+      var index = new DirectedLouvainIndex(graph, {keepDendrogram: true});
 
       // node '1', '5' => community '4' (0)
       // node '2', '3', '4', '6' => community '2' (1)
@@ -571,7 +572,7 @@ describe('Neighborhood Indices', function() {
 
       var o = {};
 
-      graph.forEachNode(function(n, attr) {
+      graph.forEachNode(function(n, attr) {
         o[n] = attr.community;
       });
 
