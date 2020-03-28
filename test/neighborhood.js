@@ -667,7 +667,7 @@ describe('Neighborhood Indices', function() {
       assert.closeTo(delta, -1 / 7, 0.001);
     });
 
-    it('modularity delta computations should remain sain in the undirected case.', function() {
+    it('modularity delta computations should remain sane in the undirected case.', function() {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
       var index = new UndirectedLouvainIndex(graph);
       applyMoves(index, UNDIRECTED_MOVES);
@@ -691,7 +691,7 @@ describe('Neighborhood Indices', function() {
       assert.closeTo(QIsolated, QWithNodeInOtherCommunity + delta, 0.0001);
     });
 
-    it.skip('modularity delta computations should remain sain in the undirected case.', function() {
+    it.skip('modularity delta computations should remain sane in the undirected case.', function() {
       var graph = fromEdges(Graph.DirectedGraph, EDGES);
       var index = new DirectedLouvainIndex(graph);
 
