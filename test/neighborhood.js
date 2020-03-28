@@ -670,14 +670,28 @@ describe('Neighborhood Indices', function() {
     it('modularity delta computations should remain sain in the undirected case.', function() {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
       var index = new UndirectedLouvainIndex(graph);
+      applyMoves(index, UNDIRECTED_MOVES);
 
-      index.expensiveMoveNodeToCommunity(1, 2);
-      index.expensiveMoveNodeToCommunity(0, 4);
-      index.expensiveMoveNodeToCommunity(5, 2);
-      index.expensiveMoveNodeToCommunity(3, 2);
+      var delta = index.computeModularityDelta(3, 1, 4);
+
+      var indexWithIsolatedNode = new UndirectedLouvainIndex(graph);
+      indexWithIsolatedNode.expensiveMoveNodeToCommunity(0, 4);
+      indexWithIsolatedNode.expensiveMoveNodeToCommunity(5, 2);
+      indexWithIsolatedNode.expensiveMoveNodeToCommunity(3, 2);
+
+      var indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph);
+      indexWithNodeInOtherCommunity.expensiveMoveNodeToCommunity(1, 4);
+      indexWithNodeInOtherCommunity.expensiveMoveNodeToCommunity(0, 4);
+      indexWithNodeInOtherCommunity.expensiveMoveNodeToCommunity(5, 2);
+      indexWithNodeInOtherCommunity.expensiveMoveNodeToCommunity(3, 2);
+
+      var QIsolated = indexWithIsolatedNode.computeModularity(),
+          QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.computeModularity();
+
+      assert.closeTo(QIsolated, QWithNodeInOtherCommunity + delta, 0.0001);
     });
 
-    it('modularity delta computations should remain sain in the undirected case.', function() {
+    it.skip('modularity delta computations should remain sain in the undirected case.', function() {
       var graph = fromEdges(Graph.DirectedGraph, EDGES);
       var index = new DirectedLouvainIndex(graph);
 
@@ -688,3 +702,6 @@ describe('Neighborhood Indices', function() {
     });
   });
 });
+
+// TODO: what if I need to move a node in another community while being the owner of mine?
+// TODO: how to isolate a node?
