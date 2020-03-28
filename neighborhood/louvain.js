@@ -322,7 +322,7 @@ UndirectedLouvainIndex.prototype.computeModularityDelta = function(degree, targe
   var targetCommunityTotalWeight = this.totalWeights[targetCommunity];
 
   return (
-    (targetCommunityDegree / (2 * M)) -
+    (targetCommunityDegree / M) - // NOTE: formula is a bit different here because targetCommunityDegree is passed without * 2
     (
       (targetCommunityTotalWeight * degree) /
       (2 * M * M)

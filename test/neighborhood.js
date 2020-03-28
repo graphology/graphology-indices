@@ -643,12 +643,12 @@ describe('Neighborhood Indices', function() {
       // node '2' to community '4'
       var delta = index.computeModularityDelta(3, 1, 4);
 
-      assert.closeTo(delta, -1 / 24, 0.001);
+      assert.closeTo(delta, 1 / 24, 0.001);
 
       // node '1' to community '2'
       delta = index.computeModularityDelta(2, 1, 2);
 
-      assert.closeTo(delta, -1 / 6, 0.001);
+      assert.closeTo(delta, -1 / 12, 0.001);
     });
 
     it('should be possible to compute modularity delta in the directed case.', function() {
@@ -688,17 +688,31 @@ describe('Neighborhood Indices', function() {
       var QIsolated = indexWithIsolatedNode.computeModularity(),
           QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.computeModularity();
 
-      assert.closeTo(QIsolated, QWithNodeInOtherCommunity + delta, 0.0001);
+      assert.closeTo(QIsolated + delta, QWithNodeInOtherCommunity, 0.0001);
     });
 
-    it.skip('modularity delta computations should remain sane in the undirected case.', function() {
+    it('modularity delta computations should remain sane in the directed case.', function() {
       var graph = fromEdges(Graph.DirectedGraph, EDGES);
       var index = new DirectedLouvainIndex(graph);
+      applyMoves(index, DIRECTED_MOVES);
 
-      index.expensiveMoveNodeToCommunity(1, 2);
-      index.expensiveMoveNodeToCommunity(0, 4);
-      index.expensiveMoveNodeToCommunity(5, 2);
-      index.expensiveMoveNodeToCommunity(3, 2);
+      var delta = index.computeModularityDelta(2, 1, 1, 4);
+
+      var indexWithIsolatedNode = new DirectedLouvainIndex(graph);
+      indexWithIsolatedNode.expensiveMoveNodeToCommunity(0, 4);
+      indexWithIsolatedNode.expensiveMoveNodeToCommunity(5, 2);
+      indexWithIsolatedNode.expensiveMoveNodeToCommunity(3, 2);
+
+      var indexWithNodeInOtherCommunity = new DirectedLouvainIndex(graph);
+      indexWithNodeInOtherCommunity.expensiveMoveNodeToCommunity(1, 4);
+      indexWithNodeInOtherCommunity.expensiveMoveNodeToCommunity(0, 4);
+      indexWithNodeInOtherCommunity.expensiveMoveNodeToCommunity(5, 2);
+      indexWithNodeInOtherCommunity.expensiveMoveNodeToCommunity(3, 2);
+
+      var QIsolated = indexWithIsolatedNode.computeModularity(),
+          QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.computeModularity();
+
+      assert.closeTo(QIsolated + delta, QWithNodeInOtherCommunity, 0.0001);
     });
   });
 });
