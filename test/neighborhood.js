@@ -672,6 +672,7 @@ describe('Neighborhood Indices', function() {
       var index = new UndirectedLouvainIndex(graph);
       applyMoves(index, UNDIRECTED_MOVES);
 
+      // node '2' to other community
       var delta = index.computeModularityDelta(3, 1, 4);
 
       var indexWithIsolatedNode = new UndirectedLouvainIndex(graph);
@@ -696,6 +697,7 @@ describe('Neighborhood Indices', function() {
       var index = new DirectedLouvainIndex(graph);
       applyMoves(index, DIRECTED_MOVES);
 
+      // node '2' to other community
       var delta = index.computeModularityDelta(2, 1, 1, 4);
 
       var indexWithIsolatedNode = new DirectedLouvainIndex(graph);
