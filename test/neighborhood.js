@@ -714,8 +714,18 @@ describe('Neighborhood Indices', function() {
 
       assert.closeTo(QIsolated + delta, QWithNodeInOtherCommunity, 0.0001);
     });
+
+    it('should not break if a community is deprived of its "owner".', function() {
+      var graph = fromEdges(Graph.UndirectedGraph, EDGES);
+      var index = new UndirectedLouvainIndex(graph);
+      applyMoves(index, UNDIRECTED_MOVES);
+
+      index.expensiveMoveNodeToCommunity(2, 4);
+
+      index.zoomOut();
+
+      assert.deepEqual(index.totalWeights.slice(0, index.C), new Float64Array([6, 6]));
+      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 2]));
+    });
   });
 });
-
-// TODO: what if I need to move a node in another community while being the owner of mine?
-// TODO: how to isolate a node?
