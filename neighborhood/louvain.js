@@ -264,6 +264,20 @@ UndirectedLouvainIndex.prototype.computeModularity = function() {
   return Q;
 };
 
+UndirectedLouvainIndex.prototype.computeModularityDelta = function(degree, targetCommunityDegree, targetCommunity) {
+  var M = this.M;
+
+  var targetCommunityTotalWeight = this.totalWeights[targetCommunity];
+
+  return (
+    (targetCommunityDegree / (2 * M)) -
+    (
+      (targetCommunityTotalWeight * degree) /
+      (2 * M * M)
+    )
+  );
+};
+
 UndirectedLouvainIndex.prototype.bounds = function(i) {
   return [this.starts[i], this.starts[i + 1]];
 };
@@ -686,6 +700,29 @@ DirectedLouvainIndex.prototype.computeModularity = function() {
     );
 
   return Q;
+};
+
+DirectedLouvainIndex.prototype.computeModularityDelta = function(
+  inDegree,
+  outDegree,
+  targetCommunityDegree,
+  targetCommunity
+) {
+  var M = this.M;
+
+  var targetCommunityTotalInWeight = this.totalInWeights[targetCommunity],
+      targetCommunityTotalOutWeight = this.totalOutWeights[targetCommunity];
+
+  return (
+    (targetCommunityDegree / M) -
+    (
+      (
+        (outDegree * targetCommunityTotalInWeight) +
+        (inDegree * targetCommunityTotalOutWeight)
+      ) /
+      (M * M)
+    )
+  );
 };
 
 DirectedLouvainIndex.prototype.collect = UndirectedLouvainIndex.prototype.collect;

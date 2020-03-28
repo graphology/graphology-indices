@@ -23,6 +23,28 @@ var EDGES = [
   [6, 3, 100]
 ];
 
+var UNDIRECTED_MOVES = [
+  // node '2' to community '2'
+  [1, 3, 0, 1, 2],
+  // node '1' to community '4'
+  [0, 2, 0, 1, 4],
+  // node '6' to community '2'
+  [5, 1, 0, 1, 2],
+  // node '4' to community '2'
+  [3, 2, 0, 2, 2]
+];
+
+var DIRECTED_MOVES = [
+  // node '2' to community '2'
+  [1, 2, 1, 0, 0, 0, 1, 2],
+  // node '1' to community '4'
+  [0, 1, 2, 0, 0, 1, 1, 4],
+  // node '6' to community '2'
+  [5, 0, 1, 0, 0, 0, 1, 2],
+  // node '4' to community '2'
+  [3, 1, 1, 0, 0, 1, 1, 2]
+];
+
 function fromEdges(GraphConstructor, edges) {
   var g = new GraphConstructor();
 
@@ -46,6 +68,12 @@ function fromEdges(GraphConstructor, edges) {
   });
 
   return g;
+}
+
+function applyMoves(index, moves) {
+  moves.forEach(function(move) {
+    index.moveNodeToCommunity.apply(index, move);
+  });
 }
 
 describe('Neighborhood Indices', function() {
@@ -605,6 +633,38 @@ describe('Neighborhood Indices', function() {
         5: 0,
         6: 1
       });
+    });
+
+    it('should be possible to compute modularity delta in the undirected case.', function() {
+      var graph = fromEdges(Graph.UndirectedGraph, EDGES);
+      var index = new UndirectedLouvainIndex(graph);
+      applyMoves(index, UNDIRECTED_MOVES);
+
+      // node '2' to community '4'
+      var delta = index.computeModularityDelta(3, 1, 4);
+
+      assert.closeTo(delta, -1 / 24, 0.001);
+
+      // node '1' to community '2'
+      delta = index.computeModularityDelta(2, 1, 2);
+
+      assert.closeTo(delta, -1 / 6, 0.001);
+    });
+
+    it('should be possible to compute modularity delta in the directed case.', function() {
+      var graph = fromEdges(Graph.DirectedGraph, EDGES);
+      var index = new DirectedLouvainIndex(graph);
+      applyMoves(index, DIRECTED_MOVES);
+
+      // node '2' to community '4'
+      var delta = index.computeModularityDelta(2, 1, 1, 4);
+
+      assert.closeTo(delta, -1 / 49, 0.001);
+
+      // node '1' to community '2'
+      delta = index.computeModularityDelta(1, 2, 1, 2);
+
+      assert.closeTo(delta, -1 / 7, 0.001);
     });
   });
 });
