@@ -666,5 +666,25 @@ describe('Neighborhood Indices', function() {
 
       assert.closeTo(delta, -1 / 7, 0.001);
     });
+
+    it('modularity delta computations should remain sain in the undirected case.', function() {
+      var graph = fromEdges(Graph.UndirectedGraph, EDGES);
+      var index = new UndirectedLouvainIndex(graph);
+
+      index.expensiveMoveNodeToCommunity(1, 2);
+      index.expensiveMoveNodeToCommunity(0, 4);
+      index.expensiveMoveNodeToCommunity(5, 2);
+      index.expensiveMoveNodeToCommunity(3, 2);
+    });
+
+    it('modularity delta computations should remain sain in the undirected case.', function() {
+      var graph = fromEdges(Graph.DirectedGraph, EDGES);
+      var index = new DirectedLouvainIndex(graph);
+
+      index.expensiveMoveNodeToCommunity(1, 2);
+      index.expensiveMoveNodeToCommunity(0, 4);
+      index.expensiveMoveNodeToCommunity(5, 2);
+      index.expensiveMoveNodeToCommunity(3, 2);
+    });
   });
 });

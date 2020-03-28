@@ -147,6 +147,33 @@ UndirectedLouvainIndex.prototype.moveNodeToCommunity = function(
   }
 };
 
+UndirectedLouvainIndex.prototype.expensiveMoveNodeToCommunity = function(i, ci) {
+  var o, l, n, cn, weight;
+
+  var degree = 0,
+      currentCommunityDegree = 0,
+      targetCommunityDegree = 0;
+
+  var c = this.belongings[i];
+
+  for (o = this.starts[i], l = this.starts[i + 1]; o < l; o++) {
+    n = this.neighborhood[o];
+    weight = this.weights[o];
+
+    degree += weight;
+
+    cn = this.belongings[n];
+
+    if (cn === ci)
+      targetCommunityDegree += weight;
+
+    if (c === cn)
+      currentCommunityDegree += weight;
+  }
+
+  this.moveNodeToCommunity(i, degree, currentCommunityDegree, targetCommunityDegree, ci);
+};
+
 UndirectedLouvainIndex.prototype.zoomOut = function() {
   var inducedGraph = {},
       newLabels = {};
@@ -564,6 +591,58 @@ DirectedLouvainIndex.prototype.moveNodeToCommunity = function(
     this.counts[currentCommunity] -= count;
     this.counts[targetCommunity] += count;
   }
+};
+
+DirectedLouvainIndex.prototype.expensiveMoveNodeToCommunity = function(i, ci) {
+  var o, l, n, out, cn, weight;
+
+  var inDegree = 0,
+      outDegree = 0,
+      currentCommunityInDegree = 0,
+      currentCommunityOutDegree = 0,
+      targetCommunityInDegree = 0,
+      targetCommunityOutDegree = 0;
+
+  var c = this.belongings[i],
+      s = this.offsets[i];
+
+  for (o = this.starts[i], l = this.starts[i + 1]; o < l; o++) {
+    out = o < s;
+    n = this.neighborhood[o];
+    weight = this.weights[o];
+
+    cn = this.belongings[n];
+
+    if (out) {
+      outDegree += weight;
+
+      if (cn === ci)
+        targetCommunityOutDegree += weight;
+
+      if (c === cn)
+        currentCommunityOutDegree += weight;
+    }
+    else {
+      inDegree += weight;
+
+      if (cn === ci)
+        targetCommunityInDegree += weight;
+
+      if (c === cn)
+        currentCommunityInDegree += weight;
+    }
+  }
+
+  this.moveNodeToCommunity(
+    i,
+    inDegree,
+    outDegree,
+    currentCommunityInDegree,
+    currentCommunityOutDegree,
+    targetCommunityInDegree,
+    targetCommunityOutDegree,
+    ci
+  );
 };
 
 DirectedLouvainIndex.prototype.zoomOut = function() {
