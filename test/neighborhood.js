@@ -785,9 +785,6 @@ describe('Neighborhood Indices', function() {
 
       var Q = index.modularity();
 
-      // Moving to own community should yield delta = 0
-      // assert.closeTo(index.trueDelta(1, 3, 2, 2, 2), 0, 0.0001);
-
       // Moving node '2' to community '4'
       var delta = index.trueDelta(1, 3, 2, 1, 4);
 
@@ -815,17 +812,16 @@ describe('Neighborhood Indices', function() {
       assert.closeTo(Q + delta, QWithNodeInOtherCommunity, 0.0001);
 
       // Zooming out to test issues related to loops
-      // index.zoomOut();
+      index.zoomOut();
 
-      // Q = index.modularity();
+      Q = index.modularity();
+      delta = index.trueDelta(1, 1, 0, 1, 0);
 
-      // index.expensiveMove(1, 0);
+      index.expensiveMove(1, 0);
 
-      // var QAfterMerge = index.modularity();
+      var QAfterMerge = index.modularity();
 
-      // delta = index.trueDelta(1, 1, 0, 1, 0);
-
-      // console.log(Q, QAfterMerge, delta);
+      assert.closeTo(Q + delta, QAfterMerge, 0.0001);
     });
   });
 });

@@ -35,6 +35,7 @@
  * [Latex]:
  * \Delta Q=\bigg{[}\frac{\sum^{c}_{in}-2d_{c}-l}{2m}-\bigg{(}\frac{\sum^{c}_{tot}-d-l}{2m}\bigg{)}^{2}+\frac{\sum^{t}_{in}+2d_{t}+l}{2m}-\bigg{(}\frac{\sum^{t}_{tot}+d+l}{2m}\bigg{)}^{2}\bigg{]}-\bigg{[}\frac{\sum^{c}_{in}}{2m}-\bigg{(}\frac{\sum^{c}_{tot}}{2m}\bigg{)}^{2}+\frac{\sum^{t}_{in}}{2m}-\bigg{(}\frac{\sum^{t}_{tot}}{2m}\bigg{)}^{2}\bigg{]}
  * \Delta Q=\frac{d_{t}-d_{c}}{m}+\frac{d\sum^{c}_{tot}-d^{2}-d\sum^{t}_{tot}}{2m^{2}}
+ * \Delta Q=\frac{d_{t}-d_{c}}{m}+\frac{l\sum^{c}_{tot}+d\sum^{c}_{tot}-d^{2}-l^{2}-2dl-l\sum^{t}_{tot}-d\sum^{t}_{tot}}{2m^{2}}
  *
  * [Notes]:
  * Louvain is a bit unclear on this but delta computation are not derived from
@@ -363,6 +364,9 @@ UndirectedLouvainIndex.prototype.deltaWithOwnCommunity = function(degree, target
   );
 };
 
+// NOTE: this function cannot work for self community move without changing
+// the underlying formula. We don't have to use it thusly anyway since
+// ∆Q is 0 in this case.
 UndirectedLouvainIndex.prototype.trueDelta = function(i, degree, currentCommunityDegree, targetCommunityDegree, targetCommunity) {
   var M = this.M;
 
