@@ -33,10 +33,17 @@
  * https://arxiv.org/abs/0812.1770
  *
  * [Latex]:
- * \Delta Q=\bigg{[}\frac{\sum^{c}_{in}-2d_{c}-l}{2m}-\bigg{(}\frac{\sum^{c}_{tot}-d-l}{2m}\bigg{)}^{2}+\frac{\sum^{t}_{in}+2d_{t}+l}{2m}-\bigg{(}\frac{\sum^{t}_{tot}+d+l}{2m}\bigg{)}^{2}\bigg{]}-\bigg{[}\frac{\sum^{c}_{in}}{2m}-\bigg{(}\frac{\sum^{c}_{tot}}{2m}\bigg{)}^{2}+\frac{\sum^{t}_{in}}{2m}-\bigg{(}\frac{\sum^{t}_{tot}}{2m}\bigg{)}^{2}\bigg{]}
- * \Delta Q=\frac{d_{t}-d_{c}}{m}+\frac{d\sum^{c}_{tot}-d^{2}-d\sum^{t}_{tot}}{2m^{2}}
+ *
+ * Undirected Case:
+ * ----------------
+ *
+ * \Delta Q=\bigg{[}\frac{\sum^{c}_{in}-(2d_{c}+l)}{2m}-\bigg{(}\frac{\sum^{c}_{tot}-(d+l)}{2m}\bigg{)}^{2}+\frac{\sum^{t}_{in}+(2d_{t}+l)}{2m}-\bigg{(}\frac{\sum^{t}_{tot}+(d+l)}{2m}\bigg{)}^{2}\bigg{]}-\bigg{[}\frac{\sum^{c}_{in}}{2m}-\bigg{(}\frac{\sum^{c}_{tot}}{2m}\bigg{)}^{2}+\frac{\sum^{t}_{in}}{2m}-\bigg{(}\frac{\sum^{t}_{tot}}{2m}\bigg{)}^{2}\bigg{]}
  * \Delta Q=\frac{d_{t}-d_{c}}{m}+\frac{l\sum^{c}_{tot}+d\sum^{c}_{tot}-d^{2}-l^{2}-2dl-l\sum^{t}_{tot}-d\sum^{t}_{tot}}{2m^{2}}
  * \Delta Q=\frac{d_{t}-d_{c}}{m}+\frac{(l+d)\sum^{c}_{tot}-d^{2}-l^{2}-2dl-(l+d)\sum^{t}_{tot}}{2m^{2}}
+ *
+ * Directed Case:
+ * --------------
+ * \Delta Q_d=\bigg{[}\frac{\sum^{c}_{in}-(d_{c.in}+d_{c.out}+l)}{m}-\frac{(\sum^{c}_{tot.in}-(d_{in}+l))(\sum^{c}_{tot.out}-(d_{out}+l))}{m^{2}}+\frac{\sum^{t}_{in}+(d_{t.in}+d_{t.out}+l)}{m}-\frac{(\sum^{t}_{tot.in}+(d_{in}+l))(\sum^{t}_{tot.out}+(d_{out}+l))}{m^{2}}\bigg{]}-\bigg{[}\frac{\sum^{c}_{in}}{m}-\frac{\sum^{c}_{tot.in}\sum^{c}_{tot.out}}{m^{2}}+\frac{\sum^{t}_{in}}{m}-\frac{\sum^{t}_{tot.in}\sum^{t}_{tot.out}}{m^{2}}\bigg{]}
  *
  * [Notes]:
  * Louvain is a bit unclear on this but delta computation are not derived from
