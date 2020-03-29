@@ -36,6 +36,7 @@
  * \Delta Q=\bigg{[}\frac{\sum^{c}_{in}-2d_{c}-l}{2m}-\bigg{(}\frac{\sum^{c}_{tot}-d-l}{2m}\bigg{)}^{2}+\frac{\sum^{t}_{in}+2d_{t}+l}{2m}-\bigg{(}\frac{\sum^{t}_{tot}+d+l}{2m}\bigg{)}^{2}\bigg{]}-\bigg{[}\frac{\sum^{c}_{in}}{2m}-\bigg{(}\frac{\sum^{c}_{tot}}{2m}\bigg{)}^{2}+\frac{\sum^{t}_{in}}{2m}-\bigg{(}\frac{\sum^{t}_{tot}}{2m}\bigg{)}^{2}\bigg{]}
  * \Delta Q=\frac{d_{t}-d_{c}}{m}+\frac{d\sum^{c}_{tot}-d^{2}-d\sum^{t}_{tot}}{2m^{2}}
  * \Delta Q=\frac{d_{t}-d_{c}}{m}+\frac{l\sum^{c}_{tot}+d\sum^{c}_{tot}-d^{2}-l^{2}-2dl-l\sum^{t}_{tot}-d\sum^{t}_{tot}}{2m^{2}}
+ * \Delta Q=\frac{d_{t}-d_{c}}{m}+\frac{(l+d)\sum^{c}_{tot}-d^{2}-l^{2}-2dl-(l+d)\sum^{t}_{tot}}{2m^{2}}
  *
  * [Notes]:
  * Louvain is a bit unclear on this but delta computation are not derived from
@@ -379,13 +380,11 @@ UndirectedLouvainIndex.prototype.trueDelta = function(i, degree, currentCommunit
   return (
     ((targetCommunityDegree - currentCommunityDegree) / M) +
     (
-      loops * currentCommunityTotalWeight +
-      degree * currentCommunityTotalWeight -
+      (loops + degree) * currentCommunityTotalWeight -
       Math.pow(degree, 2) -
       Math.pow(loops, 2) -
       (2 * loops * degree) -
-      loops * targetCommunityTotalWeight -
-      degree * targetCommunityTotalWeight
+      (loops + degree) * targetCommunityTotalWeight
     ) / (2 * Math.pow(M, 2))
   );
 };
