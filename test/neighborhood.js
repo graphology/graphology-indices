@@ -778,14 +778,16 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 2]));
     });
 
-    it.skip('true delta sanity test for the undirected case.', function() {
+    it('true delta sanity test for the undirected case.', function() {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
       var index = new UndirectedLouvainIndex(graph);
       applyMoves(index, UNDIRECTED_MOVES);
 
       var Q = index.modularity();
+
+      // Moving node '2' to community '4'
       var delta = index.trueDelta(1, 3, 2, 1, 4);
-      // i, degree, currentCommunityDegree, targetCommunityDegree, targetCommunity
+
       var indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph);
       indexWithNodeInOtherCommunity.expensiveMove(1, 4);
       indexWithNodeInOtherCommunity.expensiveMove(0, 4);
@@ -794,15 +796,33 @@ describe('Neighborhood Indices', function() {
 
       var QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.modularity();
 
-      console.log(Q, QWithNodeInOtherCommunity, delta, Q + delta, QWithNodeInOtherCommunity - Q);
+      assert.closeTo(Q + delta, QWithNodeInOtherCommunity, 0.0001);
+
+      // Moving node '4' to community '4'
+      delta = index.trueDelta(3, 2, 2, 0, 4);
 
       indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph);
-      indexWithNodeInOtherCommunity.expensiveMove(1, 4);
-      indexWithNodeInOtherCommunity.expensiveMove(0, 2);
+      indexWithNodeInOtherCommunity.expensiveMove(1, 2);
+      indexWithNodeInOtherCommunity.expensiveMove(0, 4);
       indexWithNodeInOtherCommunity.expensiveMove(5, 2);
       indexWithNodeInOtherCommunity.expensiveMove(3, 4);
 
-      console.log(indexWithNodeInOtherCommunity.modularity(), index.trueDelta(2, 0));
+      QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.modularity();
+
+      assert.closeTo(Q + delta, QWithNodeInOtherCommunity, 0.0001);
+
+      // Zooming out to test issues related to loops
+      // index.zoomOut();
+
+      // Q = index.modularity();
+
+      // index.expensiveMove(1, 0);
+
+      // var QAfterMerge = index.modularity();
+
+      // delta = index.trueDelta(1, 1, 0, 1, 0);
+
+      // console.log(Q, QAfterMerge, delta);
     });
   });
 });
