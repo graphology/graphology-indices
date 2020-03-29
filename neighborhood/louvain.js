@@ -32,6 +32,9 @@
  * doi:10.1109/TNSE.2015.2391998.
  * https://arxiv.org/abs/0812.1770
  *
+ * [Latex]:
+ * \Delta Q=\bigg{[}\frac{\sum^{c}_{in}}{2m}-\bigg{(}\frac{\sum^{c}_{tot}}{2m}\bigg{)}^{2}+\frac{\sum^{t}_{in}}{2m}-\bigg{(}\frac{\sum^{t}_{tot}}{2m}\bigg{)}^{2}\bigg{]}-\bigg{[}\frac{\sum^{c}_{in}-2d_{c}-l}{2m}-\bigg{(}\frac{\sum^{c}_{tot}-d-l}{2m}\bigg{)}^{2}+\frac{\sum^{t}_{in}+2d_{c}+l}{2m}-\bigg{(}\frac{\sum^{t}_{tot}+d+l}{2m}\bigg{)}^{2}\bigg{]}
+ *
  * [Notes]:
  * Louvain is a bit unclear on this but delta computation are not derived from
  * Q1 - Q2 but rather between Q when considered node is isolated in its own
@@ -171,8 +174,8 @@ UndirectedLouvainIndex.prototype.move = function(
   var currentCommunity = this.belongings[i],
       loops = this.loops[i];
 
-  this.totalWeights[currentCommunity] -= currentCommunityDegree + (degree - currentCommunityDegree) + loops;
-  this.totalWeights[targetCommunity] += targetCommunityDegree + (degree - targetCommunityDegree) + loops;
+  this.totalWeights[currentCommunity] -= degree + loops;
+  this.totalWeights[targetCommunity] += degree + loops;
 
   this.internalWeights[currentCommunity] -= currentCommunityDegree * 2 + loops;
   this.internalWeights[targetCommunity] += targetCommunityDegree * 2 + loops;
@@ -628,11 +631,11 @@ DirectedLouvainIndex.prototype.move = function(
   var currentCommunity = this.belongings[i],
       loops = this.loops[i];
 
-  this.totalInWeights[currentCommunity] -= currentCommunityInDegree + (inDegree - currentCommunityInDegree) + loops;
-  this.totalInWeights[targetCommunity] += targetCommunityInDegree + (inDegree - targetCommunityInDegree) + loops;
+  this.totalInWeights[currentCommunity] -= inDegree + loops;
+  this.totalInWeights[targetCommunity] += inDegree + loops;
 
-  this.totalOutWeights[currentCommunity] -= currentCommunityOutDegree + (outDegree - currentCommunityOutDegree) + loops;
-  this.totalOutWeights[targetCommunity] += targetCommunityOutDegree + (outDegree - targetCommunityOutDegree) + loops;
+  this.totalOutWeights[currentCommunity] -= outDegree + loops;
+  this.totalOutWeights[targetCommunity] += outDegree + loops;
 
   this.internalWeights[currentCommunity] -= currentCommunityInDegree + currentCommunityOutDegree + loops;
   this.internalWeights[targetCommunity] += targetCommunityInDegree + targetCommunityOutDegree + loops;
