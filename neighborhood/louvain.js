@@ -31,6 +31,16 @@
  * Multiscale Modular Structure in Networks,
  * doi:10.1109/TNSE.2015.2391998.
  * https://arxiv.org/abs/0812.1770
+ *
+ * [Notes]:
+ * Louvain is a bit unclear on this but delta computation are not derived from
+ * Q1 - Q2 but rather between Q when considered node is isolated in its own
+ * community versus Q with this node in target community.
+ *
+ * Thus, and this is where implementation differ, if you allow negative moves,
+ * you will need to consider additional possibilities:
+ *  - Delta of keeping node in its current community
+ *  - Delta of keeping node isolated in its own community
  */
 var typed = require('mnemonist/utils/typed-arrays');
 
