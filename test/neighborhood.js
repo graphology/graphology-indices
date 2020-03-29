@@ -72,7 +72,7 @@ function fromEdges(GraphConstructor, edges) {
 
 function applyMoves(index, moves) {
   moves.forEach(function(move) {
-    index.moveNodeToCommunity.apply(index, move);
+    index.move.apply(index, move);
   });
 }
 
@@ -268,7 +268,7 @@ describe('Neighborhood Indices', function() {
       };
 
       // Null move of node '1'
-      index.moveNodeToCommunity(0, 2, 0, 0, 0);
+      index.move(0, 2, 0, 0, 0);
 
       assert.deepEqual(before, {
         belongings: index.belongings,
@@ -277,14 +277,14 @@ describe('Neighborhood Indices', function() {
       });
 
       // Moving node '1' to community of node '2'
-      index.moveNodeToCommunity(0, 2, 0, 1, 1);
+      index.move(0, 2, 0, 1, 1);
 
       assert.deepEqual(Array.from(index.belongings), [1, 1, 2, 3, 4, 5]);
       assert.deepEqual(Array.from(index.internalWeights), [0, 2, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [0, 5, 3, 2, 1, 1]);
 
       // Rolling back move
-      index.moveNodeToCommunity(0, 2, 1, 0, 0);
+      index.move(0, 2, 1, 0, 0);
 
       assert.deepEqual(before, {
         belongings: index.belongings,
@@ -293,43 +293,43 @@ describe('Neighborhood Indices', function() {
       });
 
       // node '3' to community '1'
-      index.moveNodeToCommunity(2, 3, 0, 1, 1);
+      index.move(2, 3, 0, 1, 1);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 4, 5]);
       assert.deepEqual(Array.from(index.internalWeights), [0, 2, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [2, 6, 0, 2, 1, 1]);
 
       // node '5' to community '0'
-      index.moveNodeToCommunity(4, 1, 0, 1, 0);
+      index.move(4, 1, 0, 1, 0);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 0, 5]);
       assert.deepEqual(Array.from(index.internalWeights), [2, 2, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [3, 6, 0, 2, 0, 1]);
 
       // node '6' to community '1'
-      index.moveNodeToCommunity(5, 1, 0, 1, 1);
+      index.move(5, 1, 0, 1, 1);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 0, 1]);
       assert.deepEqual(Array.from(index.internalWeights), [2, 4, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [3, 7, 0, 2, 0, 0]);
 
       // node '4' to community '1'
-      index.moveNodeToCommunity(3, 2, 0, 2, 1);
+      index.move(3, 2, 0, 2, 1);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 1, 0, 1]);
       assert.deepEqual(Array.from(index.internalWeights), [2, 8, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [3, 9, 0, 0, 0, 0]);
 
       // Supplementary node '3' to community '0'
-      index.moveNodeToCommunity(2, 3, 3, 0, 0);
+      index.move(2, 3, 3, 0, 0);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 0, 1, 0, 1]);
       assert.deepEqual(Array.from(index.internalWeights), [2, 2, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [6, 6, 0, 0, 0, 0]);
 
       // Supplementary node '2' to community '0'
-      index.moveNodeToCommunity(2, 3, 0, 3, 1);
-      index.moveNodeToCommunity(1, 3, 2, 1, 0);
+      index.move(2, 3, 0, 3, 1);
+      index.move(1, 3, 2, 1, 0);
 
       assert.deepEqual(Array.from(index.belongings), [0, 0, 1, 1, 0, 1]);
       assert.deepEqual(Array.from(index.internalWeights), [4, 4, 0, 0, 0, 0]);
@@ -348,7 +348,7 @@ describe('Neighborhood Indices', function() {
       };
 
       // Null move of node '1'
-      index.moveNodeToCommunity(0, 1, 2, 0, 0, 0, 0, 0);
+      index.move(0, 1, 2, 0, 0, 0, 0, 0);
 
       assert.deepEqual(before, {
         belongings: index.belongings,
@@ -358,7 +358,7 @@ describe('Neighborhood Indices', function() {
       });
 
       // Moving node '1' to community of node '2'
-      index.moveNodeToCommunity(0, 1, 2, 0, 0, 0, 1, 1);
+      index.move(0, 1, 2, 0, 0, 0, 1, 1);
 
       assert.deepEqual(Array.from(index.belongings), [1, 1, 2, 3, 4, 5]);
       assert.deepEqual(Array.from(index.internalWeights), [0, 1, 0, 0, 0, 0]);
@@ -366,7 +366,7 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(Array.from(index.totalOutWeights), [0, 3, 1, 1, 1, 1]);
 
       // Rolling back move
-      index.moveNodeToCommunity(0, 1, 2, 0, 1, 0, 0, 0);
+      index.move(0, 1, 2, 0, 1, 0, 0, 0);
 
       assert.deepEqual(before, {
         belongings: index.belongings,
@@ -376,7 +376,7 @@ describe('Neighborhood Indices', function() {
       });
 
       // node '3' to community '1'
-      index.moveNodeToCommunity(2, 2, 1, 0, 0, 1, 0, 1);
+      index.move(2, 2, 1, 0, 0, 1, 0, 1);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 4, 5]);
       assert.deepEqual(Array.from(index.internalWeights), [0, 1, 0, 0, 0, 0]);
@@ -384,7 +384,7 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(Array.from(index.totalOutWeights), [2, 2, 0, 1, 1, 1]);
 
       // node '5' to community '0'
-      index.moveNodeToCommunity(4, 1, 1, 0, 0, 1, 1, 0);
+      index.move(4, 1, 1, 0, 0, 1, 1, 0);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 0, 5]);
       assert.deepEqual(Array.from(index.internalWeights), [2, 1, 0, 0, 0, 0]);
@@ -392,7 +392,7 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(Array.from(index.totalOutWeights), [3, 2, 0, 1, 0, 1]);
 
       // node '6' to community '1'
-      index.moveNodeToCommunity(5, 0, 1, 0, 0, 0, 1, 1);
+      index.move(5, 0, 1, 0, 0, 0, 1, 1);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 0, 1]);
       assert.deepEqual(Array.from(index.internalWeights), [2, 2, 0, 0, 0, 0]);
@@ -400,7 +400,7 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(Array.from(index.totalOutWeights), [3, 3, 0, 1, 0, 0]);
 
       // node '4' to community '1'
-      index.moveNodeToCommunity(3, 1, 1, 0, 0, 1, 1, 1);
+      index.move(3, 1, 1, 0, 0, 1, 1, 1);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 1, 0, 1]);
       assert.deepEqual(Array.from(index.internalWeights), [2, 4, 0, 0, 0, 0]);
@@ -408,7 +408,7 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(Array.from(index.totalOutWeights), [3, 4, 0, 0, 0, 0]);
 
       // Supplementary node '3' to community '0'
-      index.moveNodeToCommunity(2, 2, 1, 2, 1, 0, 0, 0);
+      index.move(2, 2, 1, 2, 1, 0, 0, 0);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 0, 1, 0, 1]);
       assert.deepEqual(Array.from(index.internalWeights), [2, 1, 0, 0, 0, 0]);
@@ -416,8 +416,8 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(Array.from(index.totalOutWeights), [4, 3, 0, 0, 0, 0]);
 
       // Supplementary node '2' to community '0'
-      index.moveNodeToCommunity(2, 2, 1, 0, 0, 2, 1, 1);
-      index.moveNodeToCommunity(1, 2, 1, 1, 1, 0, 1, 0);
+      index.move(2, 2, 1, 0, 0, 2, 1, 1);
+      index.move(1, 2, 1, 1, 1, 0, 1, 0);
 
       assert.deepEqual(Array.from(index.belongings), [0, 0, 1, 1, 0, 1]);
       assert.deepEqual(Array.from(index.internalWeights), [3, 2, 0, 0, 0, 0]);
@@ -435,23 +435,23 @@ describe('Neighborhood Indices', function() {
       // node '2', '3', '4', '6' => community '2' (1)
 
       // node '2' to community '2'
-      index.moveNodeToCommunity(1, 3, 0, 1, 2);
+      index.move(1, 3, 0, 1, 2);
 
       // node '1' to community '4'
-      index.moveNodeToCommunity(0, 2, 0, 1, 4);
+      index.move(0, 2, 0, 1, 4);
 
       // node '6' to community '2'
-      index.moveNodeToCommunity(5, 1, 0, 1, 2);
+      index.move(5, 1, 0, 1, 2);
 
       // node '4' to community '2'
-      index.moveNodeToCommunity(3, 2, 0, 2, 2);
+      index.move(3, 2, 0, 2, 2);
 
       assert.deepEqual(index.counts, new Uint8Array([0, 0, 4, 0, 2, 0]));
-      assert.closeTo(index.computeModularity(), 0.2083, 0.001);
+      assert.closeTo(index.modularity(), 0.2083, 0.001);
 
       index.zoomOut();
 
-      assert.closeTo(index.computeModularity(), 0.2083, 0.001);
+      assert.closeTo(index.modularity(), 0.2083, 0.001);
       assert.deepEqual(index.counts.slice(0, index.C), new Uint8Array([2, 4]));
 
       assert.strictEqual(index.C, 2);
@@ -465,7 +465,7 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 8]));
 
       // Once more
-      index.moveNodeToCommunity(0, 1, 0, 1, 1);
+      index.move(0, 1, 0, 1, 1);
 
       assert.deepEqual(index.totalWeights.slice(0, index.C), new Float64Array([0, 12]));
       assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([0, 12]));
@@ -539,23 +539,23 @@ describe('Neighborhood Indices', function() {
       // node '2', '3', '4', '6' => community '2' (1)
 
       // node '2' to community '2'
-      index.moveNodeToCommunity(1, 2, 1, 0, 0, 0, 1, 2);
+      index.move(1, 2, 1, 0, 0, 0, 1, 2);
 
       // node '1' to community '4'
-      index.moveNodeToCommunity(0, 1, 2, 0, 0, 1, 1, 4);
+      index.move(0, 1, 2, 0, 0, 1, 1, 4);
 
       // node '6' to community '2'
-      index.moveNodeToCommunity(5, 0, 1, 0, 0, 0, 1, 2);
+      index.move(5, 0, 1, 0, 0, 0, 1, 2);
 
       // node '4' to community '2'
-      index.moveNodeToCommunity(3, 1, 1, 0, 0, 1, 1, 2);
+      index.move(3, 1, 1, 0, 0, 1, 1, 2);
 
       assert.deepEqual(index.counts, new Uint8Array([0, 0, 4, 0, 2, 0]));
-      assert.closeTo(index.computeModularity(), 0.3265, 0.001);
+      assert.closeTo(index.modularity(), 0.3265, 0.001);
 
       index.zoomOut();
 
-      assert.closeTo(index.computeModularity(), 0.3265, 0.001);
+      assert.closeTo(index.modularity(), 0.3265, 0.001);
       assert.deepEqual(index.counts.slice(0, index.C), new Uint8Array([2, 4]));
 
       assert.strictEqual(index.C, 2);
@@ -570,7 +570,7 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 4]));
 
       // Once more
-      index.moveNodeToCommunity(0, 0, 1, 0, 0, 0, 1, 1);
+      index.move(0, 0, 1, 0, 0, 0, 1, 1);
 
       assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([0, 7]));
       assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([0, 7]));
@@ -641,12 +641,12 @@ describe('Neighborhood Indices', function() {
       applyMoves(index, UNDIRECTED_MOVES);
 
       // node '2' to community '4'
-      var delta = index.computeModularityDelta(3, 1, 4);
+      var delta = index.delta(3, 1, 4);
 
       assert.closeTo(delta, 1 / 24, 0.001);
 
       // node '1' to community '2'
-      delta = index.computeModularityDelta(2, 1, 2);
+      delta = index.delta(2, 1, 2);
 
       assert.closeTo(delta, -1 / 12, 0.001);
     });
@@ -657,12 +657,12 @@ describe('Neighborhood Indices', function() {
       applyMoves(index, DIRECTED_MOVES);
 
       // node '2' to community '4'
-      var delta = index.computeModularityDelta(2, 1, 1, 4);
+      var delta = index.delta(2, 1, 1, 4);
 
       assert.closeTo(delta, -1 / 49, 0.001);
 
       // node '1' to community '2'
-      delta = index.computeModularityDelta(1, 2, 1, 2);
+      delta = index.delta(1, 2, 1, 2);
 
       assert.closeTo(delta, -1 / 7, 0.001);
     });
@@ -673,21 +673,21 @@ describe('Neighborhood Indices', function() {
       applyMoves(index, UNDIRECTED_MOVES);
 
       // node '2' to other community
-      var delta = index.computeModularityDelta(3, 1, 4);
+      var delta = index.delta(3, 1, 4);
 
       var indexWithIsolatedNode = new UndirectedLouvainIndex(graph);
-      indexWithIsolatedNode.expensiveMoveNodeToCommunity(0, 4);
-      indexWithIsolatedNode.expensiveMoveNodeToCommunity(5, 2);
-      indexWithIsolatedNode.expensiveMoveNodeToCommunity(3, 2);
+      indexWithIsolatedNode.expensiveMove(0, 4);
+      indexWithIsolatedNode.expensiveMove(5, 2);
+      indexWithIsolatedNode.expensiveMove(3, 2);
 
       var indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph);
-      indexWithNodeInOtherCommunity.expensiveMoveNodeToCommunity(1, 4);
-      indexWithNodeInOtherCommunity.expensiveMoveNodeToCommunity(0, 4);
-      indexWithNodeInOtherCommunity.expensiveMoveNodeToCommunity(5, 2);
-      indexWithNodeInOtherCommunity.expensiveMoveNodeToCommunity(3, 2);
+      indexWithNodeInOtherCommunity.expensiveMove(1, 4);
+      indexWithNodeInOtherCommunity.expensiveMove(0, 4);
+      indexWithNodeInOtherCommunity.expensiveMove(5, 2);
+      indexWithNodeInOtherCommunity.expensiveMove(3, 2);
 
-      var QIsolated = indexWithIsolatedNode.computeModularity(),
-          QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.computeModularity();
+      var QIsolated = indexWithIsolatedNode.modularity(),
+          QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.modularity();
 
       assert.closeTo(QIsolated + delta, QWithNodeInOtherCommunity, 0.0001);
     });
@@ -698,21 +698,21 @@ describe('Neighborhood Indices', function() {
       applyMoves(index, DIRECTED_MOVES);
 
       // node '2' to other community
-      var delta = index.computeModularityDelta(2, 1, 1, 4);
+      var delta = index.delta(2, 1, 1, 4);
 
       var indexWithIsolatedNode = new DirectedLouvainIndex(graph);
-      indexWithIsolatedNode.expensiveMoveNodeToCommunity(0, 4);
-      indexWithIsolatedNode.expensiveMoveNodeToCommunity(5, 2);
-      indexWithIsolatedNode.expensiveMoveNodeToCommunity(3, 2);
+      indexWithIsolatedNode.expensiveMove(0, 4);
+      indexWithIsolatedNode.expensiveMove(5, 2);
+      indexWithIsolatedNode.expensiveMove(3, 2);
 
       var indexWithNodeInOtherCommunity = new DirectedLouvainIndex(graph);
-      indexWithNodeInOtherCommunity.expensiveMoveNodeToCommunity(1, 4);
-      indexWithNodeInOtherCommunity.expensiveMoveNodeToCommunity(0, 4);
-      indexWithNodeInOtherCommunity.expensiveMoveNodeToCommunity(5, 2);
-      indexWithNodeInOtherCommunity.expensiveMoveNodeToCommunity(3, 2);
+      indexWithNodeInOtherCommunity.expensiveMove(1, 4);
+      indexWithNodeInOtherCommunity.expensiveMove(0, 4);
+      indexWithNodeInOtherCommunity.expensiveMove(5, 2);
+      indexWithNodeInOtherCommunity.expensiveMove(3, 2);
 
-      var QIsolated = indexWithIsolatedNode.computeModularity(),
-          QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.computeModularity();
+      var QIsolated = indexWithIsolatedNode.modularity(),
+          QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.modularity();
 
       assert.closeTo(QIsolated + delta, QWithNodeInOtherCommunity, 0.0001);
     });
@@ -723,19 +723,19 @@ describe('Neighborhood Indices', function() {
       applyMoves(index, UNDIRECTED_MOVES);
 
       // node '2' to own community
-      var delta = index.computeModularityDeltaWithOwnCommunity(3, 2, 2);
+      var delta = index.deltaWithOwnCommunity(3, 2, 2);
 
       var indexWithIsolatedNode = new UndirectedLouvainIndex(graph);
-      indexWithIsolatedNode.expensiveMoveNodeToCommunity(0, 4);
-      indexWithIsolatedNode.expensiveMoveNodeToCommunity(5, 2);
-      indexWithIsolatedNode.expensiveMoveNodeToCommunity(3, 2);
+      indexWithIsolatedNode.expensiveMove(0, 4);
+      indexWithIsolatedNode.expensiveMove(5, 2);
+      indexWithIsolatedNode.expensiveMove(3, 2);
 
-      var QIsolated = indexWithIsolatedNode.computeModularity(),
-          Q = index.computeModularity();
+      var QIsolated = indexWithIsolatedNode.modularity(),
+          Q = index.modularity();
 
       assert.closeTo(QIsolated + delta, Q, 0.0001);
 
-      delta = indexWithIsolatedNode.computeModularityDeltaWithOwnCommunity(3, 0, 1);
+      delta = indexWithIsolatedNode.deltaWithOwnCommunity(3, 0, 1);
 
       assert.closeTo(delta, 0, 0.0001);
     });
@@ -746,19 +746,19 @@ describe('Neighborhood Indices', function() {
       applyMoves(index, DIRECTED_MOVES);
 
       // node '2' to own community
-      var delta = index.computeModularityDeltaWithOwnCommunity(2, 1, 2, 2);
+      var delta = index.deltaWithOwnCommunity(2, 1, 2, 2);
 
       var indexWithIsolatedNode = new DirectedLouvainIndex(graph);
-      indexWithIsolatedNode.expensiveMoveNodeToCommunity(0, 4);
-      indexWithIsolatedNode.expensiveMoveNodeToCommunity(5, 2);
-      indexWithIsolatedNode.expensiveMoveNodeToCommunity(3, 2);
+      indexWithIsolatedNode.expensiveMove(0, 4);
+      indexWithIsolatedNode.expensiveMove(5, 2);
+      indexWithIsolatedNode.expensiveMove(3, 2);
 
-      var QIsolated = indexWithIsolatedNode.computeModularity(),
-          Q = index.computeModularity();
+      var QIsolated = indexWithIsolatedNode.modularity(),
+          Q = index.modularity();
 
       assert.closeTo(QIsolated + delta, Q, 0.0001);
 
-      delta = indexWithIsolatedNode.computeModularityDeltaWithOwnCommunity(2, 1, 0, 1);
+      delta = indexWithIsolatedNode.deltaWithOwnCommunity(2, 1, 0, 1);
 
       assert.closeTo(delta, 0, 0.0001);
     });
@@ -768,7 +768,7 @@ describe('Neighborhood Indices', function() {
       var index = new UndirectedLouvainIndex(graph);
       applyMoves(index, UNDIRECTED_MOVES);
 
-      index.expensiveMoveNodeToCommunity(2, 4);
+      index.expensiveMove(2, 4);
 
       index.zoomOut();
 

@@ -151,7 +151,7 @@ function UndirectedLouvainIndex(graph, options) {
     this.mapping = this.belongings.slice();
 }
 
-UndirectedLouvainIndex.prototype.moveNodeToCommunity = function(
+UndirectedLouvainIndex.prototype.move = function(
   i,
   degree,
   currentCommunityDegree,
@@ -177,7 +177,7 @@ UndirectedLouvainIndex.prototype.moveNodeToCommunity = function(
   }
 };
 
-UndirectedLouvainIndex.prototype.expensiveMoveNodeToCommunity = function(i, ci) {
+UndirectedLouvainIndex.prototype.expensiveMove = function(i, ci) {
   var o, l, n, cn, weight;
 
   var degree = 0,
@@ -201,7 +201,7 @@ UndirectedLouvainIndex.prototype.expensiveMoveNodeToCommunity = function(i, ci) 
       currentCommunityDegree += weight;
   }
 
-  this.moveNodeToCommunity(i, degree, currentCommunityDegree, targetCommunityDegree, ci);
+  this.move(i, degree, currentCommunityDegree, targetCommunityDegree, ci);
 };
 
 UndirectedLouvainIndex.prototype.zoomOut = function() {
@@ -307,7 +307,7 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
   this.level++;
 };
 
-UndirectedLouvainIndex.prototype.computeModularity = function() {
+UndirectedLouvainIndex.prototype.modularity = function() {
 
   var Q = 0;
   var M2 = this.M * 2;
@@ -321,7 +321,7 @@ UndirectedLouvainIndex.prototype.computeModularity = function() {
   return Q;
 };
 
-UndirectedLouvainIndex.prototype.computeModularityDelta = function(degree, targetCommunityDegree, targetCommunity) {
+UndirectedLouvainIndex.prototype.delta = function(degree, targetCommunityDegree, targetCommunity) {
   var M = this.M;
 
   var targetCommunityTotalWeight = this.totalWeights[targetCommunity];
@@ -335,7 +335,7 @@ UndirectedLouvainIndex.prototype.computeModularityDelta = function(degree, targe
   );
 };
 
-UndirectedLouvainIndex.prototype.computeModularityDeltaWithOwnCommunity = function(degree, targetCommunityDegree, targetCommunity) {
+UndirectedLouvainIndex.prototype.deltaWithOwnCommunity = function(degree, targetCommunityDegree, targetCommunity) {
   var M = this.M;
 
   var targetCommunityTotalWeight = this.totalWeights[targetCommunity];
@@ -605,7 +605,7 @@ DirectedLouvainIndex.prototype.projectOut = function() {
   return projection;
 };
 
-DirectedLouvainIndex.prototype.moveNodeToCommunity = function(
+DirectedLouvainIndex.prototype.move = function(
   i,
   inDegree,
   outDegree,
@@ -637,7 +637,7 @@ DirectedLouvainIndex.prototype.moveNodeToCommunity = function(
   }
 };
 
-DirectedLouvainIndex.prototype.expensiveMoveNodeToCommunity = function(i, ci) {
+DirectedLouvainIndex.prototype.expensiveMove = function(i, ci) {
   var o, l, n, out, cn, weight;
 
   var inDegree = 0,
@@ -677,7 +677,7 @@ DirectedLouvainIndex.prototype.expensiveMoveNodeToCommunity = function(i, ci) {
     }
   }
 
-  this.moveNodeToCommunity(
+  this.move(
     i,
     inDegree,
     outDegree,
@@ -811,7 +811,7 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
   this.level++;
 };
 
-DirectedLouvainIndex.prototype.computeModularity = function() {
+DirectedLouvainIndex.prototype.modularity = function() {
 
   var Q = 0;
   var M = this.M;
@@ -825,7 +825,7 @@ DirectedLouvainIndex.prototype.computeModularity = function() {
   return Q;
 };
 
-DirectedLouvainIndex.prototype.computeModularityDelta = function(
+DirectedLouvainIndex.prototype.delta = function(
   inDegree,
   outDegree,
   targetCommunityDegree,
@@ -848,7 +848,7 @@ DirectedLouvainIndex.prototype.computeModularityDelta = function(
   );
 };
 
-DirectedLouvainIndex.prototype.computeModularityDeltaWithOwnCommunity = function(
+DirectedLouvainIndex.prototype.deltaWithOwnCommunity = function(
   inDegree,
   outDegree,
   targetCommunityDegree,

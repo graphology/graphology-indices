@@ -25,7 +25,7 @@ export class UndirectedLouvainIndex {
 
   bounds(index: number): [number, number];
   project(): {[key: string]: Array<string>};
-  moveNodeToCommunity(
+  move(
     index: number,
     degree: number,
     currentCommunityDegree: number,
@@ -33,9 +33,9 @@ export class UndirectedLouvainIndex {
     targetCommunity: number
   ): void;
   zoomOut(): void;
-  computeModularity(): number;
-  computeModularityDelta(degree: number, targetCommunityDegree: number, targetCommunity: number): number;
-  computeModularityDeltaWithOwnCommunity(degree: number, targetCommunityDegree: number, targetCommunity: number): number;
+  modularity(): number;
+  delta(degree: number, targetCommunityDegree: number, targetCommunity: number): number;
+  deltaWithOwnCommunity(degree: number, targetCommunityDegree: number, targetCommunity: number): number;
 }
 
 export class DirectedLouvainIndex {
@@ -53,7 +53,7 @@ export class DirectedLouvainIndex {
 
   bounds(index: number): [number, number];
   project(): {[key: string]: Array<string>};
-  moveNodeToCommunity(
+  move(
     index: number,
     inDegree: number,
     outDegree: number,
@@ -64,14 +64,14 @@ export class DirectedLouvainIndex {
     targetCommunity: number
   ): void;
   zoomOut(): void;
-  computeModularity(): number;
-  computeModularityDelta(
+  modularity(): number;
+  delta(
     inDegree: number,
     outDegree: number,
     targetCommunityDegree: number,
     targetCommunity: number
   ): number;
-  computeModularityDeltaWithOwnCommunity(
+  deltaWithOwnCommunity(
     inDegree: number,
     outDegree: number,
     targetCommunityDegree: number,
