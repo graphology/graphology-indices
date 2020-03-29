@@ -785,6 +785,9 @@ describe('Neighborhood Indices', function() {
 
       var Q = index.modularity();
 
+      // Moving to own community should yield delta = 0
+      // assert.closeTo(index.trueDelta(1, 3, 2, 2, 2), 0, 0.0001);
+
       // Moving node '2' to community '4'
       var delta = index.trueDelta(1, 3, 2, 1, 4);
 

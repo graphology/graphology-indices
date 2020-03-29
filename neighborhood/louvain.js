@@ -366,7 +366,8 @@ UndirectedLouvainIndex.prototype.deltaWithOwnCommunity = function(degree, target
 UndirectedLouvainIndex.prototype.trueDelta = function(i, degree, currentCommunityDegree, targetCommunityDegree, targetCommunity) {
   var M = this.M;
 
-  var currentCommunity = this.belongings[i];
+  var currentCommunity = this.belongings[i],
+      loops = this.loops[i];
 
   var currentCommunityTotalWeight = this.totalWeights[currentCommunity],
       targetCommunityTotalWeight = this.totalWeights[targetCommunity];
@@ -374,8 +375,12 @@ UndirectedLouvainIndex.prototype.trueDelta = function(i, degree, currentCommunit
   return (
     ((targetCommunityDegree - currentCommunityDegree) / M) +
     (
+      loops * currentCommunityTotalWeight +
       degree * currentCommunityTotalWeight -
       Math.pow(degree, 2) -
+      Math.pow(loops, 2) -
+      (2 * loops * degree) -
+      loops * targetCommunityTotalWeight -
       degree * targetCommunityTotalWeight
     ) / (2 * Math.pow(M, 2))
   );
