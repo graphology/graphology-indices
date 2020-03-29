@@ -34,8 +34,6 @@
  *
  * [Latex]:
  * \Delta Q=\bigg{[}\frac{\sum^{c}_{in}-2d_{c}-l}{2m}-\bigg{(}\frac{\sum^{c}_{tot}-d-l}{2m}\bigg{)}^{2}+\frac{\sum^{t}_{in}+2d_{t}+l}{2m}-\bigg{(}\frac{\sum^{t}_{tot}+d+l}{2m}\bigg{)}^{2}\bigg{]}-\bigg{[}\frac{\sum^{c}_{in}}{2m}-\bigg{(}\frac{\sum^{c}_{tot}}{2m}\bigg{)}^{2}+\frac{\sum^{t}_{in}}{2m}-\bigg{(}\frac{\sum^{t}_{tot}}{2m}\bigg{)}^{2}\bigg{]}
- * \Delta Q=\bigg{[}\frac{\sum^{c}_{in}-2d_{c}+\sum^{t}_{in}+2d_{t}}{2m}-\bigg{(}\frac{\sum^{c}_{tot}+\sum^{t}_{tot}}{2m}\bigg{)}^{2}\bigg{]}-\bigg{[}\frac{\sum^{c}_{in}+\sum^{t}_{in}}{2m}-\bigg{(}\frac{\sum^{c}_{tot}+\sum^{t}_{tot}}{2m}\bigg{)}^{2}\bigg{]}
- * \Delta Q=\frac{d_{t}-d_{c}+\sum^{t}_{in}}{m}
  *
  * [Notes]:
  * Louvain is a bit unclear on this but delta computation are not derived from
