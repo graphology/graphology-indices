@@ -717,13 +717,13 @@ describe('Neighborhood Indices', function() {
       assert.closeTo(QIsolated + delta, QWithNodeInOtherCommunity, 0.0001);
     });
 
-    it.skip('delta computations should remain sound when moving to same community.', function() {
+    it('delta computations should remain sound when moving to same community, in the undirected case.', function() {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
       var index = new UndirectedLouvainIndex(graph);
       applyMoves(index, UNDIRECTED_MOVES);
 
       // node '2' to own community
-      var delta = index.computeModularityDelta(3, 2, 2);
+      var delta = index.computeModularityDeltaWithOwnCommunity(3, 2, 2);
 
       var indexWithIsolatedNode = new UndirectedLouvainIndex(graph);
       indexWithIsolatedNode.expensiveMoveNodeToCommunity(0, 4);
@@ -734,6 +734,33 @@ describe('Neighborhood Indices', function() {
           Q = index.computeModularity();
 
       assert.closeTo(QIsolated + delta, Q, 0.0001);
+
+      delta = indexWithIsolatedNode.computeModularityDeltaWithOwnCommunity(3, 0, 1);
+
+      assert.closeTo(delta, 0, 0.0001);
+    });
+
+    it('delta computations should remain sound when moving to same community, in the directed case.', function() {
+      var graph = fromEdges(Graph.DirectedGraph, EDGES);
+      var index = new DirectedLouvainIndex(graph);
+      applyMoves(index, DIRECTED_MOVES);
+
+      // node '2' to own community
+      var delta = index.computeModularityDeltaWithOwnCommunity(2, 1, 2, 2);
+
+      var indexWithIsolatedNode = new DirectedLouvainIndex(graph);
+      indexWithIsolatedNode.expensiveMoveNodeToCommunity(0, 4);
+      indexWithIsolatedNode.expensiveMoveNodeToCommunity(5, 2);
+      indexWithIsolatedNode.expensiveMoveNodeToCommunity(3, 2);
+
+      var QIsolated = indexWithIsolatedNode.computeModularity(),
+          Q = index.computeModularity();
+
+      assert.closeTo(QIsolated + delta, Q, 0.0001);
+
+      delta = indexWithIsolatedNode.computeModularityDeltaWithOwnCommunity(2, 1, 0, 1);
+
+      assert.closeTo(delta, 0, 0.0001);
     });
 
     it('should not break if a community is deprived of its "owner".', function() {

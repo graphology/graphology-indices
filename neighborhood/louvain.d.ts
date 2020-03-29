@@ -35,6 +35,7 @@ export class UndirectedLouvainIndex {
   zoomOut(): void;
   computeModularity(): number;
   computeModularityDelta(degree: number, targetCommunityDegree: number, targetCommunity: number): number;
+  computeModularityDeltaWithOwnCommunity(degree: number, targetCommunityDegree: number, targetCommunity: number): number;
 }
 
 export class DirectedLouvainIndex {
@@ -65,6 +66,12 @@ export class DirectedLouvainIndex {
   zoomOut(): void;
   computeModularity(): number;
   computeModularityDelta(
+    inDegree: number,
+    outDegree: number,
+    targetCommunityDegree: number,
+    targetCommunity: number
+  ): number;
+  computeModularityDeltaWithOwnCommunity(
     inDegree: number,
     outDegree: number,
     targetCommunityDegree: number,

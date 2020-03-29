@@ -335,6 +335,20 @@ UndirectedLouvainIndex.prototype.computeModularityDelta = function(degree, targe
   );
 };
 
+UndirectedLouvainIndex.prototype.computeModularityDeltaWithOwnCommunity = function(degree, targetCommunityDegree, targetCommunity) {
+  var M = this.M;
+
+  var targetCommunityTotalWeight = this.totalWeights[targetCommunity];
+
+  return (
+    (targetCommunityDegree / M) - // NOTE: formula is a bit different here because targetCommunityDegree is passed without * 2
+    (
+      ((targetCommunityTotalWeight - degree) * degree) /
+      (2 * M * M)
+    )
+  );
+};
+
 UndirectedLouvainIndex.prototype.bounds = function(i) {
   return [this.starts[i], this.starts[i + 1]];
 };
@@ -828,6 +842,29 @@ DirectedLouvainIndex.prototype.computeModularityDelta = function(
       (
         (outDegree * targetCommunityTotalInWeight) +
         (inDegree * targetCommunityTotalOutWeight)
+      ) /
+      (M * M)
+    )
+  );
+};
+
+DirectedLouvainIndex.prototype.computeModularityDeltaWithOwnCommunity = function(
+  inDegree,
+  outDegree,
+  targetCommunityDegree,
+  targetCommunity
+) {
+  var M = this.M;
+
+  var targetCommunityTotalInWeight = this.totalInWeights[targetCommunity],
+      targetCommunityTotalOutWeight = this.totalOutWeights[targetCommunity];
+
+  return (
+    (targetCommunityDegree / M) -
+    (
+      (
+        (outDegree * (targetCommunityTotalInWeight - inDegree)) +
+        (inDegree * (targetCommunityTotalOutWeight - outDegree))
       ) /
       (M * M)
     )
