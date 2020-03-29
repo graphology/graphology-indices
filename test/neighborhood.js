@@ -735,6 +735,7 @@ describe('Neighborhood Indices', function() {
 
       assert.closeTo(QIsolated + delta, Q, 0.0001);
 
+      // sanity test
       delta = indexWithIsolatedNode.deltaWithOwnCommunity(3, 0, 1);
 
       assert.closeTo(delta, 0, 0.0001);
@@ -758,6 +759,7 @@ describe('Neighborhood Indices', function() {
 
       assert.closeTo(QIsolated + delta, Q, 0.0001);
 
+      // sanity test
       delta = indexWithIsolatedNode.deltaWithOwnCommunity(2, 1, 0, 1);
 
       assert.closeTo(delta, 0, 0.0001);
