@@ -690,6 +690,13 @@ describe('Neighborhood Indices', function() {
           QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.modularity();
 
       assert.closeTo(QIsolated + delta, QWithNodeInOtherCommunity, 0.0001);
+
+      // index.zoomOut();
+
+      // indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph);
+      // applyMoves(indexWithNodeInOtherCommunity, UNDIRECTED_MOVES);
+      // indexWithNodeInOtherCommunity.zoomOut();
+      // indexWithNodeInOtherCommunity.expensiveMove(1, 0);
     });
 
     it('modularity delta computations should remain sane in the directed case.', function() {
