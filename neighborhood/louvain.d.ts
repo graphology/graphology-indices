@@ -11,6 +11,9 @@ type LouvainIndexOptions = {
   weighted: boolean
 }
 
+type CommunityMapping = {[key: string]: number};
+type NeighborhoodProjection = {[key: string]: Array<string>};
+
 export class UndirectedLouvainIndex {
   constructor(graph: Graph, options?: LouvainIndexOptions);
 
@@ -24,7 +27,7 @@ export class UndirectedLouvainIndex {
   nodes: Array<string>;
 
   bounds(index: number): [number, number];
-  project(): {[key: string]: Array<string>};
+  project(): NeighborhoodProjection;
   move(
     index: number,
     degree: number,
@@ -43,6 +46,8 @@ export class UndirectedLouvainIndex {
     targetCommunityDegree: number,
     targetCommunity: number
   ): number;
+  collect(level?: number): CommunityMapping;
+  assign(prop: string, level?: number): void;
 }
 
 export class DirectedLouvainIndex {
@@ -59,7 +64,11 @@ export class DirectedLouvainIndex {
   nodes: Array<string>;
 
   bounds(index: number): [number, number];
-  project(): {[key: string]: Array<string>};
+  inBounds(index: number): [number, number];
+  outBounds(index: number): [number, number];
+  project(): NeighborhoodProjection;
+  projectIn(): NeighborhoodProjection;
+  projectOut(): NeighborhoodProjection;
   move(
     index: number,
     inDegree: number,
@@ -84,4 +93,6 @@ export class DirectedLouvainIndex {
     targetCommunityDegree: number,
     targetCommunity: number
   ): number;
+  collect(level?: number): CommunityMapping;
+  assign(prop: string, level?: number): void;
 }
