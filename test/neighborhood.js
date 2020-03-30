@@ -697,6 +697,10 @@ describe('Neighborhood Indices', function() {
       // applyMoves(indexWithNodeInOtherCommunity, UNDIRECTED_MOVES);
       // indexWithNodeInOtherCommunity.zoomOut();
       // indexWithNodeInOtherCommunity.expensiveMove(1, 0);
+
+      // console.log(index.modularity());
+      // console.log(index.delta(9, 1, 0));
+      // console.log(indexWithNodeInOtherCommunity.modularity());
     });
 
     it('modularity delta computations should remain sane in the directed case.', function() {
