@@ -46,6 +46,8 @@ export class UndirectedLouvainIndex {
     targetCommunityDegree: number,
     targetCommunity: number
   ): number;
+  fastDelta(degree: number, targetCommunityDegree: number, targetCommunity: number): number;
+  fastDeltaWithOwnCommunity(degree: number, targetCommunityDegree: number, targetCommunity: number): number;
   collect(level?: number): CommunityMapping;
   assign(prop: string, level?: number): void;
 }

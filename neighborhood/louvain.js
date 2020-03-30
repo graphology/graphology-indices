@@ -398,6 +398,29 @@ UndirectedLouvainIndex.prototype.trueDelta = function(i, degree, currentCommunit
   );
 };
 
+// NOTE: this is Gephi's corrected faster delta computation
+UndirectedLouvainIndex.prototype.fastDelta = function(degree, targetCommunityDegree, targetCommunity) {
+  var M = this.M;
+
+  var targetCommunityTotalWeight = this.totalWeights[targetCommunity];
+
+  return (
+    targetCommunityDegree -
+    (degree * targetCommunityTotalWeight) / M
+  );
+};
+
+UndirectedLouvainIndex.prototype.fastDeltaWithOwnCommunity = function(degree, targetCommunityDegree, targetCommunity) {
+  var M = this.M;
+
+  var targetCommunityTotalWeight = this.totalWeights[targetCommunity];
+
+  return (
+    targetCommunityDegree -
+    (degree * (targetCommunityTotalWeight - degree)) / M
+  );
+};
+
 UndirectedLouvainIndex.prototype.bounds = function(i) {
   return [this.starts[i], this.starts[i + 1]];
 };
