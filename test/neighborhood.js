@@ -641,12 +641,12 @@ describe('Neighborhood Indices', function() {
       applyMoves(index, UNDIRECTED_MOVES);
 
       // node '2' to community '4'
-      var delta = index.delta(3, 1, 4);
+      var delta = index.delta(1, 3, 1, 4);
 
       assert.closeTo(delta, 1 / 24, 0.001);
 
       // node '1' to community '2'
-      delta = index.delta(2, 1, 2);
+      delta = index.delta(0, 2, 1, 2);
 
       assert.closeTo(delta, -1 / 12, 0.001);
     });
@@ -657,12 +657,12 @@ describe('Neighborhood Indices', function() {
       applyMoves(index, DIRECTED_MOVES);
 
       // node '2' to community '4'
-      var delta = index.delta(2, 1, 1, 4);
+      var delta = index.delta(1, 2, 1, 1, 4);
 
       assert.closeTo(delta, -1 / 49, 0.001);
 
       // node '1' to community '2'
-      delta = index.delta(1, 2, 1, 2);
+      delta = index.delta(0, 1, 2, 1, 2);
 
       assert.closeTo(delta, -1 / 7, 0.001);
     });
@@ -673,7 +673,7 @@ describe('Neighborhood Indices', function() {
       applyMoves(index, UNDIRECTED_MOVES);
 
       // node '2' to other community
-      var delta = index.delta(3, 1, 4);
+      var delta = index.delta(1, 3, 1, 4);
 
       var indexWithIsolatedNode = new UndirectedLouvainIndex(graph);
       indexWithIsolatedNode.expensiveMove(0, 4);
@@ -691,16 +691,15 @@ describe('Neighborhood Indices', function() {
 
       assert.closeTo(QIsolated + delta, QWithNodeInOtherCommunity, 0.0001);
 
-      // index.zoomOut();
+      index.zoomOut();
 
-      // indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph);
-      // applyMoves(indexWithNodeInOtherCommunity, UNDIRECTED_MOVES);
-      // indexWithNodeInOtherCommunity.zoomOut();
-      // indexWithNodeInOtherCommunity.expensiveMove(1, 0);
+      indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph);
+      applyMoves(indexWithNodeInOtherCommunity, UNDIRECTED_MOVES);
+      indexWithNodeInOtherCommunity.zoomOut();
+      indexWithNodeInOtherCommunity.expensiveMove(1, 0);
 
-      // console.log(index.modularity());
-      // console.log(index.delta(9, 1, 0));
-      // console.log(indexWithNodeInOtherCommunity.modularity());
+      assert.closeTo(index.deltaWithOwnCommunity(1, 1, 0, 1), 0, 0.0001);
+      assert.closeTo(index.modularity() + index.delta(1, 1, 1, 0), indexWithNodeInOtherCommunity.modularity(), 0.0001);
     });
 
     it('modularity delta computations should remain sane in the directed case.', function() {
@@ -709,7 +708,7 @@ describe('Neighborhood Indices', function() {
       applyMoves(index, DIRECTED_MOVES);
 
       // node '2' to other community
-      var delta = index.delta(2, 1, 1, 4);
+      var delta = index.delta(1, 2, 1, 1, 4);
 
       var indexWithIsolatedNode = new DirectedLouvainIndex(graph);
       indexWithIsolatedNode.expensiveMove(0, 4);
@@ -726,6 +725,16 @@ describe('Neighborhood Indices', function() {
           QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.modularity();
 
       assert.closeTo(QIsolated + delta, QWithNodeInOtherCommunity, 0.0001);
+
+      index.zoomOut();
+
+      indexWithNodeInOtherCommunity = new DirectedLouvainIndex(graph);
+      applyMoves(indexWithNodeInOtherCommunity, DIRECTED_MOVES);
+      indexWithNodeInOtherCommunity.zoomOut();
+      indexWithNodeInOtherCommunity.expensiveMove(1, 0);
+
+      assert.closeTo(index.deltaWithOwnCommunity(1, 1, 0, 0, 1), 0, 0.0001);
+      assert.closeTo(index.modularity() + index.delta(1, 1, 0, 1, 0), indexWithNodeInOtherCommunity.modularity(), 0.0001);
     });
 
     it('delta computations should remain sound when moving to same community, in the undirected case.', function() {
@@ -734,7 +743,7 @@ describe('Neighborhood Indices', function() {
       applyMoves(index, UNDIRECTED_MOVES);
 
       // node '2' to own community
-      var delta = index.deltaWithOwnCommunity(3, 2, 2);
+      var delta = index.deltaWithOwnCommunity(1, 3, 2, 2);
 
       var indexWithIsolatedNode = new UndirectedLouvainIndex(graph);
       indexWithIsolatedNode.expensiveMove(0, 4);
@@ -747,7 +756,7 @@ describe('Neighborhood Indices', function() {
       assert.closeTo(QIsolated + delta, Q, 0.0001);
 
       // sanity test
-      delta = indexWithIsolatedNode.deltaWithOwnCommunity(3, 0, 1);
+      delta = indexWithIsolatedNode.deltaWithOwnCommunity(1, 3, 0, 1);
 
       assert.closeTo(delta, 0, 0.0001);
     });
@@ -758,7 +767,7 @@ describe('Neighborhood Indices', function() {
       applyMoves(index, DIRECTED_MOVES);
 
       // node '2' to own community
-      var delta = index.deltaWithOwnCommunity(2, 1, 2, 2);
+      var delta = index.deltaWithOwnCommunity(1, 2, 1, 2, 2);
 
       var indexWithIsolatedNode = new DirectedLouvainIndex(graph);
       indexWithIsolatedNode.expensiveMove(0, 4);
@@ -771,7 +780,7 @@ describe('Neighborhood Indices', function() {
       assert.closeTo(QIsolated + delta, Q, 0.0001);
 
       // sanity test
-      delta = indexWithIsolatedNode.deltaWithOwnCommunity(2, 1, 0, 1);
+      delta = indexWithIsolatedNode.deltaWithOwnCommunity(1, 2, 1, 0, 1);
 
       assert.closeTo(delta, 0, 0.0001);
     });

@@ -346,10 +346,12 @@ UndirectedLouvainIndex.prototype.modularity = function() {
   return Q;
 };
 
-UndirectedLouvainIndex.prototype.delta = function(degree, targetCommunityDegree, targetCommunity) {
+UndirectedLouvainIndex.prototype.delta = function(i, degree, targetCommunityDegree, targetCommunity) {
   var M = this.M;
 
   var targetCommunityTotalWeight = this.totalWeights[targetCommunity];
+
+  degree += this.loops[i];
 
   return (
     (targetCommunityDegree / M) - // NOTE: formula is a bit different here because targetCommunityDegree is passed without * 2
@@ -360,10 +362,12 @@ UndirectedLouvainIndex.prototype.delta = function(degree, targetCommunityDegree,
   );
 };
 
-UndirectedLouvainIndex.prototype.deltaWithOwnCommunity = function(degree, targetCommunityDegree, targetCommunity) {
+UndirectedLouvainIndex.prototype.deltaWithOwnCommunity = function(i, degree, targetCommunityDegree, targetCommunity) {
   var M = this.M;
 
   var targetCommunityTotalWeight = this.totalWeights[targetCommunity];
+
+  degree += this.loops[i];
 
   return (
     (targetCommunityDegree / M) - // NOTE: formula is a bit different here because targetCommunityDegree is passed without * 2
@@ -399,10 +403,12 @@ UndirectedLouvainIndex.prototype.trueDelta = function(i, degree, currentCommunit
 };
 
 // NOTE: this is Gephi's corrected faster delta computation
-UndirectedLouvainIndex.prototype.fastDelta = function(degree, targetCommunityDegree, targetCommunity) {
+UndirectedLouvainIndex.prototype.fastDelta = function(i, degree, targetCommunityDegree, targetCommunity) {
   var M = this.M;
 
   var targetCommunityTotalWeight = this.totalWeights[targetCommunity];
+
+  degree += this.loops[i];
 
   return (
     targetCommunityDegree -
@@ -410,10 +416,12 @@ UndirectedLouvainIndex.prototype.fastDelta = function(degree, targetCommunityDeg
   );
 };
 
-UndirectedLouvainIndex.prototype.fastDeltaWithOwnCommunity = function(degree, targetCommunityDegree, targetCommunity) {
+UndirectedLouvainIndex.prototype.fastDeltaWithOwnCommunity = function(i, degree, targetCommunityDegree, targetCommunity) {
   var M = this.M;
 
   var targetCommunityTotalWeight = this.totalWeights[targetCommunity];
+
+  degree += this.loops[i];
 
   return (
     targetCommunityDegree -
@@ -898,6 +906,7 @@ DirectedLouvainIndex.prototype.modularity = function() {
 };
 
 DirectedLouvainIndex.prototype.delta = function(
+  i,
   inDegree,
   outDegree,
   targetCommunityDegree,
@@ -907,6 +916,11 @@ DirectedLouvainIndex.prototype.delta = function(
 
   var targetCommunityTotalInWeight = this.totalInWeights[targetCommunity],
       targetCommunityTotalOutWeight = this.totalOutWeights[targetCommunity];
+
+  var loops = this.loops[i];
+
+  inDegree += loops;
+  outDegree += loops;
 
   return (
     (targetCommunityDegree / M) -
@@ -921,6 +935,7 @@ DirectedLouvainIndex.prototype.delta = function(
 };
 
 DirectedLouvainIndex.prototype.deltaWithOwnCommunity = function(
+  i,
   inDegree,
   outDegree,
   targetCommunityDegree,
@@ -930,6 +945,11 @@ DirectedLouvainIndex.prototype.deltaWithOwnCommunity = function(
 
   var targetCommunityTotalInWeight = this.totalInWeights[targetCommunity],
       targetCommunityTotalOutWeight = this.totalOutWeights[targetCommunity];
+
+  var loops = this.loops[i];
+
+  inDegree += loops;
+  outDegree += loops;
 
   return (
     (targetCommunityDegree / M) -
