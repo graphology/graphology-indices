@@ -10,7 +10,9 @@
  * Note that this index shares a lot with the classic Union-Find data
  * structure. As such, note that its structural integrity is only guaranteed
  * if the number of communities only decreases, never increases, which is the
- * case when applying Louvain's algorithm.
+ * case when applying Louvain's algorithm. It is possible to allow communities
+ * to increase back, i.e. by isolating nodes again, but this would require
+ * to store a stack of now unused community ids.
  *
  * [Articles]
  * M. E. J. Newman, « Modularity and community structure in networks »,
