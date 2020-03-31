@@ -161,8 +161,11 @@ function UndirectedLouvainIndex(graph, options) {
       this.neighborhood[n] = ids[neighbor];
       this.weights[n] = weight;
 
-      // NOTE: we could handle self-loops here by incrementing `internalWeights`
-      // and using #.loops
+      // Hanling self loops
+      if (node === neighbor) {
+        this.loops[i] += weight * 2;
+        this.internalWeights[i] += weight * 2;
+      }
 
       n++;
     }
@@ -610,8 +613,11 @@ function DirectedLouvainIndex(graph, options) {
       this.neighborhood[n] = ids[neighbor];
       this.weights[n] = weight;
 
-      // NOTE: we could handle self-loops here by incrementing `internalWeights`
-      // and using #.loops
+      // Hanling self loops
+      if (node === neighbor) {
+        this.internalWeights[i] += weight * 2;
+        this.loops[i] += weight * 2;
+      }
 
       n++;
     }

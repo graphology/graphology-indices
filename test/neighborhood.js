@@ -843,5 +843,25 @@ describe('Neighborhood Indices', function() {
 
       assert.closeTo(Q + delta, QAfterMerge, 0.0001);
     });
+
+    it('should handle self-loops in the input graph the undirected case.', function() {
+      var graph = fromEdges(Graph.UndirectedGraph, EDGES);
+      graph.addEdge(1, 1);
+
+      var index = new UndirectedLouvainIndex(graph);
+
+      assert.strictEqual(index.internalWeights[0], 2);
+      assert.strictEqual(index.loops[0], 2);
+    });
+
+    it('should handle self-loops in the input graph the directed case.', function() {
+      var graph = fromEdges(Graph.DirectedGraph, EDGES);
+      graph.addEdge(1, 1);
+
+      var index = new DirectedLouvainIndex(graph);
+
+      assert.strictEqual(index.internalWeights[0], 2);
+      assert.strictEqual(index.loops[0], 2);
+    });
   });
 });
