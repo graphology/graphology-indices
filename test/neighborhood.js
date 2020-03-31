@@ -863,5 +863,15 @@ describe('Neighborhood Indices', function() {
       assert.strictEqual(index.internalWeights[0], 2);
       assert.strictEqual(index.loops[0], 2);
     });
+
+    it('modularity should not be NaN on the initial singleton partition.', function() {
+      var graph = new Graph.UndirectedGraph();
+      graph.mergeEdge(1, 2);
+      graph.addNode(3);
+
+      var index = new UndirectedLouvainIndex(graph);
+
+      assert.strictEqual(index.modularity(), -0.5);
+    });
   });
 });
