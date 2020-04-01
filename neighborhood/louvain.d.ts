@@ -35,6 +35,8 @@ export class UndirectedLouvainIndex {
     targetCommunityDegree: number,
     targetCommunity: number
   ): void;
+  expensiveMove(index: number, targetCommunity: number, dryRun?: boolean): void;
+  expensiveMove(index: number, targetCommunity: number, dryRun: boolean): Array<number>;
   zoomOut(): void;
   modularity(): number;
   delta(index: number, degree: number, targetCommunityDegree: number, targetCommunity: number): number;
@@ -81,6 +83,8 @@ export class DirectedLouvainIndex {
     targetCommunityOutDegree: number,
     targetCommunity: number
   ): void;
+  expensiveMove(index: number, targetCommunity: number, dryRun?: boolean): void;
+  expensiveMove(index: number, targetCommunity: number, dryRun: boolean): Array<number>;
   zoomOut(): void;
   modularity(): number;
   delta(

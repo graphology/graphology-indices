@@ -206,7 +206,7 @@ UndirectedLouvainIndex.prototype.move = function(
   }
 };
 
-UndirectedLouvainIndex.prototype.expensiveMove = function(i, ci) {
+UndirectedLouvainIndex.prototype.expensiveMove = function(i, ci, dryRun) {
   var o, l, n, cn, weight;
 
   var degree = 0,
@@ -230,7 +230,12 @@ UndirectedLouvainIndex.prototype.expensiveMove = function(i, ci) {
       currentCommunityDegree += weight;
   }
 
-  this.move(i, degree, currentCommunityDegree, targetCommunityDegree, ci);
+  var args = [i, degree, currentCommunityDegree, targetCommunityDegree, ci];
+
+  if (dryRun)
+    return args;
+
+  this.move.apply(this, args);
 };
 
 UndirectedLouvainIndex.prototype.zoomOut = function() {
@@ -726,7 +731,7 @@ DirectedLouvainIndex.prototype.move = function(
   }
 };
 
-DirectedLouvainIndex.prototype.expensiveMove = function(i, ci) {
+DirectedLouvainIndex.prototype.expensiveMove = function(i, ci, dryRun) {
   var o, l, n, out, cn, weight;
 
   var inDegree = 0,
@@ -766,7 +771,7 @@ DirectedLouvainIndex.prototype.expensiveMove = function(i, ci) {
     }
   }
 
-  this.move(
+  var args = [
     i,
     inDegree,
     outDegree,
@@ -775,7 +780,12 @@ DirectedLouvainIndex.prototype.expensiveMove = function(i, ci) {
     targetCommunityInDegree,
     targetCommunityOutDegree,
     ci
-  );
+  ];
+
+  if (dryRun)
+    return args;
+
+  this.move.apply(this, args);
 };
 
 DirectedLouvainIndex.prototype.zoomOut = function() {
