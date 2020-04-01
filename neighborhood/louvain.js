@@ -165,6 +165,7 @@ function UndirectedLouvainIndex(graph, options) {
       if (node === neighbor) {
         this.loops[i] += weight * 2;
         this.internalWeights[i] += weight * 2;
+        this.totalWeights[i] += weight;
       }
 
       n++;
@@ -617,6 +618,8 @@ function DirectedLouvainIndex(graph, options) {
       if (node === neighbor) {
         this.internalWeights[i] += weight * 2;
         this.loops[i] += weight * 2;
+        this.totalOutWeights[i] += weight;
+        this.totalInWeights[i] += weight;
       }
 
       n++;

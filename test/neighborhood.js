@@ -881,6 +881,8 @@ describe('Neighborhood Indices', function() {
       var graph = new Graph.UndirectedGraph();
       mergeClique(graph, [0, 1, 2, 3]);
 
+      graph.addEdge(0, 0);
+
       var index = new UndirectedLouvainIndex(graph);
       index.expensiveMove(1, 0);
       index.expensiveMove(3, 2);
@@ -888,17 +890,21 @@ describe('Neighborhood Indices', function() {
       index.zoomOut();
 
       assert.strictEqual(index.E, 2);
+      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([4, 2]));
+      assert.deepEqual(index.totalWeights.slice(0, index.C), new Float64Array([8, 6]));
 
       // Directed
       graph = new Graph.DirectedGraph();
       mergeClique(graph, [0, 1, 2, 3]);
+
+      // graph.addEdge(0, 0);
 
       index = new DirectedLouvainIndex(graph);
       index.expensiveMove(1, 0);
       index.expensiveMove(3, 2);
 
       index.zoomOut();
-
+      // console.log(index);
       assert.strictEqual(index.E, 2);
     });
   });
