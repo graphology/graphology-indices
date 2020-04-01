@@ -296,13 +296,11 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
         adj[cj] = 0;
 
       adj[cj] += this.weights[n];
-      E++;
     }
   }
 
   // Rewriting neighborhood
   this.C = C;
-  this.E = E;
 
   n = 0;
 
@@ -326,12 +324,14 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
       this.neighborhood[n] = cj;
       this.weights[n] = adj[cj];
 
+      E++;
       n++;
     }
   }
 
   this.starts[C] = E;
 
+  this.E = E;
   this.level++;
 };
 
@@ -441,7 +441,7 @@ UndirectedLouvainIndex.prototype.project = function() {
 
   var projection = {};
 
-  self.nodes.forEach(function(node, i) {
+  self.nodes.slice(0, this.C).forEach(function(node, i) {
     projection[node] = Array.from(
       self.neighborhood.slice(self.starts[i], self.starts[i + 1])
     ).map(function(j) {
@@ -664,7 +664,7 @@ DirectedLouvainIndex.prototype.projectIn = function() {
 
   var projection = {};
 
-  self.nodes.forEach(function(node, i) {
+  self.nodes.slice(0, this.C).forEach(function(node, i) {
     projection[node] = Array.from(
       self.neighborhood.slice(self.offsets[i], self.starts[i + 1])
     ).map(function(j) {
@@ -680,7 +680,7 @@ DirectedLouvainIndex.prototype.projectOut = function() {
 
   var projection = {};
 
-  self.nodes.forEach(function(node, i) {
+  self.nodes.slice(0, this.C).forEach(function(node, i) {
     projection[node] = Array.from(
       self.neighborhood.slice(self.starts[i], self.offsets[i])
     ).map(function(j) {
@@ -847,13 +847,11 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
         adj[cj] = 0;
 
       adj[cj] += this.weights[n];
-      E++;
     }
   }
 
   // Rewriting neighborhood
   this.C = C;
-  this.E = E;
 
   n = 0;
 
@@ -879,6 +877,7 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
       this.neighborhood[n] = cj;
       this.weights[n] = inAdj[cj];
 
+      E++;
       n++;
     }
 
@@ -888,12 +887,14 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
       this.neighborhood[n] = cj;
       this.weights[n] = outAdj[cj];
 
+      E++;
       n++;
     }
   }
 
   this.starts[C] = E;
 
+  this.E = E;
   this.level++;
 };
 

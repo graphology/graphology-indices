@@ -4,6 +4,7 @@
  */
 var assert = require('chai').assert;
 var Graph = require('graphology');
+var mergeClique = require('graphology-utils/merge-clique');
 var outbound = require('../neighborhood/outbound.js');
 var louvain = require('../neighborhood/louvain.js');
 
@@ -872,6 +873,33 @@ describe('Neighborhood Indices', function() {
       var index = new UndirectedLouvainIndex(graph);
 
       assert.strictEqual(index.modularity(), -0.5);
+    });
+
+    it('should properly zoom out when there are multiple edges between communities.', function() {
+
+      // Undirected
+      var graph = new Graph.UndirectedGraph();
+      mergeClique(graph, [0, 1, 2, 3]);
+
+      var index = new UndirectedLouvainIndex(graph);
+      index.expensiveMove(1, 0);
+      index.expensiveMove(3, 2);
+
+      index.zoomOut();
+
+      assert.strictEqual(index.E, 2);
+
+      // Directed
+      graph = new Graph.DirectedGraph();
+      mergeClique(graph, [0, 1, 2, 3]);
+
+      index = new DirectedLouvainIndex(graph);
+      index.expensiveMove(1, 0);
+      index.expensiveMove(3, 2);
+
+      index.zoomOut();
+
+      assert.strictEqual(index.E, 2);
     });
   });
 });
