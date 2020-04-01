@@ -5,6 +5,7 @@
 var assert = require('chai').assert;
 var Graph = require('graphology');
 var mergeClique = require('graphology-utils/merge-clique');
+var toDirected = require('graphology-operators/to-directed');
 var outbound = require('../neighborhood/outbound.js');
 var louvain = require('../neighborhood/louvain.js');
 
@@ -906,6 +907,21 @@ describe('Neighborhood Indices', function() {
       index.zoomOut();
       // console.log(index);
       assert.strictEqual(index.E, 2);
+    });
+
+    it('directed modularity should be the same as the mutual directed one.', function() {
+      var undirectedGraph = fromEdges(Graph.UndirectedGraph, EDGES);
+      var directedGraph = toDirected(undirectedGraph);
+
+      var undirectedIndex = new UndirectedLouvainIndex(undirectedGraph);
+      applyMoves(undirectedIndex, UNDIRECTED_MOVES);
+      undirectedIndex.zoomOut();
+
+      var directedIndex = new DirectedLouvainIndex(directedGraph);
+      applyMoves(directedIndex, DIRECTED_MOVES);
+      directedIndex.zoomOut();
+
+      assert.closeTo(undirectedIndex.modularity(), directedIndex.modularity(), 0.001);
     });
   });
 });
