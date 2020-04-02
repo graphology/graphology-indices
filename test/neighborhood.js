@@ -1020,6 +1020,14 @@ describe('Neighborhood Indices', function() {
 
       // NOTE: this is aligned to igraph
       assert.closeTo(index.modularity(), 0.3163, 0.0001);
+
+      graph = fromEdges(Graph.DirectedGraph, EDGES);
+      graph.addEdge(1, 1);
+
+      var index = new DirectedLouvainIndex(graph);
+      applyMoves(index, DIRECTED_MOVES);
+
+      assert.closeTo(index.modularity(), 0.375, 0.0001);
     });
   });
 });
