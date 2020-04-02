@@ -1004,5 +1004,16 @@ describe('Neighborhood Indices', function() {
 
       assert.closeTo(index.modularity(), other.modularity(), 0.0001);
     });
+
+    it('testing modularity validity wrt self loops.', function() {
+      var graph = fromEdges(Graph.UndirectedGraph, EDGES);
+      graph.addEdge(1, 1);
+
+      var index = new UndirectedLouvainIndex(graph);
+      applyMoves(index, UNDIRECTED_MOVES);
+
+      // NOTE: this is aligned to igraph
+      assert.closeTo(index.modularity(), 0.3163, 0.0001);
+    });
   });
 });
