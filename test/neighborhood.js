@@ -706,6 +706,10 @@ describe('Neighborhood Indices', function() {
 
     it('modularity delta computations should remain sane in the directed case.', function() {
       var graph = fromEdges(Graph.DirectedGraph, EDGES);
+
+      // Self loop to spice up the mix
+      // graph.addEdge(1, 1);
+
       var index = new DirectedLouvainIndex(graph);
       applyMoves(index, DIRECTED_MOVES);
 
@@ -958,6 +962,47 @@ describe('Neighborhood Indices', function() {
       directedIndex.zoomOut();
 
       assert.closeTo(undirectedIndex.modularity(), directedIndex.modularity(), 0.001);
+    });
+
+    it('testing k-clique equivalency in the undirected case.', function() {
+      var graph = new Graph.UndirectedGraph();
+      mergeClique(graph, [0, 1, 2, 3]);
+
+      var kCliqueEquiv = graph.copy();
+      kCliqueEquiv.dropEdge(0, 1);
+      kCliqueEquiv.addEdge(0, 0);
+
+      var index = new UndirectedLouvainIndex(graph),
+          other = new UndirectedLouvainIndex(kCliqueEquiv);
+
+      index.expensiveMove(0, 1);
+      index.expensiveMove(2, 3);
+
+      other.expensiveMove(0, 1);
+      other.expensiveMove(2, 3);
+
+      assert.closeTo(index.modularity(), other.modularity(), 0.0001);
+    });
+
+    it('testing k-clique equivalency in the directed case.', function() {
+      var graph = new Graph.UndirectedGraph();
+      mergeClique(graph, [0, 1, 2, 3]);
+      graph = toDirected(graph);
+
+      var kCliqueEquiv = graph.copy();
+      kCliqueEquiv.dropEdge(0, 1);
+      kCliqueEquiv.addEdge(0, 0);
+
+      var index = new DirectedLouvainIndex(graph),
+          other = new DirectedLouvainIndex(kCliqueEquiv);
+
+      index.expensiveMove(0, 1);
+      index.expensiveMove(2, 3);
+
+      other.expensiveMove(0, 1);
+      other.expensiveMove(2, 3);
+
+      assert.closeTo(index.modularity(), other.modularity(), 0.0001);
     });
   });
 });
