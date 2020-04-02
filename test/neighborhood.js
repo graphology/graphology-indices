@@ -894,7 +894,7 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([4, 2]));
       assert.deepEqual(index.totalWeights.slice(0, index.C), new Float64Array([8, 6]));
 
-      // Directed
+      // Mutual
       graph = new Graph.UndirectedGraph();
       mergeClique(graph, [0, 1, 2, 3]);
       graph = toDirected(graph);
