@@ -862,8 +862,8 @@ describe('Neighborhood Indices', function() {
 
       var index = new DirectedLouvainIndex(graph);
 
-      assert.strictEqual(index.internalWeights[0], 2);
-      assert.strictEqual(index.loops[0], 2);
+      assert.strictEqual(index.internalWeights[0], 1);
+      assert.strictEqual(index.loops[0], 1);
     });
 
     it('modularity should not be NaN on the initial singleton partition.', function() {
@@ -914,10 +914,14 @@ describe('Neighborhood Indices', function() {
       index.zoomOut();
 
       assert.strictEqual(index.E, 2);
-      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([4, 2]));
-      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([8, 6]));
-      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([8, 6]));
+      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([3, 2]));
+      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([7, 6]));
+      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([7, 6]));
 
+      index.internalWeights[0] += 1;
+      index.totalInWeights[0] += 1;
+      index.totalOutWeights[0] += 1;
+      index.M += 1;
       assert.closeTo(index.modularity(), UQ, 0.0001);
 
       // Directed
@@ -935,10 +939,10 @@ describe('Neighborhood Indices', function() {
 
       index.zoomOut();
 
-      assert.strictEqual(index.M, 6);
-      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([3, 1]));
-      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([3, 3]));
-      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([5, 1]));
+      assert.strictEqual(index.M, 5);
+      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 1]));
+      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([2, 3]));
+      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([4, 1]));
     });
 
     it('directed modularity should be the same as the mutual directed one.', function() {

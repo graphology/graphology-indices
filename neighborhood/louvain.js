@@ -618,11 +618,11 @@ function DirectedLouvainIndex(graph, options) {
       // Self loops
       if (node === neighbor) {
         this.E -= 2;
-        this.M += weight * 2;
-        this.internalWeights[i] += weight * 2;
-        this.loops[i] += weight * 2;
-        this.totalInWeights[i] += weight * 2;
-        this.totalOutWeights[i] += weight * 2;
+        this.M += weight;
+        this.internalWeights[i] += weight;
+        this.loops[i] += weight;
+        this.totalInWeights[i] += weight;
+        this.totalOutWeights[i] += weight;
       }
       else {
         this.M += weight;
