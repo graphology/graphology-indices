@@ -152,23 +152,27 @@ function UndirectedLouvainIndex(graph, options) {
       neighbor = graph.opposite(node, edge);
       weight = getWeight(edge);
 
-      // Doing only once per edge
-      if (node <= neighbor)
-        this.M += weight;
-
-      this.totalWeights[i] += weight;
-
-      this.neighborhood[n] = ids[neighbor];
-      this.weights[n] = weight;
-
-      // Handling self loops
+      // Self loops
       if (node === neighbor) {
-        this.loops[i] += weight * 2;
+        this.E -= 2;
+        this.M += weight;
+        this.totalWeights[i] += weight * 2;
         this.internalWeights[i] += weight * 2;
-        this.totalWeights[i] += weight;
+        this.loops[i] = weight * 2;
       }
+      else {
 
-      n++;
+        // Doing only once per edge
+        if (node < neighbor)
+          this.M += weight;
+
+        this.totalWeights[i] += weight;
+
+        this.neighborhood[n] = ids[neighbor];
+        this.weights[n] = weight;
+
+        n++;
+      }
     }
   }
 
@@ -611,24 +615,25 @@ function DirectedLouvainIndex(graph, options) {
       neighbor = graph.opposite(node, edge);
       weight = getWeight(edge);
 
-      // Doing this three things only when the edge is going out
-      this.M += weight;
-      this.totalOutWeights[i] += weight;
-      this.totalInWeights[ids[neighbor]] += weight;
-
-      this.neighborhood[n] = ids[neighbor];
-      this.weights[n] = weight;
-
-      // Handling self loops
+      // Self loops
       if (node === neighbor) {
-        this.M += weight;
+        this.E -= 2;
+        this.M += weight * 2;
         this.internalWeights[i] += weight * 2;
         this.loops[i] += weight * 2;
-        this.totalOutWeights[i] += weight;
-        this.totalInWeights[i] += weight;
+        this.totalInWeights[i] += weight * 2;
+        this.totalOutWeights[i] += weight * 2;
       }
+      else {
+        this.M += weight;
+        this.totalOutWeights[i] += weight;
+        this.totalInWeights[ids[neighbor]] += weight;
 
-      n++;
+        this.neighborhood[n] = ids[neighbor];
+        this.weights[n] = weight;
+
+        n++;
+      }
     }
 
     // Recording offset and continuing with ingoing edges
