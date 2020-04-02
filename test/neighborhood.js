@@ -888,6 +888,8 @@ describe('Neighborhood Indices', function() {
       index.expensiveMove(1, 0);
       index.expensiveMove(3, 2);
 
+      var Q = index.modularity();
+
       index.zoomOut();
 
       assert.strictEqual(index.E, 2);
@@ -895,6 +897,8 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(index.totalWeights.slice(0, index.C), new Float64Array([8, 6]));
 
       var UQ = index.modularity();
+
+      assert.closeTo(Q, UQ, 0.0001);
 
       // Mutual
       graph = new Graph.UndirectedGraph();
