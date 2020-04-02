@@ -931,7 +931,10 @@ describe('Neighborhood Indices', function() {
 
       index.zoomOut();
 
-      // console.log(index);
+      assert.strictEqual(index.M, 6);
+      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([3, 1]));
+      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([3, 3]));
+      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([5, 1]));
     });
 
     it('directed modularity should be the same as the mutual directed one.', function() {
