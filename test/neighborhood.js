@@ -911,6 +911,23 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([4, 2]));
       assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([8, 6]));
       assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([8, 6]));
+
+      // Directed
+      graph = new Graph.DirectedGraph();
+      graph.mergeEdge(0, 0);
+      graph.mergeEdge(0, 1);
+      graph.mergeEdge(1, 2);
+      graph.mergeEdge(1, 3);
+      graph.mergeEdge(3, 2);
+
+      index = new DirectedLouvainIndex(graph);
+
+      index.expensiveMove(1, 0);
+      index.expensiveMove(3, 2);
+
+      index.zoomOut();
+
+      // console.log(index);
     });
 
     it('directed modularity should be the same as the mutual directed one.', function() {
