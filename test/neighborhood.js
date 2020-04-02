@@ -915,12 +915,18 @@ describe('Neighborhood Indices', function() {
       index.expensiveMove(1, 0);
       index.expensiveMove(3, 2);
 
+      var DQ = index.modularity();
+
       index.zoomOut();
 
       assert.strictEqual(index.E, 2);
       assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([3, 2]));
       assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([7, 6]));
       assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([7, 6]));
+
+      Q = index.modularity();
+
+      assert.closeTo(Q, DQ, 0.0001);
 
       index.internalWeights[0] += 1;
       index.totalInWeights[0] += 1;
