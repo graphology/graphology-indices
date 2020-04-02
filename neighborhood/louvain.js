@@ -153,7 +153,7 @@ function UndirectedLouvainIndex(graph, options) {
       weight = getWeight(edge);
 
       // Doing only once per edge
-      if (node < neighbor)
+      if (node <= neighbor)
         this.M += weight;
 
       this.totalWeights[i] += weight;
@@ -621,6 +621,7 @@ function DirectedLouvainIndex(graph, options) {
 
       // Handling self loops
       if (node === neighbor) {
+        this.M += weight;
         this.internalWeights[i] += weight * 2;
         this.loops[i] += weight * 2;
         this.totalOutWeights[i] += weight;
