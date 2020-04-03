@@ -1024,7 +1024,7 @@ describe('Neighborhood Indices', function() {
       graph = fromEdges(Graph.DirectedGraph, EDGES);
       graph.addEdge(1, 1);
 
-      var index = new DirectedLouvainIndex(graph);
+      index = new DirectedLouvainIndex(graph);
       applyMoves(index, DIRECTED_MOVES);
 
       assert.closeTo(index.modularity(), 0.375, 0.0001);

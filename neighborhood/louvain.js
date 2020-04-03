@@ -305,7 +305,7 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
       if (!(cj in adj))
         adj[cj] = 0;
 
-      adj[cj] += this.weights[n];
+      adj[cj] += this.weights[j];
     }
   }
 
@@ -865,7 +865,7 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
       if (!(cj in adj))
         adj[cj] = 0;
 
-      adj[cj] += this.weights[n];
+      adj[cj] += this.weights[j];
     }
   }
 
