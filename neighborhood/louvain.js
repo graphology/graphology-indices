@@ -644,6 +644,10 @@ function DirectedLouvainIndex(graph, options) {
     for (j = 0, m = edges.length; j < m; j++) {
       edge = edges[j];
       neighbor = graph.opposite(node, edge);
+
+      if (node === neighbor)
+        continue;
+
       weight = getWeight(edge);
 
       this.neighborhood[n] = ids[neighbor];
