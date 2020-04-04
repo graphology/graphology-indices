@@ -919,7 +919,7 @@ describe('Neighborhood Indices', function() {
 
       index.zoomOut();
 
-      assert.strictEqual(index.E, 2);
+      assert.strictEqual(index.E, 4);
       assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([3, 2]));
       assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([7, 6]));
       assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([7, 6]));

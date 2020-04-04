@@ -573,6 +573,7 @@ function DirectedLouvainIndex(graph, options) {
   this.keepDendrogram = keepDendrogram;
 
   // Edge-level
+  // NOTE: edges are stored out then in, in this order
   this.neighborhood = new NodesPointerArray(upperBound);
   this.weights = new Float64Array(upperBound);
 
@@ -861,7 +862,7 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
       cj = this.belongings[n];
       out = j < offset;
 
-      adj = out === 0 ? inAdj : outAdj;
+      adj = out ? outAdj : inAdj;
 
       if (ci === cj)
         continue;
@@ -896,9 +897,9 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
     this.starts[ci] = n;
     this.belongings[ci] = ci;
 
-    for (cj in inAdj) {
+    for (cj in outAdj) {
       this.neighborhood[n] = cj;
-      this.weights[n] = inAdj[cj];
+      this.weights[n] = outAdj[cj];
 
       E++;
       n++;
@@ -906,9 +907,9 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
 
     this.offsets[ci] = n;
 
-    for (cj in outAdj) {
+    for (cj in inAdj) {
       this.neighborhood[n] = cj;
-      this.weights[n] = outAdj[cj];
+      this.weights[n] = inAdj[cj];
 
       E++;
       n++;
