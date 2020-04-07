@@ -408,7 +408,7 @@ UndirectedLouvainIndex.prototype.fastDelta = function(i, degree, targetCommunity
 
   return (
     targetCommunityDegree -
-    (degree * targetCommunityTotalWeight) / M
+    (degree * targetCommunityTotalWeight) / (2 * M)
   );
 };
 
@@ -421,7 +421,7 @@ UndirectedLouvainIndex.prototype.fastDeltaWithOwnCommunity = function(i, degree,
 
   return (
     targetCommunityDegree -
-    (degree * (targetCommunityTotalWeight - degree)) / M
+    (degree * (targetCommunityTotalWeight - degree)) / (2 * M)
   );
 };
 
