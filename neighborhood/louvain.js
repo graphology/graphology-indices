@@ -84,11 +84,11 @@ function UndirectedLouvainIndex(graph, options) {
 
   var weightAttribute = attributes.weight || DEFAULTS.attributes.weight;
 
-  var getWeight = function(edge) {
+  var getWeight = function(attr) {
     if (!weighted)
       return 1;
 
-    var weight = graph.getEdgeAttribute(edge, weightAttribute);
+    var weight = attr[weightAttribute];
 
     if (typeof weight !== 'number' || isNaN(weight))
       return 1;
@@ -130,16 +130,44 @@ function UndirectedLouvainIndex(graph, options) {
 
   var ids = {};
 
-  var i, l, j, m, node, neighbor, edges, edge, weight;
+  var i, l, node, neighbor, weight;
 
   var n = 0;
 
   for (i = 0, l = graph.order; i < l; i++)
     ids[this.nodes[i]] = i;
 
+  var self = this;
+
+  function edgeCallback(edge, attr, source, target) {
+    neighbor = node === source ? target : source;
+    weight = getWeight(attr);
+
+    // Self loops
+    if (node === neighbor) {
+      self.E -= 2;
+      self.M += weight;
+      self.totalWeights[i] += weight * 2;
+      self.internalWeights[i] += weight * 2;
+      self.loops[i] = weight * 2;
+    }
+    else {
+
+      // Doing only once per edge
+      if (node < neighbor)
+        self.M += weight;
+
+      self.totalWeights[i] += weight;
+
+      self.neighborhood[n] = ids[neighbor];
+      self.weights[n] = weight;
+
+      n++;
+    }
+  }
+
   for (i = 0, l = graph.order; i < l; i++) {
     node = this.nodes[i];
-    edges = graph.edges(node);
 
     this.starts[i] = n;
     this.belongings[i] = i;
@@ -147,33 +175,7 @@ function UndirectedLouvainIndex(graph, options) {
     if (keepCounts)
       this.counts[i] = 1;
 
-    for (j = 0, m = edges.length; j < m; j++) {
-      edge = edges[j];
-      neighbor = graph.opposite(node, edge);
-      weight = getWeight(edge);
-
-      // Self loops
-      if (node === neighbor) {
-        this.E -= 2;
-        this.M += weight;
-        this.totalWeights[i] += weight * 2;
-        this.internalWeights[i] += weight * 2;
-        this.loops[i] = weight * 2;
-      }
-      else {
-
-        // Doing only once per edge
-        if (node < neighbor)
-          this.M += weight;
-
-        this.totalWeights[i] += weight;
-
-        this.neighborhood[n] = ids[neighbor];
-        this.weights[n] = weight;
-
-        n++;
-      }
-    }
+    graph.forEachEdge(node, edgeCallback);
   }
 
   this.starts[i] = upperBound;
