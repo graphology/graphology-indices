@@ -546,11 +546,11 @@ function DirectedLouvainIndex(graph, options) {
 
   var weightAttribute = attributes.weight || DEFAULTS.attributes.weight;
 
-  var getWeight = function(edge) {
+  var getWeight = function(attr) {
     if (!weighted)
       return 1;
 
-    var weight = graph.getEdgeAttribute(edge, weightAttribute);
+    var weight = attr[weightAttribute];
 
     if (typeof weight !== 'number' || isNaN(weight))
       return 1;
@@ -594,70 +594,70 @@ function DirectedLouvainIndex(graph, options) {
 
   var ids = {};
 
-  var i, l, j, m, node, neighbor, edges, edge, weight;
+  var i, l, node, neighbor, weight;
 
   var n = 0;
 
   for (i = 0, l = graph.order; i < l; i++)
     ids[this.nodes[i]] = i;
 
+  var self = this;
+
+  function outEdgeCallback(edge, attr, source, target) {
+    neighbor = target;
+    weight = getWeight(attr);
+
+    // Self loops
+    if (node === neighbor) {
+      self.E -= 2;
+      self.M += weight;
+      self.internalWeights[i] += weight;
+      self.loops[i] += weight;
+      self.totalInWeights[i] += weight;
+      self.totalOutWeights[i] += weight;
+    }
+    else {
+      self.M += weight;
+      self.totalOutWeights[i] += weight;
+      self.totalInWeights[ids[neighbor]] += weight;
+
+      self.neighborhood[n] = ids[neighbor];
+      self.weights[n] = weight;
+
+      n++;
+    }
+  }
+
+  function inEdgeCallback(edge, attr, source) {
+    neighbor = source;
+
+    if (node === neighbor)
+      return;
+
+    weight = getWeight(attr);
+
+    self.neighborhood[n] = ids[neighbor];
+    self.weights[n] = weight;
+
+    n++;
+  }
+
   for (i = 0, l = graph.order; i < l; i++) {
     node = this.nodes[i];
 
     // Starting with outgoing edges
-    edges = graph.outEdges(node);
-
     this.starts[i] = n;
     this.belongings[i] = i;
 
     if (keepCounts)
       this.counts[i] = 1;
 
-    for (j = 0, m = edges.length; j < m; j++) {
-      edge = edges[j];
-      neighbor = graph.opposite(node, edge);
-      weight = getWeight(edge);
-
-      // Self loops
-      if (node === neighbor) {
-        this.E -= 2;
-        this.M += weight;
-        this.internalWeights[i] += weight;
-        this.loops[i] += weight;
-        this.totalInWeights[i] += weight;
-        this.totalOutWeights[i] += weight;
-      }
-      else {
-        this.M += weight;
-        this.totalOutWeights[i] += weight;
-        this.totalInWeights[ids[neighbor]] += weight;
-
-        this.neighborhood[n] = ids[neighbor];
-        this.weights[n] = weight;
-
-        n++;
-      }
-    }
+    graph.forEachOutEdge(node, outEdgeCallback);
 
     // Recording offset and continuing with ingoing edges
     this.offsets[i] = n;
 
-    edges = graph.inEdges(node);
-
-    for (j = 0, m = edges.length; j < m; j++) {
-      edge = edges[j];
-      neighbor = graph.opposite(node, edge);
-
-      if (node === neighbor)
-        continue;
-
-      weight = getWeight(edge);
-
-      this.neighborhood[n] = ids[neighbor];
-      this.weights[n] = weight;
-
-      n++;
-    }
+    graph.forEachInEdge(node, inEdgeCallback);
   }
 
   this.starts[i] = upperBound;
