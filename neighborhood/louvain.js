@@ -130,41 +130,12 @@ function UndirectedLouvainIndex(graph, options) {
 
   var ids = {};
 
-  var i, l, node, neighbor, weight;
+  var i, l, node, neighbor, adj, edge, weight;
 
   var n = 0;
 
   for (i = 0, l = graph.order; i < l; i++)
     ids[this.nodes[i]] = i;
-
-  var self = this;
-
-  function edgeCallback(edge, attr, source, target) {
-    neighbor = node === source ? target : source;
-    weight = getWeight(attr);
-
-    // Self loops
-    if (node === neighbor) {
-      self.E -= 2;
-      self.M += weight;
-      self.totalWeights[i] += weight * 2;
-      self.internalWeights[i] += weight * 2;
-      self.loops[i] = weight * 2;
-    }
-    else {
-
-      // Doing only once per edge
-      if (node < neighbor)
-        self.M += weight;
-
-      self.totalWeights[i] += weight;
-
-      self.neighborhood[n] = ids[neighbor];
-      self.weights[n] = weight;
-
-      n++;
-    }
-  }
 
   for (i = 0, l = graph.order; i < l; i++) {
     node = this.nodes[i];
@@ -175,7 +146,35 @@ function UndirectedLouvainIndex(graph, options) {
     if (keepCounts)
       this.counts[i] = 1;
 
-    graph.forEachEdge(node, edgeCallback);
+    // TODO: this should be generalized when different implementations are used
+    adj = graph._nodes.get(node).undirected;
+
+    for (neighbor in adj) {
+      edge = adj[neighbor];
+      weight = getWeight(edge.attributes);
+
+      // Self loops
+      if (node === neighbor) {
+        this.E -= 2;
+        this.M += weight;
+        this.totalWeights[i] += weight * 2;
+        this.internalWeights[i] += weight * 2;
+        this.loops[i] = weight * 2;
+      }
+      else {
+
+        // Doing only once per edge
+        if (node < neighbor)
+          this.M += weight;
+
+        this.totalWeights[i] += weight;
+
+        this.neighborhood[n] = ids[neighbor];
+        this.weights[n] = weight;
+
+        n++;
+      }
+    }
   }
 
   this.starts[i] = upperBound;
@@ -594,53 +593,12 @@ function DirectedLouvainIndex(graph, options) {
 
   var ids = {};
 
-  var i, l, node, neighbor, weight;
+  var i, l, node, neighbor, adj, edge, weight;
 
   var n = 0;
 
   for (i = 0, l = graph.order; i < l; i++)
     ids[this.nodes[i]] = i;
-
-  var self = this;
-
-  function outEdgeCallback(edge, attr, source, target) {
-    neighbor = target;
-    weight = getWeight(attr);
-
-    // Self loops
-    if (node === neighbor) {
-      self.E -= 2;
-      self.M += weight;
-      self.internalWeights[i] += weight;
-      self.loops[i] += weight;
-      self.totalInWeights[i] += weight;
-      self.totalOutWeights[i] += weight;
-    }
-    else {
-      self.M += weight;
-      self.totalOutWeights[i] += weight;
-      self.totalInWeights[ids[neighbor]] += weight;
-
-      self.neighborhood[n] = ids[neighbor];
-      self.weights[n] = weight;
-
-      n++;
-    }
-  }
-
-  function inEdgeCallback(edge, attr, source) {
-    neighbor = source;
-
-    if (node === neighbor)
-      return;
-
-    weight = getWeight(attr);
-
-    self.neighborhood[n] = ids[neighbor];
-    self.weights[n] = weight;
-
-    n++;
-  }
 
   for (i = 0, l = graph.order; i < l; i++) {
     node = this.nodes[i];
@@ -652,12 +610,52 @@ function DirectedLouvainIndex(graph, options) {
     if (keepCounts)
       this.counts[i] = 1;
 
-    graph.forEachOutEdge(node, outEdgeCallback);
+    // TODO: this should be generalized when different implementations are used
+    adj = graph._nodes.get(node).out;
+
+    for (neighbor in adj) {
+      edge = adj[neighbor];
+      weight = getWeight(edge.attributes);
+
+      // Self loops
+      if (node === neighbor) {
+        this.E -= 2;
+        this.M += weight;
+        this.internalWeights[i] += weight;
+        this.loops[i] += weight;
+        this.totalInWeights[i] += weight;
+        this.totalOutWeights[i] += weight;
+      }
+      else {
+        this.M += weight;
+        this.totalOutWeights[i] += weight;
+        this.totalInWeights[ids[neighbor]] += weight;
+
+        this.neighborhood[n] = ids[neighbor];
+        this.weights[n] = weight;
+
+        n++;
+      }
+    }
 
     // Recording offset and continuing with ingoing edges
     this.offsets[i] = n;
 
-    graph.forEachInEdge(node, inEdgeCallback);
+    adj = graph._nodes.get(node).in;
+
+    for (neighbor in adj) {
+      edge = adj[neighbor];
+
+      if (node === neighbor)
+        return;
+
+      weight = getWeight(edge.attributes);
+
+      this.neighborhood[n] = ids[neighbor];
+      this.weights[n] = weight;
+
+      n++;
+    }
   }
 
   this.starts[i] = upperBound;
