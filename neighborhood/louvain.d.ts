@@ -6,7 +6,6 @@ type LouvainIndexOptions = {
   attributes: {
     weight: string
   },
-  keepCounts: boolean,
   keepDendrogram: boolean,
   weighted: boolean
 }

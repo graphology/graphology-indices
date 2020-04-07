@@ -65,7 +65,6 @@ var DEFAULTS = {
   attributes: {
     weight: 'weight'
   },
-  keepCounts: false,
   keepDendrogram: false,
   weighted: false
 };
@@ -77,7 +76,6 @@ function UndirectedLouvainIndex(graph, options) {
   var attributes = options.attributes || {};
 
   var keepDendrogram = options.keepDendrogram === true;
-  var keepCounts = options.keepCounts === true;
 
   // Weight getters
   var weighted = options.weighted === true;
@@ -109,7 +107,6 @@ function UndirectedLouvainIndex(graph, options) {
   this.level = 0;
   this.graph = graph;
   this.nodes = graph.nodes();
-  this.keepCounts = keepCounts;
   this.keepDendrogram = keepDendrogram;
 
   // Edge-level
@@ -124,7 +121,6 @@ function UndirectedLouvainIndex(graph, options) {
   this.mapping = null;
 
   // Community-level
-  this.counts = keepCounts ? new NodesPointerArray(graph.order) : null;
   this.internalWeights = new Float64Array(graph.order);
   this.totalWeights = new Float64Array(graph.order);
 
@@ -142,9 +138,6 @@ function UndirectedLouvainIndex(graph, options) {
 
     this.starts[i] = n;
     this.belongings[i] = i;
-
-    if (keepCounts)
-      this.counts[i] = 1;
 
     // TODO: this should be generalized when different implementations are used
     adj = graph._nodes.get(node).undirected;
@@ -202,13 +195,6 @@ UndirectedLouvainIndex.prototype.move = function(
   this.internalWeights[targetCommunity] += targetCommunityDegree * 2 + loops;
 
   this.belongings[i] = targetCommunity;
-
-  if (this.keepCounts) {
-    var count = this.counts[i];
-
-    this.counts[currentCommunity] -= count;
-    this.counts[targetCommunity] += count;
-  }
 };
 
 UndirectedLouvainIndex.prototype.expensiveMove = function(i, ci, dryRun) {
@@ -262,7 +248,6 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
       newLabels[ci] = C;
       inducedGraph[C] = {
         adj: {},
-        counts: this.keepCounts ? this.counts[ci] : null,
         totalWeights: this.totalWeights[ci],
         internalWeights: this.internalWeights[ci]
       };
@@ -324,9 +309,6 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
     this.totalWeights[ci] = data.totalWeights;
     this.internalWeights[ci] = data.internalWeights;
     this.loops[ci] = data.internalWeights;
-
-    if (this.keepCounts)
-      this.counts[ci] = data.counts;
 
     this.starts[ci] = n;
     this.belongings[ci] = ci;
@@ -508,7 +490,7 @@ UndirectedLouvainIndex.prototype[INSPECT] = function() {
   proxy.starts = this.starts.slice(0, proxy.C + 1);
 
   var eTruncated = ['neighborhood', 'weights'];
-  var cTruncated = ['loops', 'belongings', 'counts', 'internalWeights', 'totalWeights'];
+  var cTruncated = ['loops', 'belongings', 'internalWeights', 'totalWeights'];
 
   var self = this;
 
@@ -517,9 +499,6 @@ UndirectedLouvainIndex.prototype[INSPECT] = function() {
   });
 
   cTruncated.forEach(function(key) {
-    if (key === 'counts' && !self.keepCounts)
-      return;
-
     proxy[key] = self[key].slice(0, proxy.C);
   });
 
@@ -538,7 +517,6 @@ function DirectedLouvainIndex(graph, options) {
   var attributes = options.attributes || {};
 
   var keepDendrogram = options.keepDendrogram === true;
-  var keepCounts = options.keepCounts === true;
 
   // Weight getters
   var weighted = options.weighted === true;
@@ -570,7 +548,6 @@ function DirectedLouvainIndex(graph, options) {
   this.level = 0;
   this.graph = graph;
   this.nodes = graph.nodes();
-  this.keepCounts = keepCounts;
   this.keepDendrogram = keepDendrogram;
 
   // Edge-level
@@ -586,7 +563,6 @@ function DirectedLouvainIndex(graph, options) {
   this.dendrogram = [];
 
   // Community-level
-  this.counts = keepCounts ? new NodesPointerArray(graph.order) : null;
   this.internalWeights = new Float64Array(graph.order);
   this.totalInWeights = new Float64Array(graph.order);
   this.totalOutWeights = new Float64Array(graph.order);
@@ -606,9 +582,6 @@ function DirectedLouvainIndex(graph, options) {
     // Starting with outgoing edges
     this.starts[i] = n;
     this.belongings[i] = i;
-
-    if (keepCounts)
-      this.counts[i] = 1;
 
     // TODO: this should be generalized when different implementations are used
     adj = graph._nodes.get(node).out;
@@ -733,13 +706,6 @@ DirectedLouvainIndex.prototype.move = function(
   this.internalWeights[targetCommunity] += targetCommunityInDegree + targetCommunityOutDegree + loops;
 
   this.belongings[i] = targetCommunity;
-
-  if (this.keepCounts) {
-    var count = this.counts[i];
-
-    this.counts[currentCommunity] -= count;
-    this.counts[targetCommunity] += count;
-  }
 };
 
 DirectedLouvainIndex.prototype.expensiveMove = function(i, ci, dryRun) {
@@ -819,7 +785,6 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
       inducedGraph[C] = {
         inAdj: {},
         outAdj: {},
-        counts: this.keepCounts ? this.counts[ci] : null,
         totalInWeights: this.totalInWeights[ci],
         totalOutWeights: this.totalOutWeights[ci],
         internalWeights: this.internalWeights[ci]
@@ -890,9 +855,6 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
     this.totalOutWeights[ci] = data.totalOutWeights;
     this.internalWeights[ci] = data.internalWeights;
     this.loops[ci] = data.internalWeights;
-
-    if (this.keepCounts)
-      this.counts[ci] = data.counts;
 
     this.starts[ci] = n;
     this.belongings[ci] = ci;
@@ -1014,7 +976,7 @@ DirectedLouvainIndex.prototype[INSPECT] = function() {
   proxy.starts = this.starts.slice(0, proxy.C + 1);
 
   var eTruncated = ['neighborhood', 'weights'];
-  var cTruncated = ['offsets', 'loops', 'belongings', 'counts', 'internalWeights', 'totalInWeights', 'totalOutWeights'];
+  var cTruncated = ['offsets', 'loops', 'belongings', 'internalWeights', 'totalInWeights', 'totalOutWeights'];
 
   var self = this;
 
@@ -1023,9 +985,6 @@ DirectedLouvainIndex.prototype[INSPECT] = function() {
   });
 
   cTruncated.forEach(function(key) {
-    if (key === 'counts' && !self.keepCounts)
-      return;
-
     proxy[key] = self[key].slice(0, proxy.C);
   });
 
