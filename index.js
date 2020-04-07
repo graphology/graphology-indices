@@ -4,3 +4,4 @@
  *
  * Library endpoint.
  */
+exports.neighborhood = require('./neighborhood');
