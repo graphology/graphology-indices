@@ -557,7 +557,7 @@ function DirectedLouvainIndex(graph, options) {
   this.E = graph.size * 2;
   this.level = 0;
   this.graph = graph;
-  this.nodes = graph.nodes();
+  this.nodes = new Array(graph.order);
   this.keepDendrogram = keepDendrogram;
 
   // Edge-level
@@ -579,69 +579,65 @@ function DirectedLouvainIndex(graph, options) {
 
   var ids = {};
 
-  var i, l, node, neighbor, adj, edge, weight;
+  var weight;
 
-  var n = 0;
+  var i = 0,
+      n = 0;
 
-  for (i = 0, l = graph.order; i < l; i++)
-    ids[this.nodes[i]] = i;
+  var self = this;
 
-  for (i = 0, l = graph.order; i < l; i++) {
-    node = this.nodes[i];
+  // TODO: this is implementation specific
+  graph._nodes.forEach(function(nodeData, node) {
+    self.nodes[i] = node;
 
-    // Starting with outgoing edges
-    this.starts[i] = n;
-    this.belongings[i] = i;
+    // Node map to index
+    ids[node] = i;
 
-    // TODO: this should be generalized when different implementations are used
-    adj = graph._nodes.get(node).out;
+    // Initializing starts & offsets
+    n += nodeData.outDegree;
+    self.starts[i] = n;
 
-    for (neighbor in adj) {
-      edge = adj[neighbor];
-      weight = getWeight(edge.attributes);
+    n += nodeData.inDegree;
+    self.offsets[i] = n;
 
-      // Self loops
-      if (node === neighbor) {
-        this.E -= 2;
-        this.M += weight;
-        this.internalWeights[i] += weight;
-        this.loops[i] += weight;
-        this.totalInWeights[i] += weight;
-        this.totalOutWeights[i] += weight;
-      }
-      else {
-        this.M += weight;
-        this.totalOutWeights[i] += weight;
-        this.totalInWeights[ids[neighbor]] += weight;
+    // Belongings
+    self.belongings[i] = i;
+    i++;
+  });
 
-        this.neighborhood[n] = ids[neighbor];
-        this.weights[n] = weight;
+  // Single sweep over the edges
+  graph.forEachEdge(function(edge, attr, source, target) {
+    weight = getWeight(attr);
 
-        n++;
-      }
+    source = ids[source];
+    target = ids[target];
+
+    self.M += weight;
+
+    // Self loop?
+    if (source === target) {
+      self.E -= 2;
+      self.internalWeights[source] += weight;
+      self.loops[source] += weight;
+      self.totalInWeights[source] += weight;
+      self.totalOutWeights[source] += weight;
     }
+    else {
+      self.totalOutWeights[source] += weight;
+      self.totalInWeights[target] += weight;
 
-    // Recording offset and continuing with ingoing edges
-    this.offsets[i] = n;
+      var startSource = --self.starts[source],
+          startTarget = --self.offsets[target];
 
-    adj = graph._nodes.get(node).in;
+      self.neighborhood[startSource] = target;
+      self.neighborhood[startTarget] = source;
 
-    for (neighbor in adj) {
-      edge = adj[neighbor];
-
-      if (node === neighbor)
-        return;
-
-      weight = getWeight(edge.attributes);
-
-      this.neighborhood[n] = ids[neighbor];
-      this.weights[n] = weight;
-
-      n++;
+      self.weights[startSource] = weight;
+      self.weights[startTarget] = weight;
     }
-  }
+  });
 
-  this.starts[i] = upperBound;
+  this.starts[i] = this.E;
 
   if (this.keepDendrogram)
     this.dendrogram.push(this.belongings.slice());
