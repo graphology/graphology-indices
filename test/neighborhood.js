@@ -190,16 +190,16 @@ describe('Neighborhood Indices', function() {
       assert.strictEqual(index.M, 161);
 
       assert.deepEqual(index.project(), {
-        1: ['2', '5'],
-        2: ['1', '3', '4'],
-        3: ['2', '4', '6'],
+        1: ['5', '2'],
+        2: ['4', '3', '1'],
+        3: ['6', '4', '2'],
         4: ['2', '3'],
         5: ['1'],
         6: ['3']
       });
 
-      assert.deepEqual(index.neighborhood, new Uint8Array([1, 4, 0, 2, 3, 1, 3, 5, 1, 2, 0, 2]));
-      assert.deepEqual(index.weights, new Float64Array([30, 5, 30, 15, 1, 15, 10, 100, 1, 10, 5, 100]));
+      assert.deepEqual(index.neighborhood, new Uint8Array([4, 1, 3, 2, 0, 5, 3, 1, 1, 2, 0, 2]));
+      assert.deepEqual(index.weights, new Float64Array([5, 30, 1, 15, 30, 100, 10, 15, 1, 10, 5, 100]));
       assert.deepEqual(index.internalWeights, new Float64Array([0, 0, 0, 0, 0, 0]));
       assert.deepEqual(index.totalWeights, new Float64Array(Array.from(graph.nodes().map(function(node) {
         return graph.edges(node).reduce(function(sum, edge) {

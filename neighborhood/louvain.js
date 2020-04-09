@@ -106,7 +106,7 @@ function UndirectedLouvainIndex(graph, options) {
   this.E = graph.size * 2;
   this.level = 0;
   this.graph = graph;
-  this.nodes = graph.nodes();
+  this.nodes = new Array(graph.order);
   this.keepDendrogram = keepDendrogram;
 
   // Edge-level
@@ -126,51 +126,61 @@ function UndirectedLouvainIndex(graph, options) {
 
   var ids = {};
 
-  var i, l, node, neighbor, adj, edge, weight;
+  var weight;
 
-  var n = 0;
+  var i = 0,
+      n = 0;
 
-  for (i = 0, l = graph.order; i < l; i++)
-    ids[this.nodes[i]] = i;
+  var self = this;
 
-  for (i = 0, l = graph.order; i < l; i++) {
-    node = this.nodes[i];
+  // TODO: this is implementation specific
+  graph._nodes.forEach(function(nodeData, node) {
+    self.nodes[i] = node;
 
-    this.starts[i] = n;
-    this.belongings[i] = i;
+    // Node map to index
+    ids[node] = i;
 
-    // TODO: this should be generalized when different implementations are used
-    adj = graph._nodes.get(node).undirected;
+    // Initializing starts
+    n += nodeData.undirectedDegree;
+    self.starts[i] = n;
 
-    for (neighbor in adj) {
-      edge = adj[neighbor];
-      weight = getWeight(edge.attributes);
+    // Belongings
+    self.belongings[i] = i;
+    i++;
+  });
 
-      // Self loops
-      if (node === neighbor) {
-        this.E -= 2;
-        this.M += weight;
-        this.totalWeights[i] += weight * 2;
-        this.internalWeights[i] += weight * 2;
-        this.loops[i] = weight * 2;
-      }
-      else {
+  // Single sweep over the edges
+  graph.forEachEdge(function(edge, attr, source, target) {
+    weight = getWeight(attr);
 
-        // Doing only once per edge
-        if (node < neighbor)
-          this.M += weight;
+    source = ids[source];
+    target = ids[target];
 
-        this.totalWeights[i] += weight;
+    self.M += weight;
 
-        this.neighborhood[n] = ids[neighbor];
-        this.weights[n] = weight;
-
-        n++;
-      }
+    // Self loop?
+    if (source === target) {
+      self.E -= 2;
+      self.totalWeights[source] += weight * 2;
+      self.internalWeights[source] += weight * 2;
+      self.loops[source] = weight * 2;
     }
-  }
+    else {
+      self.totalWeights[source] += weight;
+      self.totalWeights[target] += weight;
 
-  this.starts[i] = upperBound;
+      var startSource = --self.starts[source],
+          startTarget = --self.starts[target];
+
+      self.neighborhood[startSource] = target;
+      self.neighborhood[startTarget] = source;
+
+      self.weights[startSource] = weight;
+      self.weights[startTarget] = weight;
+    }
+  });
+
+  this.starts[i] = this.E;
 
   if (this.keepDendrogram)
     this.dendrogram.push(this.belongings.slice());
