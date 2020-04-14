@@ -71,6 +71,7 @@ var DEFAULTS = {
     weight: 'weight'
   },
   keepDendrogram: false,
+  resolution: 1,
   weighted: false
 };
 
@@ -81,6 +82,10 @@ function UndirectedLouvainIndex(graph, options) {
   var attributes = options.attributes || {};
 
   var keepDendrogram = options.keepDendrogram === true;
+
+  var resolution = typeof options.resolution === 'number' ?
+    options.resolution :
+    DEFAULTS.resolution;
 
   // Weight getters
   var weighted = options.weighted === true;
@@ -109,6 +114,7 @@ function UndirectedLouvainIndex(graph, options) {
   this.C = graph.order;
   this.M = 0;
   this.E = graph.size * 2;
+  this.resolution = resolution;
   this.level = 0;
   this.graph = graph;
   this.nodes = new Array(graph.order);
@@ -351,7 +357,7 @@ UndirectedLouvainIndex.prototype.modularity = function() {
   for (var i = 0; i < this.C; i++)
     Q += (
       this.internalWeights[i] / M2 -
-      Math.pow(this.totalWeights[i] / M2, 2)
+      Math.pow(this.totalWeights[i] / M2, 2) * this.resolution
     );
 
   return Q;
@@ -500,6 +506,7 @@ UndirectedLouvainIndex.prototype[INSPECT] = function() {
   proxy.C = this.C;
   proxy.M = this.M;
   proxy.E = this.E;
+  proxy.resolution = this.resolution;
   proxy.level = this.level;
   proxy.nodes = this.nodes;
   proxy.starts = this.starts.slice(0, proxy.C + 1);
@@ -533,6 +540,10 @@ function DirectedLouvainIndex(graph, options) {
 
   var keepDendrogram = options.keepDendrogram === true;
 
+  var resolution = typeof options.resolution === 'number' ?
+    options.resolution :
+    DEFAULTS.resolution;
+
   // Weight getters
   var weighted = options.weighted === true;
 
@@ -560,6 +571,7 @@ function DirectedLouvainIndex(graph, options) {
   this.C = graph.order;
   this.M = 0;
   this.E = graph.size * 2;
+  this.resolution = resolution;
   this.level = 0;
   this.graph = graph;
   this.nodes = new Array(graph.order);
@@ -903,7 +915,8 @@ DirectedLouvainIndex.prototype.modularity = function() {
   for (var i = 0; i < this.C; i++)
     Q += (
       (this.internalWeights[i] / M) -
-      (this.totalInWeights[i] * this.totalOutWeights[i] / Math.pow(M, 2))
+      (this.totalInWeights[i] * this.totalOutWeights[i] / Math.pow(M, 2)) *
+      this.resolution
     );
 
   return Q;
@@ -982,6 +995,7 @@ DirectedLouvainIndex.prototype[INSPECT] = function() {
   proxy.C = this.C;
   proxy.M = this.M;
   proxy.E = this.E;
+  proxy.resolution = this.resolution;
   proxy.level = this.level;
   proxy.nodes = this.nodes;
   proxy.starts = this.starts.slice(0, proxy.C + 1);
