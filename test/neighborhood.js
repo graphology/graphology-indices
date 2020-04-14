@@ -661,9 +661,9 @@ describe('Neighborhood Indices', function() {
       closeTo(delta, -1 / 7);
     });
 
-    it('modularity delta computations should remain sane in the undirected case.', function() {
+    function modularityDeltaSanityUndirected(resolution) {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
-      var index = new UndirectedLouvainIndex(graph);
+      var index = new UndirectedLouvainIndex(graph, {resolution: resolution});
       applyMoves(index, UNDIRECTED_MOVES);
 
       // node '2' to other community
@@ -694,15 +694,19 @@ describe('Neighborhood Indices', function() {
 
       closeTo(index.deltaWithOwnCommunity(1, 1, 0, 1), 0);
       closeTo(index.modularity() + index.delta(1, 1, 1, 0), indexWithNodeInOtherCommunity.modularity());
+    }
+
+    it('modularity delta computations should remain sane in the undirected case.', function() {
+      modularityDeltaSanityUndirected(1);
     });
 
-    it('modularity delta computations should remain sane in the directed case.', function() {
+    function modularityDeltaSanityDirected(resolution) {
       var graph = fromEdges(Graph.DirectedGraph, EDGES);
 
       // Self loop to spice up the mix
       // graph.addEdge(1, 1);
 
-      var index = new DirectedLouvainIndex(graph);
+      var index = new DirectedLouvainIndex(graph, {resolution: resolution});
       applyMoves(index, DIRECTED_MOVES);
 
       // node '2' to other community
@@ -733,6 +737,10 @@ describe('Neighborhood Indices', function() {
 
       closeTo(index.deltaWithOwnCommunity(1, 1, 0, 0, 1), 0);
       closeTo(index.modularity() + index.delta(1, 1, 0, 1, 0), indexWithNodeInOtherCommunity.modularity());
+    }
+
+    it('modularity delta computations should remain sane in the directed case.', function() {
+      modularityDeltaSanityDirected(1);
     });
 
     it('delta computations should remain sound when moving to same community, in the undirected case.', function() {
