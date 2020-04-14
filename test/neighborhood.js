@@ -78,6 +78,10 @@ function applyMoves(index, moves) {
   });
 }
 
+function closeTo(A, B) {
+  assert.closeTo(A, B, 0.0001);
+}
+
 describe('Neighborhood Indices', function() {
   describe('OutboundNeighborhoodIndex', function() {
 
@@ -446,11 +450,11 @@ describe('Neighborhood Indices', function() {
       // node '4' to community '2'
       index.move(3, 2, 0, 2, 2);
 
-      assert.closeTo(index.modularity(), 0.2083, 0.001);
+      closeTo(index.modularity(), 0.2083);
 
       index.zoomOut();
 
-      assert.closeTo(index.modularity(), 0.2083, 0.001);
+      closeTo(index.modularity(), 0.2083);
 
       assert.strictEqual(index.C, 2);
       assert.strictEqual(index.E, 2);
@@ -544,11 +548,11 @@ describe('Neighborhood Indices', function() {
       // node '4' to community '2'
       index.move(3, 1, 1, 0, 0, 1, 1, 2);
 
-      assert.closeTo(index.modularity(), 0.3265, 0.001);
+      closeTo(index.modularity(), 0.3265);
 
       index.zoomOut();
 
-      assert.closeTo(index.modularity(), 0.3265, 0.001);
+      closeTo(index.modularity(), 0.3265);
 
       assert.strictEqual(index.C, 2);
       assert.strictEqual(index.E, 2);
@@ -633,12 +637,12 @@ describe('Neighborhood Indices', function() {
       // node '2' to community '4'
       var delta = index.delta(1, 3, 1, 4);
 
-      assert.closeTo(delta, 1 / 24, 0.001);
+      closeTo(delta, 1 / 24);
 
       // node '1' to community '2'
       delta = index.delta(0, 2, 1, 2);
 
-      assert.closeTo(delta, -1 / 12, 0.001);
+      closeTo(delta, -1 / 12);
     });
 
     it('should be possible to compute modularity delta in the directed case.', function() {
@@ -649,12 +653,12 @@ describe('Neighborhood Indices', function() {
       // node '2' to community '4'
       var delta = index.delta(1, 2, 1, 1, 4);
 
-      assert.closeTo(delta, -1 / 49, 0.001);
+      closeTo(delta, -1 / 49);
 
       // node '1' to community '2'
       delta = index.delta(0, 1, 2, 1, 2);
 
-      assert.closeTo(delta, -1 / 7, 0.001);
+      closeTo(delta, -1 / 7);
     });
 
     it('modularity delta computations should remain sane in the undirected case.', function() {
@@ -679,7 +683,7 @@ describe('Neighborhood Indices', function() {
       var QIsolated = indexWithIsolatedNode.modularity(),
           QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.modularity();
 
-      assert.closeTo(QIsolated + delta, QWithNodeInOtherCommunity, 0.0001);
+      closeTo(QIsolated + delta, QWithNodeInOtherCommunity);
 
       index.zoomOut();
 
@@ -688,8 +692,8 @@ describe('Neighborhood Indices', function() {
       indexWithNodeInOtherCommunity.zoomOut();
       indexWithNodeInOtherCommunity.expensiveMove(1, 0);
 
-      assert.closeTo(index.deltaWithOwnCommunity(1, 1, 0, 1), 0, 0.0001);
-      assert.closeTo(index.modularity() + index.delta(1, 1, 1, 0), indexWithNodeInOtherCommunity.modularity(), 0.0001);
+      closeTo(index.deltaWithOwnCommunity(1, 1, 0, 1), 0);
+      closeTo(index.modularity() + index.delta(1, 1, 1, 0), indexWithNodeInOtherCommunity.modularity());
     });
 
     it('modularity delta computations should remain sane in the directed case.', function() {
@@ -718,7 +722,7 @@ describe('Neighborhood Indices', function() {
       var QIsolated = indexWithIsolatedNode.modularity(),
           QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.modularity();
 
-      assert.closeTo(QIsolated + delta, QWithNodeInOtherCommunity, 0.0001);
+      closeTo(QIsolated + delta, QWithNodeInOtherCommunity);
 
       index.zoomOut();
 
@@ -727,8 +731,8 @@ describe('Neighborhood Indices', function() {
       indexWithNodeInOtherCommunity.zoomOut();
       indexWithNodeInOtherCommunity.expensiveMove(1, 0);
 
-      assert.closeTo(index.deltaWithOwnCommunity(1, 1, 0, 0, 1), 0, 0.0001);
-      assert.closeTo(index.modularity() + index.delta(1, 1, 0, 1, 0), indexWithNodeInOtherCommunity.modularity(), 0.0001);
+      closeTo(index.deltaWithOwnCommunity(1, 1, 0, 0, 1), 0);
+      closeTo(index.modularity() + index.delta(1, 1, 0, 1, 0), indexWithNodeInOtherCommunity.modularity());
     });
 
     it('delta computations should remain sound when moving to same community, in the undirected case.', function() {
@@ -747,12 +751,12 @@ describe('Neighborhood Indices', function() {
       var QIsolated = indexWithIsolatedNode.modularity(),
           Q = index.modularity();
 
-      assert.closeTo(QIsolated + delta, Q, 0.0001);
+      closeTo(QIsolated + delta, Q);
 
       // sanity test
       delta = indexWithIsolatedNode.deltaWithOwnCommunity(1, 3, 0, 1);
 
-      assert.closeTo(delta, 0, 0.0001);
+      closeTo(delta, 0);
     });
 
     it('delta computations should remain sound when moving to same community, in the directed case.', function() {
@@ -771,12 +775,12 @@ describe('Neighborhood Indices', function() {
       var QIsolated = indexWithIsolatedNode.modularity(),
           Q = index.modularity();
 
-      assert.closeTo(QIsolated + delta, Q, 0.0001);
+      closeTo(QIsolated + delta, Q);
 
       // sanity test
       delta = indexWithIsolatedNode.deltaWithOwnCommunity(1, 2, 1, 0, 1);
 
-      assert.closeTo(delta, 0, 0.0001);
+      closeTo(delta, 0);
     });
 
     it('should not break if a community is deprived of its "owner".', function() {
@@ -810,7 +814,7 @@ describe('Neighborhood Indices', function() {
 
       var QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.modularity();
 
-      assert.closeTo(Q + delta, QWithNodeInOtherCommunity, 0.0001);
+      closeTo(Q + delta, QWithNodeInOtherCommunity);
 
       // Moving node '4' to community '4'
       delta = index.trueDelta(3, 2, 2, 0, 4);
@@ -823,7 +827,7 @@ describe('Neighborhood Indices', function() {
 
       QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.modularity();
 
-      assert.closeTo(Q + delta, QWithNodeInOtherCommunity, 0.0001);
+      closeTo(Q + delta, QWithNodeInOtherCommunity);
 
       // Zooming out to test issues related to loops
       index.zoomOut();
@@ -835,7 +839,7 @@ describe('Neighborhood Indices', function() {
 
       var QAfterMerge = index.modularity();
 
-      assert.closeTo(Q + delta, QAfterMerge, 0.0001);
+      closeTo(Q + delta, QAfterMerge);
     });
 
     it('should handle self-loops in the input graph the undirected case.', function() {
@@ -890,7 +894,7 @@ describe('Neighborhood Indices', function() {
 
       var UQ = index.modularity();
 
-      assert.closeTo(Q, UQ, 0.0001);
+      closeTo(Q, UQ);
 
       // Mutual
       graph = new Graph.UndirectedGraph();
@@ -914,13 +918,13 @@ describe('Neighborhood Indices', function() {
 
       Q = index.modularity();
 
-      assert.closeTo(Q, DQ, 0.0001);
+      closeTo(Q, DQ);
 
       index.internalWeights[0] += 1;
       index.totalInWeights[0] += 1;
       index.totalOutWeights[0] += 1;
       index.M += 1;
-      assert.closeTo(index.modularity(), UQ, 0.0001);
+      closeTo(index.modularity(), UQ);
 
       // Directed
       graph = new Graph.DirectedGraph();
@@ -955,7 +959,7 @@ describe('Neighborhood Indices', function() {
       applyMoves(directedIndex, DIRECTED_MOVES);
       directedIndex.zoomOut();
 
-      assert.closeTo(undirectedIndex.modularity(), directedIndex.modularity(), 0.001);
+      closeTo(undirectedIndex.modularity(), directedIndex.modularity());
     });
 
     it('testing k-clique equivalency in the undirected case.', function() {
@@ -975,7 +979,7 @@ describe('Neighborhood Indices', function() {
       other.expensiveMove(0, 1);
       other.expensiveMove(2, 3);
 
-      assert.closeTo(index.modularity(), other.modularity(), 0.0001);
+      closeTo(index.modularity(), other.modularity());
     });
 
     it('testing k-clique equivalency in the directed case.', function() {
@@ -996,7 +1000,7 @@ describe('Neighborhood Indices', function() {
       other.expensiveMove(0, 1);
       other.expensiveMove(2, 3);
 
-      assert.closeTo(index.modularity(), other.modularity(), 0.0001);
+      closeTo(index.modularity(), other.modularity());
     });
 
     it('testing modularity validity wrt self loops.', function() {
@@ -1007,7 +1011,7 @@ describe('Neighborhood Indices', function() {
       applyMoves(index, UNDIRECTED_MOVES);
 
       // NOTE: this is aligned to igraph
-      assert.closeTo(index.modularity(), 0.3163, 0.0001);
+      closeTo(index.modularity(), 0.3163);
 
       graph = fromEdges(Graph.DirectedGraph, EDGES);
       graph.addEdge(1, 1);
@@ -1015,7 +1019,21 @@ describe('Neighborhood Indices', function() {
       index = new DirectedLouvainIndex(graph);
       applyMoves(index, DIRECTED_MOVES);
 
-      assert.closeTo(index.modularity(), 0.375, 0.0001);
+      closeTo(index.modularity(), 0.375);
+    });
+
+    it('should be possible to tweak resolution.', function() {
+      var undirectedGraph = fromEdges(Graph.UndirectedGraph, EDGES);
+      var undirectedIndex = new UndirectedLouvainIndex(undirectedGraph, {resolution: 0.5});
+      applyMoves(undirectedIndex, UNDIRECTED_MOVES);
+
+      closeTo(undirectedIndex.modularity(), 0.5208);
+
+      var directedGraph = fromEdges(Graph.DirectedGraph, EDGES);
+      var directedIndex = new DirectedLouvainIndex(directedGraph, {resolution: 0.5});
+      applyMoves(directedIndex, DIRECTED_MOVES);
+
+      closeTo(directedIndex.modularity(), 0.5918);
     });
   });
 });
