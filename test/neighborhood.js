@@ -669,12 +669,12 @@ describe('Neighborhood Indices', function() {
       // node '2' to other community
       var delta = index.delta(1, 3, 1, 4);
 
-      var indexWithIsolatedNode = new UndirectedLouvainIndex(graph);
+      var indexWithIsolatedNode = new UndirectedLouvainIndex(graph, {resolution: resolution});
       indexWithIsolatedNode.expensiveMove(0, 4);
       indexWithIsolatedNode.expensiveMove(5, 2);
       indexWithIsolatedNode.expensiveMove(3, 2);
 
-      var indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph);
+      var indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph, {resolution: resolution});
       indexWithNodeInOtherCommunity.expensiveMove(1, 4);
       indexWithNodeInOtherCommunity.expensiveMove(0, 4);
       indexWithNodeInOtherCommunity.expensiveMove(5, 2);
@@ -687,7 +687,7 @@ describe('Neighborhood Indices', function() {
 
       index.zoomOut();
 
-      indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph);
+      indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph, {resolution: resolution});
       applyMoves(indexWithNodeInOtherCommunity, UNDIRECTED_MOVES);
       indexWithNodeInOtherCommunity.zoomOut();
       indexWithNodeInOtherCommunity.expensiveMove(1, 0);
@@ -698,6 +698,8 @@ describe('Neighborhood Indices', function() {
 
     it('modularity delta computations should remain sane in the undirected case.', function() {
       modularityDeltaSanityUndirected(1);
+      modularityDeltaSanityUndirected(0.5);
+      modularityDeltaSanityUndirected(2);
     });
 
     function modularityDeltaSanityDirected(resolution) {
@@ -712,12 +714,12 @@ describe('Neighborhood Indices', function() {
       // node '2' to other community
       var delta = index.delta(1, 2, 1, 1, 4);
 
-      var indexWithIsolatedNode = new DirectedLouvainIndex(graph);
+      var indexWithIsolatedNode = new DirectedLouvainIndex(graph, {resolution: resolution});
       indexWithIsolatedNode.expensiveMove(0, 4);
       indexWithIsolatedNode.expensiveMove(5, 2);
       indexWithIsolatedNode.expensiveMove(3, 2);
 
-      var indexWithNodeInOtherCommunity = new DirectedLouvainIndex(graph);
+      var indexWithNodeInOtherCommunity = new DirectedLouvainIndex(graph, {resolution: resolution});
       indexWithNodeInOtherCommunity.expensiveMove(1, 4);
       indexWithNodeInOtherCommunity.expensiveMove(0, 4);
       indexWithNodeInOtherCommunity.expensiveMove(5, 2);
@@ -730,7 +732,7 @@ describe('Neighborhood Indices', function() {
 
       index.zoomOut();
 
-      indexWithNodeInOtherCommunity = new DirectedLouvainIndex(graph);
+      indexWithNodeInOtherCommunity = new DirectedLouvainIndex(graph, {resolution: resolution});
       applyMoves(indexWithNodeInOtherCommunity, DIRECTED_MOVES);
       indexWithNodeInOtherCommunity.zoomOut();
       indexWithNodeInOtherCommunity.expensiveMove(1, 0);
@@ -741,6 +743,8 @@ describe('Neighborhood Indices', function() {
 
     it('modularity delta computations should remain sane in the directed case.', function() {
       modularityDeltaSanityDirected(1);
+      modularityDeltaSanityDirected(0.5);
+      modularityDeltaSanityDirected(2);
     });
 
     it('delta computations should remain sound when moving to same community, in the undirected case.', function() {

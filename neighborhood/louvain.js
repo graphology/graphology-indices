@@ -373,7 +373,7 @@ UndirectedLouvainIndex.prototype.delta = function(i, degree, targetCommunityDegr
   return (
     (targetCommunityDegree / M) - // NOTE: formula is a bit different here because targetCommunityDegree is passed without * 2
     (
-      (targetCommunityTotalWeight * degree) /
+      (targetCommunityTotalWeight * degree * this.resolution) /
       (2 * M * M)
     )
   );
@@ -389,7 +389,7 @@ UndirectedLouvainIndex.prototype.deltaWithOwnCommunity = function(i, degree, tar
   return (
     (targetCommunityDegree / M) - // NOTE: formula is a bit different here because targetCommunityDegree is passed without * 2
     (
-      ((targetCommunityTotalWeight - degree) * degree) /
+      ((targetCommunityTotalWeight - degree) * degree * this.resolution) /
       (2 * M * M)
     )
   );
@@ -398,6 +398,7 @@ UndirectedLouvainIndex.prototype.deltaWithOwnCommunity = function(i, degree, tar
 // NOTE: this function cannot work for self community move without changing
 // the underlying formula. We don't have to use it thusly anyway since
 // ∆Q is 0 in this case.
+// TODO: this formula does not work with resolution != 1
 UndirectedLouvainIndex.prototype.trueDelta = function(i, degree, currentCommunityDegree, targetCommunityDegree, targetCommunity) {
   var M = this.M;
 
@@ -429,7 +430,7 @@ UndirectedLouvainIndex.prototype.fastDelta = function(i, degree, targetCommunity
 
   return (
     targetCommunityDegree -
-    (degree * targetCommunityTotalWeight) / (2 * M)
+    (degree * targetCommunityTotalWeight * this.resolution) / (2 * M)
   );
 };
 
@@ -945,7 +946,7 @@ DirectedLouvainIndex.prototype.delta = function(
       (
         (outDegree * targetCommunityTotalInWeight) +
         (inDegree * targetCommunityTotalOutWeight)
-      ) /
+      ) * this.resolution /
       (M * M)
     )
   );
@@ -974,7 +975,7 @@ DirectedLouvainIndex.prototype.deltaWithOwnCommunity = function(
       (
         (outDegree * (targetCommunityTotalInWeight - inDegree)) +
         (inDegree * (targetCommunityTotalOutWeight - outDegree))
-      ) /
+      ) * this.resolution /
       (M * M)
     )
   );
