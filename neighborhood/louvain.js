@@ -443,7 +443,7 @@ UndirectedLouvainIndex.prototype.fastDeltaWithOwnCommunity = function(i, degree,
 
   return (
     targetCommunityDegree -
-    (degree * (targetCommunityTotalWeight - degree)) / (2 * M)
+    (degree * (targetCommunityTotalWeight - degree) * this.resolution) / (2 * M)
   );
 };
 
