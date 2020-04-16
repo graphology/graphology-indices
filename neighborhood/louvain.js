@@ -340,6 +340,7 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
     this.totalWeights[ci] = data.totalWeights;
     this.internalWeights[ci] = data.internalWeights;
     this.loops[ci] = data.internalWeights;
+    this.counts[ci] = 1;
 
     this.starts[ci] = n;
     this.belongings[ci] = ci;
@@ -356,6 +357,7 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
   this.starts[C] = E;
 
   this.E = E;
+  this.U = 0;
   this.level++;
 };
 
@@ -903,6 +905,7 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
     this.totalOutWeights[ci] = data.totalOutWeights;
     this.internalWeights[ci] = data.internalWeights;
     this.loops[ci] = data.internalWeights;
+    this.counts[ci] = 1;
 
     this.starts[ci] = n;
     this.belongings[ci] = ci;
@@ -929,6 +932,7 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
   this.starts[C] = E;
 
   this.E = E;
+  this.U = 0;
   this.level++;
 };
 

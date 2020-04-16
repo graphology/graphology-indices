@@ -462,7 +462,9 @@ describe('Neighborhood Indices', function() {
 
       assert.strictEqual(index.C, 2);
       assert.strictEqual(index.E, 2);
+      assert.strictEqual(index.U, 0);
       assert.strictEqual(index.level, 1);
+      assert.deepEqual(index.counts.slice(0, index.C), new Uint8Array([1, 1]));
       assert.deepEqual(index.neighborhood.slice(0, index.E), new Uint8Array([1, 0]));
       assert.deepEqual(index.weights.slice(0, index.E), new Float64Array([1, 1]));
       assert.deepEqual(index.starts.slice(0, index.C + 1), new Uint8Array([0, 1, 2]));
@@ -475,6 +477,9 @@ describe('Neighborhood Indices', function() {
 
       assert.deepEqual(index.totalWeights.slice(0, index.C), new Float64Array([0, 12]));
       assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([0, 12]));
+      assert.strictEqual(index.U, 1);
+      assert.deepEqual(index.unused.slice(0, index.U), new Uint8Array([0]));
+      assert.deepEqual(index.counts.slice(0, index.C), new Uint8Array([0, 2]));
 
       index.zoomOut();
 
@@ -563,7 +568,9 @@ describe('Neighborhood Indices', function() {
 
       assert.strictEqual(index.C, 2);
       assert.strictEqual(index.E, 2);
+      assert.strictEqual(index.U, 0);
       assert.strictEqual(index.level, 1);
+      assert.deepEqual(index.counts.slice(0, index.C), new Uint8Array([1, 1]));
       assert.deepEqual(index.neighborhood.slice(0, index.E), new Uint8Array([1, 0]));
       assert.deepEqual(index.weights.slice(0, index.E), new Float64Array([1, 1]));
       assert.deepEqual(index.starts.slice(0, index.C + 1), new Uint8Array([0, 1, 2]));
@@ -578,6 +585,9 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([0, 7]));
       assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([0, 7]));
       assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([0, 7]));
+      assert.strictEqual(index.U, 1);
+      assert.deepEqual(index.unused.slice(0, index.U), new Uint8Array([0]));
+      assert.deepEqual(index.counts.slice(0, index.C), new Uint8Array([0, 2]));
 
       index.zoomOut();
 
