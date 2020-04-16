@@ -420,7 +420,8 @@ UndirectedLouvainIndex.prototype.trueDelta = function(i, degree, currentCommunit
   );
 };
 
-// NOTE: this is Gephi's corrected faster delta computation
+// NOTE: this is just a faster but equivalent version of #.delta
+// It is just off by a constant factor and is just faster to compute
 UndirectedLouvainIndex.prototype.fastDelta = function(i, degree, targetCommunityDegree, targetCommunity) {
   var M = this.M;
 
