@@ -108,12 +108,13 @@ function UndirectedLouvainIndex(graph, options) {
   var upperBound = graph.size * 2;
 
   var NeighborhoodPointerArray = typed.getPointerArray(upperBound);
-  var NodesPointerArray = typed.getPointerArray(graph.order);
+  var NodesPointerArray = typed.getPointerArray(graph.order + 1);
 
   // Properties
   this.C = graph.order;
   this.M = 0;
   this.E = graph.size * 2;
+  this.U = 0;
   this.resolution = resolution;
   this.level = 0;
   this.graph = graph;
@@ -132,6 +133,8 @@ function UndirectedLouvainIndex(graph, options) {
   this.mapping = null;
 
   // Community-level
+  this.counts = new NodesPointerArray(graph.order);
+  this.unused = new NodesPointerArray(graph.order);
   this.internalWeights = new Float64Array(graph.order);
   this.totalWeights = new Float64Array(graph.order);
 
@@ -157,6 +160,7 @@ function UndirectedLouvainIndex(graph, options) {
 
     // Belongings
     self.belongings[i] = i;
+    self.counts[i] = 1;
     i++;
   });
 
@@ -216,6 +220,12 @@ UndirectedLouvainIndex.prototype.move = function(
   this.internalWeights[targetCommunity] += targetCommunityDegree * 2 + loops;
 
   this.belongings[i] = targetCommunity;
+
+  var nowEmpty = this.counts[currentCommunity]-- === 1;
+  this.counts[targetCommunity]++;
+
+  if (nowEmpty)
+    this.unused[this.U++] = currentCommunity;
 };
 
 UndirectedLouvainIndex.prototype.expensiveMove = function(i, ci, dryRun) {
@@ -508,13 +518,14 @@ UndirectedLouvainIndex.prototype[INSPECT] = function() {
   proxy.C = this.C;
   proxy.M = this.M;
   proxy.E = this.E;
+  proxy.U = this.U;
   proxy.resolution = this.resolution;
   proxy.level = this.level;
   proxy.nodes = this.nodes;
   proxy.starts = this.starts.slice(0, proxy.C + 1);
 
   var eTruncated = ['neighborhood', 'weights'];
-  var cTruncated = ['loops', 'belongings', 'internalWeights', 'totalWeights'];
+  var cTruncated = ['counts', 'loops', 'belongings', 'internalWeights', 'totalWeights'];
 
   var self = this;
 
@@ -525,6 +536,8 @@ UndirectedLouvainIndex.prototype[INSPECT] = function() {
   cTruncated.forEach(function(key) {
     proxy[key] = self[key].slice(0, proxy.C);
   });
+
+  proxy.unused = this.unused.slice(0, this.U);
 
   if (this.keepDendrogram)
     proxy.dendrogram = this.dendrogram;
@@ -567,12 +580,13 @@ function DirectedLouvainIndex(graph, options) {
   var upperBound = graph.size * 2;
 
   var NeighborhoodPointerArray = typed.getPointerArray(upperBound);
-  var NodesPointerArray = typed.getPointerArray(graph.order);
+  var NodesPointerArray = typed.getPointerArray(graph.order + 1);
 
   // Properties
   this.C = graph.order;
   this.M = 0;
   this.E = graph.size * 2;
+  this.U = 0;
   this.resolution = resolution;
   this.level = 0;
   this.graph = graph;
@@ -592,6 +606,8 @@ function DirectedLouvainIndex(graph, options) {
   this.dendrogram = [];
 
   // Community-level
+  this.counts = new NodesPointerArray(graph.order);
+  this.unused = new NodesPointerArray(graph.order);
   this.internalWeights = new Float64Array(graph.order);
   this.totalInWeights = new Float64Array(graph.order);
   this.totalOutWeights = new Float64Array(graph.order);
@@ -621,6 +637,7 @@ function DirectedLouvainIndex(graph, options) {
 
     // Belongings
     self.belongings[i] = i;
+    self.counts[i] = 1;
     i++;
   });
 
@@ -731,6 +748,12 @@ DirectedLouvainIndex.prototype.move = function(
   this.internalWeights[targetCommunity] += targetCommunityInDegree + targetCommunityOutDegree + loops;
 
   this.belongings[i] = targetCommunity;
+
+  var nowEmpty = this.counts[currentCommunity]-- === 1;
+  this.counts[targetCommunity]++;
+
+  if (nowEmpty)
+    this.unused[this.U++] = currentCommunity;
 };
 
 DirectedLouvainIndex.prototype.expensiveMove = function(i, ci, dryRun) {
@@ -997,13 +1020,14 @@ DirectedLouvainIndex.prototype[INSPECT] = function() {
   proxy.C = this.C;
   proxy.M = this.M;
   proxy.E = this.E;
+  proxy.U = this.U;
   proxy.resolution = this.resolution;
   proxy.level = this.level;
   proxy.nodes = this.nodes;
   proxy.starts = this.starts.slice(0, proxy.C + 1);
 
   var eTruncated = ['neighborhood', 'weights'];
-  var cTruncated = ['offsets', 'loops', 'belongings', 'internalWeights', 'totalInWeights', 'totalOutWeights'];
+  var cTruncated = ['counts', 'offsets', 'loops', 'belongings', 'internalWeights', 'totalInWeights', 'totalOutWeights'];
 
   var self = this;
 
@@ -1014,6 +1038,8 @@ DirectedLouvainIndex.prototype[INSPECT] = function() {
   cTruncated.forEach(function(key) {
     proxy[key] = self[key].slice(0, proxy.C);
   });
+
+  proxy.unused = this.unused.slice(0, this.U);
 
   if (this.keepDendrogram)
     proxy.dendrogram = this.dendrogram;

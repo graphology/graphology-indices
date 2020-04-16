@@ -452,6 +452,10 @@ describe('Neighborhood Indices', function() {
 
       closeTo(index.modularity(), 0.2083);
 
+      assert.deepEqual(index.counts, new Uint8Array([0, 0, 4, 0, 2, 0]));
+      assert.strictEqual(index.U, 4);
+      assert.deepEqual(index.unused, new Uint8Array([1, 0, 5, 3, 0, 0]));
+
       index.zoomOut();
 
       closeTo(index.modularity(), 0.2083);
@@ -549,6 +553,9 @@ describe('Neighborhood Indices', function() {
       index.move(3, 1, 1, 0, 0, 1, 1, 2);
 
       closeTo(index.modularity(), 0.3265);
+      assert.deepEqual(index.counts, new Uint8Array([0, 0, 4, 0, 2, 0]));
+      assert.strictEqual(index.U, 4);
+      assert.deepEqual(index.unused, new Uint8Array([1, 0, 5, 3, 0, 0]));
 
       index.zoomOut();
 
