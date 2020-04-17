@@ -135,7 +135,6 @@ function UndirectedLouvainIndex(graph, options) {
   // Community-level
   this.counts = new NodesPointerArray(graph.order);
   this.unused = new NodesPointerArray(graph.order);
-  this.internalWeights = new Float64Array(graph.order);
   this.totalWeights = new Float64Array(graph.order);
 
   var ids = {};
@@ -177,7 +176,6 @@ function UndirectedLouvainIndex(graph, options) {
     if (source === target) {
       self.E -= 2;
       self.totalWeights[source] += weight * 2;
-      self.internalWeights[source] += weight * 2;
       self.loops[source] = weight * 2;
     }
     else {
@@ -215,9 +213,6 @@ UndirectedLouvainIndex.prototype.move = function(
 
   this.totalWeights[currentCommunity] -= degree + loops;
   this.totalWeights[targetCommunity] += degree + loops;
-
-  this.internalWeights[currentCommunity] -= currentCommunityDegree * 2 + loops;
-  this.internalWeights[targetCommunity] += targetCommunityDegree * 2 + loops;
 
   this.belongings[i] = targetCommunity;
 
@@ -342,7 +337,6 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
     ci = +ci;
 
     this.totalWeights[ci] = data.totalWeights;
-    this.internalWeights[ci] = data.internalWeights;
     this.loops[ci] = data.internalWeights;
     this.counts[ci] = 1;
 
@@ -548,7 +542,7 @@ UndirectedLouvainIndex.prototype[INSPECT] = function() {
   proxy.starts = this.starts.slice(0, proxy.C + 1);
 
   var eTruncated = ['neighborhood', 'weights'];
-  var cTruncated = ['counts', 'loops', 'belongings', 'internalWeights', 'totalWeights'];
+  var cTruncated = ['counts', 'loops', 'belongings', 'totalWeights'];
 
   var self = this;
 
@@ -631,7 +625,6 @@ function DirectedLouvainIndex(graph, options) {
   // Community-level
   this.counts = new NodesPointerArray(graph.order);
   this.unused = new NodesPointerArray(graph.order);
-  this.internalWeights = new Float64Array(graph.order);
   this.totalInWeights = new Float64Array(graph.order);
   this.totalOutWeights = new Float64Array(graph.order);
 
@@ -676,7 +669,6 @@ function DirectedLouvainIndex(graph, options) {
     // Self loop?
     if (source === target) {
       self.E -= 2;
-      self.internalWeights[source] += weight;
       self.loops[source] += weight;
       self.totalInWeights[source] += weight;
       self.totalOutWeights[source] += weight;
@@ -766,9 +758,6 @@ DirectedLouvainIndex.prototype.move = function(
 
   this.totalOutWeights[currentCommunity] -= outDegree + loops;
   this.totalOutWeights[targetCommunity] += outDegree + loops;
-
-  this.internalWeights[currentCommunity] -= currentCommunityInDegree + currentCommunityOutDegree + loops;
-  this.internalWeights[targetCommunity] += targetCommunityInDegree + targetCommunityOutDegree + loops;
 
   this.belongings[i] = targetCommunity;
 
@@ -929,7 +918,6 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
 
     this.totalInWeights[ci] = data.totalInWeights;
     this.totalOutWeights[ci] = data.totalOutWeights;
-    this.internalWeights[ci] = data.internalWeights;
     this.loops[ci] = data.internalWeights;
     this.counts[ci] = 1;
 
@@ -1073,7 +1061,7 @@ DirectedLouvainIndex.prototype[INSPECT] = function() {
   proxy.starts = this.starts.slice(0, proxy.C + 1);
 
   var eTruncated = ['neighborhood', 'weights'];
-  var cTruncated = ['counts', 'offsets', 'loops', 'belongings', 'internalWeights', 'totalInWeights', 'totalOutWeights'];
+  var cTruncated = ['counts', 'offsets', 'loops', 'belongings', 'totalInWeights', 'totalOutWeights'];
 
   var self = this;
 
