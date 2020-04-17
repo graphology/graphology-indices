@@ -1068,5 +1068,31 @@ describe('Neighborhood Indices', function() {
 
       assert.strictEqual(index.U, 0);
     });
+
+    it('isolation and deltaWithOwnCommunity should be consistent.', function() {
+      var graph = fromEdges(Graph.UndirectedGraph, EDGES);
+      var index = new UndirectedLouvainIndex(graph);
+      applyMoves(index, UNDIRECTED_MOVES);
+
+      var delta = index.deltaWithOwnCommunity(1, 3, 2, 2);
+
+      index.isolate(1, 3);
+
+      var isolatedDelta = index.delta(1, 3, 2, 2);
+
+      closeTo(delta, isolatedDelta);
+
+      graph = fromEdges(Graph.DirectedGraph, EDGES);
+      index = new DirectedLouvainIndex(graph);
+      applyMoves(index, DIRECTED_MOVES);
+
+      delta = index.deltaWithOwnCommunity(1, 2, 1, 2, 2);
+
+      index.isolate(1, 2, 1);
+
+      isolatedDelta = index.delta(1, 2, 1, 2, 2);
+
+      closeTo(delta, isolatedDelta);
+    });
   });
 });
