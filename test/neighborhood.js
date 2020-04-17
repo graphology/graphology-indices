@@ -1074,13 +1074,16 @@ describe('Neighborhood Indices', function() {
       var index = new UndirectedLouvainIndex(graph);
       applyMoves(index, UNDIRECTED_MOVES);
 
-      var delta = index.deltaWithOwnCommunity(1, 3, 2, 2);
+      var delta = index.deltaWithOwnCommunity(1, 3, 2, 2),
+          fastDelta = index.fastDeltaWithOwnCommunity(1, 3, 2, 2);
 
       index.isolate(1, 3);
 
-      var isolatedDelta = index.delta(1, 3, 2, 2);
+      var isolatedDelta = index.delta(1, 3, 2, 2),
+          fastIsolatedDelta = index.fastDelta(1, 3, 2, 2);
 
       closeTo(delta, isolatedDelta);
+      closeTo(fastDelta, fastIsolatedDelta);
 
       graph = fromEdges(Graph.DirectedGraph, EDGES);
       index = new DirectedLouvainIndex(graph);
