@@ -195,6 +195,28 @@ function UndirectedLouvainIndex(graph, options) {
     this.mapping = this.belongings.slice();
 }
 
+UndirectedLouvainIndex.prototype.isolate = function(i, degree) {
+  var currentCommunity = this.belongings[i];
+
+  // The node is already isolated
+  if (this.counts[currentCommunity] === 1)
+    return;
+
+  var newCommunity = this.unused[--this.U];
+
+  var loops = this.loops[i];
+
+  this.totalWeights[currentCommunity] -= degree + loops;
+  this.totalWeights[newCommunity] += degree + loops;
+
+  this.belongings[i] = newCommunity;
+
+  this.counts[currentCommunity]--;
+  this.counts[newCommunity]++;
+
+  return newCommunity;
+};
+
 UndirectedLouvainIndex.prototype.move = function(
   i,
   degree,
