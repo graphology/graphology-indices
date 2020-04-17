@@ -27,24 +27,24 @@ var EDGES = [
 
 var UNDIRECTED_MOVES = [
   // node '2' to community '2'
-  [1, 3, 0, 1, 2],
+  [1, 3, 2],
   // node '1' to community '4'
-  [0, 2, 0, 1, 4],
+  [0, 2, 4],
   // node '6' to community '2'
-  [5, 1, 0, 1, 2],
+  [5, 1, 2],
   // node '4' to community '2'
-  [3, 2, 0, 2, 2]
+  [3, 2, 2]
 ];
 
 var DIRECTED_MOVES = [
   // node '2' to community '2'
-  [1, 2, 1, 0, 0, 0, 1, 2],
+  [1, 2, 1, 2],
   // node '1' to community '4'
-  [0, 1, 2, 0, 0, 1, 1, 4],
+  [0, 1, 2, 4],
   // node '6' to community '2'
-  [5, 0, 1, 0, 0, 0, 1, 2],
+  [5, 0, 1, 2],
   // node '4' to community '2'
-  [3, 1, 1, 0, 0, 1, 1, 2]
+  [3, 1, 1, 2]
 ];
 
 function fromEdges(GraphConstructor, edges) {
@@ -274,7 +274,7 @@ describe('Neighborhood Indices', function() {
       };
 
       // Null move of node '1'
-      index.move(0, 2, 0, 0, 0);
+      index.move(0, 2, 0);
 
       assert.deepEqual(before, {
         belongings: index.belongings,
@@ -283,14 +283,14 @@ describe('Neighborhood Indices', function() {
       });
 
       // Moving node '1' to community of node '2'
-      index.move(0, 2, 0, 1, 1);
+      index.move(0, 2, 1);
 
       assert.deepEqual(Array.from(index.belongings), [1, 1, 2, 3, 4, 5]);
       // assert.deepEqual(Array.from(index.internalWeights), [0, 2, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [0, 5, 3, 2, 1, 1]);
 
       // Rolling back move
-      index.move(0, 2, 1, 0, 0);
+      index.move(0, 2, 0);
 
       assert.deepEqual(before, {
         belongings: index.belongings,
@@ -299,43 +299,43 @@ describe('Neighborhood Indices', function() {
       });
 
       // node '3' to community '1'
-      index.move(2, 3, 0, 1, 1);
+      index.move(2, 3, 1);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 4, 5]);
       // assert.deepEqual(Array.from(index.internalWeights), [0, 2, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [2, 6, 0, 2, 1, 1]);
 
       // node '5' to community '0'
-      index.move(4, 1, 0, 1, 0);
+      index.move(4, 1, 0);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 0, 5]);
       // assert.deepEqual(Array.from(index.internalWeights), [2, 2, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [3, 6, 0, 2, 0, 1]);
 
       // node '6' to community '1'
-      index.move(5, 1, 0, 1, 1);
+      index.move(5, 1, 1);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 0, 1]);
       // assert.deepEqual(Array.from(index.internalWeights), [2, 4, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [3, 7, 0, 2, 0, 0]);
 
       // node '4' to community '1'
-      index.move(3, 2, 0, 2, 1);
+      index.move(3, 2, 1);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 1, 0, 1]);
       // assert.deepEqual(Array.from(index.internalWeights), [2, 8, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [3, 9, 0, 0, 0, 0]);
 
       // Supplementary node '3' to community '0'
-      index.move(2, 3, 3, 0, 0);
+      index.move(2, 3, 0);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 0, 1, 0, 1]);
       // assert.deepEqual(Array.from(index.internalWeights), [2, 2, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [6, 6, 0, 0, 0, 0]);
 
       // Supplementary node '2' to community '0'
-      index.move(2, 3, 0, 3, 1);
-      index.move(1, 3, 2, 1, 0);
+      index.move(2, 3, 1);
+      index.move(1, 3, 0);
 
       assert.deepEqual(Array.from(index.belongings), [0, 0, 1, 1, 0, 1]);
       // assert.deepEqual(Array.from(index.internalWeights), [4, 4, 0, 0, 0, 0]);
@@ -354,7 +354,7 @@ describe('Neighborhood Indices', function() {
       };
 
       // Null move of node '1'
-      index.move(0, 1, 2, 0, 0, 0, 0, 0);
+      index.move(0, 1, 2, 0);
 
       assert.deepEqual(before, {
         belongings: index.belongings,
@@ -364,7 +364,7 @@ describe('Neighborhood Indices', function() {
       });
 
       // Moving node '1' to community of node '2'
-      index.move(0, 1, 2, 0, 0, 0, 1, 1);
+      index.move(0, 1, 2, 1);
 
       assert.deepEqual(Array.from(index.belongings), [1, 1, 2, 3, 4, 5]);
       // assert.deepEqual(Array.from(index.internalWeights), [0, 1, 0, 0, 0, 0]);
@@ -372,7 +372,7 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(Array.from(index.totalOutWeights), [0, 3, 1, 1, 1, 1]);
 
       // Rolling back move
-      index.move(0, 1, 2, 0, 1, 0, 0, 0);
+      index.move(0, 1, 2, 0);
 
       assert.deepEqual(before, {
         belongings: index.belongings,
@@ -382,7 +382,7 @@ describe('Neighborhood Indices', function() {
       });
 
       // node '3' to community '1'
-      index.move(2, 2, 1, 0, 0, 1, 0, 1);
+      index.move(2, 2, 1, 1);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 4, 5]);
       // assert.deepEqual(Array.from(index.internalWeights), [0, 1, 0, 0, 0, 0]);
@@ -390,7 +390,7 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(Array.from(index.totalOutWeights), [2, 2, 0, 1, 1, 1]);
 
       // node '5' to community '0'
-      index.move(4, 1, 1, 0, 0, 1, 1, 0);
+      index.move(4, 1, 1, 0);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 0, 5]);
       // assert.deepEqual(Array.from(index.internalWeights), [2, 1, 0, 0, 0, 0]);
@@ -398,7 +398,7 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(Array.from(index.totalOutWeights), [3, 2, 0, 1, 0, 1]);
 
       // node '6' to community '1'
-      index.move(5, 0, 1, 0, 0, 0, 1, 1);
+      index.move(5, 0, 1, 1);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 0, 1]);
       // assert.deepEqual(Array.from(index.internalWeights), [2, 2, 0, 0, 0, 0]);
@@ -406,7 +406,7 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(Array.from(index.totalOutWeights), [3, 3, 0, 1, 0, 0]);
 
       // node '4' to community '1'
-      index.move(3, 1, 1, 0, 0, 1, 1, 1);
+      index.move(3, 1, 1, 1);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 1, 0, 1]);
       // assert.deepEqual(Array.from(index.internalWeights), [2, 4, 0, 0, 0, 0]);
@@ -414,7 +414,7 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(Array.from(index.totalOutWeights), [3, 4, 0, 0, 0, 0]);
 
       // Supplementary node '3' to community '0'
-      index.move(2, 2, 1, 2, 1, 0, 0, 0);
+      index.move(2, 2, 1, 0);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 0, 1, 0, 1]);
       // assert.deepEqual(Array.from(index.internalWeights), [2, 1, 0, 0, 0, 0]);
@@ -422,8 +422,8 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(Array.from(index.totalOutWeights), [4, 3, 0, 0, 0, 0]);
 
       // Supplementary node '2' to community '0'
-      index.move(2, 2, 1, 0, 0, 2, 1, 1);
-      index.move(1, 2, 1, 1, 1, 0, 1, 0);
+      index.move(2, 2, 1, 1);
+      index.move(1, 2, 1, 0);
 
       assert.deepEqual(Array.from(index.belongings), [0, 0, 1, 1, 0, 1]);
       // assert.deepEqual(Array.from(index.internalWeights), [3, 2, 0, 0, 0, 0]);
@@ -439,16 +439,16 @@ describe('Neighborhood Indices', function() {
       // node '2', '3', '4', '6' => community '2' (1)
 
       // node '2' to community '2'
-      index.move(1, 3, 0, 1, 2);
+      index.move(1, 3, 2);
 
       // node '1' to community '4'
-      index.move(0, 2, 0, 1, 4);
+      index.move(0, 2, 4);
 
       // node '6' to community '2'
-      index.move(5, 1, 0, 1, 2);
+      index.move(5, 1, 2);
 
       // node '4' to community '2'
-      index.move(3, 2, 0, 2, 2);
+      index.move(3, 2, 2);
 
       closeTo(index.modularity(), 0.2083);
 
@@ -473,7 +473,7 @@ describe('Neighborhood Indices', function() {
       // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 8]));
 
       // Once more
-      index.move(0, 1, 0, 1, 1);
+      index.move(0, 1, 1);
 
       assert.deepEqual(index.totalWeights.slice(0, index.C), new Float64Array([0, 12]));
       // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([0, 12]));
@@ -546,16 +546,16 @@ describe('Neighborhood Indices', function() {
       // node '2', '3', '4', '6' => community '2' (1)
 
       // node '2' to community '2'
-      index.move(1, 2, 1, 0, 0, 0, 1, 2);
+      index.move(1, 2, 1, 2);
 
       // node '1' to community '4'
-      index.move(0, 1, 2, 0, 0, 1, 1, 4);
+      index.move(0, 1, 2, 4);
 
       // node '6' to community '2'
-      index.move(5, 0, 1, 0, 0, 0, 1, 2);
+      index.move(5, 0, 1, 2);
 
       // node '4' to community '2'
-      index.move(3, 1, 1, 0, 0, 1, 1, 2);
+      index.move(3, 1, 1, 2);
 
       closeTo(index.modularity(), 0.3265);
       assert.deepEqual(index.counts, new Uint8Array([0, 0, 4, 0, 2, 0]));
@@ -580,7 +580,7 @@ describe('Neighborhood Indices', function() {
       // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 4]));
 
       // Once more
-      index.move(0, 0, 1, 0, 0, 0, 1, 1);
+      index.move(0, 0, 1, 1);
 
       assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([0, 7]));
       assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([0, 7]));

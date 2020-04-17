@@ -30,8 +30,6 @@ export class UndirectedLouvainIndex {
   move(
     index: number,
     degree: number,
-    currentCommunityDegree: number,
-    targetCommunityDegree: number,
     targetCommunity: number
   ): void;
   expensiveMove(index: number, targetCommunity: number, dryRun?: boolean): void;
@@ -76,10 +74,6 @@ export class DirectedLouvainIndex {
     index: number,
     inDegree: number,
     outDegree: number,
-    currentCommunityInDegree: number,
-    currentCommunityOutDegree: number,
-    targetCommunityInDegree: number,
-    targetCommunityOutDegree: number,
     targetCommunity: number
   ): void;
   expensiveMove(index: number, targetCommunity: number, dryRun?: boolean): void;

@@ -200,7 +200,7 @@ UndirectedLouvainIndex.prototype.isolate = function(i, degree) {
 
   // The node is already isolated
   if (this.counts[currentCommunity] === 1)
-    return;
+    return currentCommunity;
 
   var newCommunity = this.unused[--this.U];
 
@@ -220,8 +220,6 @@ UndirectedLouvainIndex.prototype.isolate = function(i, degree) {
 UndirectedLouvainIndex.prototype.move = function(
   i,
   degree,
-  currentCommunityDegree,
-  targetCommunityDegree,
   targetCommunity
 ) {
   var currentCommunity = this.belongings[i],
@@ -240,30 +238,17 @@ UndirectedLouvainIndex.prototype.move = function(
 };
 
 UndirectedLouvainIndex.prototype.expensiveMove = function(i, ci, dryRun) {
-  var o, l, n, cn, weight;
+  var o, l, weight;
 
-  var degree = 0,
-      currentCommunityDegree = 0,
-      targetCommunityDegree = 0;
-
-  var c = this.belongings[i];
+  var degree = 0;
 
   for (o = this.starts[i], l = this.starts[i + 1]; o < l; o++) {
-    n = this.neighborhood[o];
     weight = this.weights[o];
 
     degree += weight;
-
-    cn = this.belongings[n];
-
-    if (cn === ci)
-      targetCommunityDegree += weight;
-
-    if (c === cn)
-      currentCommunityDegree += weight;
   }
 
-  var args = [i, degree, currentCommunityDegree, targetCommunityDegree, ci];
+  var args = [i, degree, ci];
 
   if (dryRun)
     return args;
@@ -760,10 +745,6 @@ DirectedLouvainIndex.prototype.move = function(
   i,
   inDegree,
   outDegree,
-  currentCommunityInDegree,
-  currentCommunityOutDegree,
-  targetCommunityInDegree,
-  targetCommunityOutDegree,
   targetCommunity
 ) {
   var currentCommunity = this.belongings[i],
@@ -785,53 +766,27 @@ DirectedLouvainIndex.prototype.move = function(
 };
 
 DirectedLouvainIndex.prototype.expensiveMove = function(i, ci, dryRun) {
-  var o, l, n, out, cn, weight;
+  var o, l, out, weight;
 
   var inDegree = 0,
-      outDegree = 0,
-      currentCommunityInDegree = 0,
-      currentCommunityOutDegree = 0,
-      targetCommunityInDegree = 0,
-      targetCommunityOutDegree = 0;
+      outDegree = 0;
 
-  var c = this.belongings[i],
-      s = this.offsets[i];
+  var s = this.offsets[i];
 
   for (o = this.starts[i], l = this.starts[i + 1]; o < l; o++) {
     out = o < s;
-    n = this.neighborhood[o];
     weight = this.weights[o];
 
-    cn = this.belongings[n];
-
-    if (out) {
+    if (out)
       outDegree += weight;
-
-      if (cn === ci)
-        targetCommunityOutDegree += weight;
-
-      if (c === cn)
-        currentCommunityOutDegree += weight;
-    }
-    else {
+    else
       inDegree += weight;
-
-      if (cn === ci)
-        targetCommunityInDegree += weight;
-
-      if (c === cn)
-        currentCommunityInDegree += weight;
-    }
   }
 
   var args = [
     i,
     inDegree,
     outDegree,
-    currentCommunityInDegree,
-    currentCommunityOutDegree,
-    targetCommunityInDegree,
-    targetCommunityOutDegree,
     ci
   ];
 
