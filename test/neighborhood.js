@@ -204,7 +204,7 @@ describe('Neighborhood Indices', function() {
 
       assert.deepEqual(index.neighborhood, new Uint8Array([4, 1, 3, 2, 0, 5, 3, 1, 1, 2, 0, 2]));
       assert.deepEqual(index.weights, new Float64Array([5, 30, 1, 15, 30, 100, 10, 15, 1, 10, 5, 100]));
-      assert.deepEqual(index.internalWeights, new Float64Array([0, 0, 0, 0, 0, 0]));
+      // assert.deepEqual(index.internalWeights, new Float64Array([0, 0, 0, 0, 0, 0]));
       assert.deepEqual(index.totalWeights, new Float64Array(Array.from(graph.nodes().map(function(node) {
         return graph.edges(node).reduce(function(sum, edge) {
           return sum + (graph.getEdgeAttribute(edge, 'weight') || 1);
@@ -250,7 +250,7 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(index.neighborhood, new Uint8Array([4, 1, 4, 2, 3, 0, 3, 5, 1, 1, 2, 0, 0, 2]));
       assert.deepEqual(index.weights, new Float64Array([1, 30, 5, 15, 1, 30, 10, 100, 15, 1, 10, 5, 1, 100]));
       assert.deepEqual(index.offsets, new Uint8Array([2, 4, 7, 10, 12, 14]));
-      assert.deepEqual(index.internalWeights, new Float64Array([0, 0, 0, 0, 0, 0]));
+      // assert.deepEqual(index.internalWeights, new Float64Array([0, 0, 0, 0, 0, 0]));
       assert.deepEqual(index.totalInWeights, new Float64Array(Array.from(graph.nodes().map(function(node) {
         return graph.inEdges(node).reduce(function(sum, edge) {
           return sum + (graph.getEdgeAttribute(edge, 'weight') || 1);
@@ -270,7 +270,7 @@ describe('Neighborhood Indices', function() {
       var before = {
         belongings: index.belongings.slice(),
         totalWeights: index.totalWeights.slice(),
-        internalWeights: index.internalWeights.slice()
+        // internalWeights: index.internalWeights.slice()
       };
 
       // Null move of node '1'
@@ -279,14 +279,14 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(before, {
         belongings: index.belongings,
         totalWeights: index.totalWeights,
-        internalWeights: index.internalWeights
+        // internalWeights: index.internalWeights
       });
 
       // Moving node '1' to community of node '2'
       index.move(0, 2, 0, 1, 1);
 
       assert.deepEqual(Array.from(index.belongings), [1, 1, 2, 3, 4, 5]);
-      assert.deepEqual(Array.from(index.internalWeights), [0, 2, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.internalWeights), [0, 2, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [0, 5, 3, 2, 1, 1]);
 
       // Rolling back move
@@ -295,42 +295,42 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(before, {
         belongings: index.belongings,
         totalWeights: index.totalWeights,
-        internalWeights: index.internalWeights
+        // internalWeights: index.internalWeights
       });
 
       // node '3' to community '1'
       index.move(2, 3, 0, 1, 1);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 4, 5]);
-      assert.deepEqual(Array.from(index.internalWeights), [0, 2, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.internalWeights), [0, 2, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [2, 6, 0, 2, 1, 1]);
 
       // node '5' to community '0'
       index.move(4, 1, 0, 1, 0);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 0, 5]);
-      assert.deepEqual(Array.from(index.internalWeights), [2, 2, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.internalWeights), [2, 2, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [3, 6, 0, 2, 0, 1]);
 
       // node '6' to community '1'
       index.move(5, 1, 0, 1, 1);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 0, 1]);
-      assert.deepEqual(Array.from(index.internalWeights), [2, 4, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.internalWeights), [2, 4, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [3, 7, 0, 2, 0, 0]);
 
       // node '4' to community '1'
       index.move(3, 2, 0, 2, 1);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 1, 0, 1]);
-      assert.deepEqual(Array.from(index.internalWeights), [2, 8, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.internalWeights), [2, 8, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [3, 9, 0, 0, 0, 0]);
 
       // Supplementary node '3' to community '0'
       index.move(2, 3, 3, 0, 0);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 0, 1, 0, 1]);
-      assert.deepEqual(Array.from(index.internalWeights), [2, 2, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.internalWeights), [2, 2, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [6, 6, 0, 0, 0, 0]);
 
       // Supplementary node '2' to community '0'
@@ -338,7 +338,7 @@ describe('Neighborhood Indices', function() {
       index.move(1, 3, 2, 1, 0);
 
       assert.deepEqual(Array.from(index.belongings), [0, 0, 1, 1, 0, 1]);
-      assert.deepEqual(Array.from(index.internalWeights), [4, 4, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.internalWeights), [4, 4, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalWeights), [6, 6, 0, 0, 0, 0]);
     });
 
@@ -350,7 +350,7 @@ describe('Neighborhood Indices', function() {
         belongings: index.belongings.slice(),
         totalInWeights: index.totalInWeights.slice(),
         totalOutWeights: index.totalOutWeights.slice(),
-        internalWeights: index.internalWeights.slice()
+        // internalWeights: index.internalWeights.slice()
       };
 
       // Null move of node '1'
@@ -360,14 +360,14 @@ describe('Neighborhood Indices', function() {
         belongings: index.belongings,
         totalInWeights: index.totalInWeights,
         totalOutWeights: index.totalOutWeights,
-        internalWeights: index.internalWeights
+        // internalWeights: index.internalWeights
       });
 
       // Moving node '1' to community of node '2'
       index.move(0, 1, 2, 0, 0, 0, 1, 1);
 
       assert.deepEqual(Array.from(index.belongings), [1, 1, 2, 3, 4, 5]);
-      assert.deepEqual(Array.from(index.internalWeights), [0, 1, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.internalWeights), [0, 1, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalInWeights), [0, 3, 2, 1, 1, 0]);
       assert.deepEqual(Array.from(index.totalOutWeights), [0, 3, 1, 1, 1, 1]);
 
@@ -378,14 +378,14 @@ describe('Neighborhood Indices', function() {
         belongings: index.belongings,
         totalInWeights: index.totalInWeights,
         totalOutWeights: index.totalOutWeights,
-        internalWeights: index.internalWeights
+        // internalWeights: index.internalWeights
       });
 
       // node '3' to community '1'
       index.move(2, 2, 1, 0, 0, 1, 0, 1);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 4, 5]);
-      assert.deepEqual(Array.from(index.internalWeights), [0, 1, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.internalWeights), [0, 1, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalInWeights), [1, 4, 0, 1, 1, 0]);
       assert.deepEqual(Array.from(index.totalOutWeights), [2, 2, 0, 1, 1, 1]);
 
@@ -393,7 +393,7 @@ describe('Neighborhood Indices', function() {
       index.move(4, 1, 1, 0, 0, 1, 1, 0);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 0, 5]);
-      assert.deepEqual(Array.from(index.internalWeights), [2, 1, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.internalWeights), [2, 1, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalInWeights), [2, 4, 0, 1, 0, 0]);
       assert.deepEqual(Array.from(index.totalOutWeights), [3, 2, 0, 1, 0, 1]);
 
@@ -401,7 +401,7 @@ describe('Neighborhood Indices', function() {
       index.move(5, 0, 1, 0, 0, 0, 1, 1);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 3, 0, 1]);
-      assert.deepEqual(Array.from(index.internalWeights), [2, 2, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.internalWeights), [2, 2, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalInWeights), [2, 4, 0, 1, 0, 0]);
       assert.deepEqual(Array.from(index.totalOutWeights), [3, 3, 0, 1, 0, 0]);
 
@@ -409,7 +409,7 @@ describe('Neighborhood Indices', function() {
       index.move(3, 1, 1, 0, 0, 1, 1, 1);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 1, 1, 0, 1]);
-      assert.deepEqual(Array.from(index.internalWeights), [2, 4, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.internalWeights), [2, 4, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalInWeights), [2, 5, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalOutWeights), [3, 4, 0, 0, 0, 0]);
 
@@ -417,7 +417,7 @@ describe('Neighborhood Indices', function() {
       index.move(2, 2, 1, 2, 1, 0, 0, 0);
 
       assert.deepEqual(Array.from(index.belongings), [0, 1, 0, 1, 0, 1]);
-      assert.deepEqual(Array.from(index.internalWeights), [2, 1, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.internalWeights), [2, 1, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalInWeights), [4, 3, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalOutWeights), [4, 3, 0, 0, 0, 0]);
 
@@ -426,7 +426,7 @@ describe('Neighborhood Indices', function() {
       index.move(1, 2, 1, 1, 1, 0, 1, 0);
 
       assert.deepEqual(Array.from(index.belongings), [0, 0, 1, 1, 0, 1]);
-      assert.deepEqual(Array.from(index.internalWeights), [3, 2, 0, 0, 0, 0]);
+      // assert.deepEqual(Array.from(index.internalWeights), [3, 2, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalInWeights), [4, 3, 0, 0, 0, 0]);
       assert.deepEqual(Array.from(index.totalOutWeights), [4, 3, 0, 0, 0, 0]);
     });
@@ -470,13 +470,13 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(index.starts.slice(0, index.C + 1), new Uint8Array([0, 1, 2]));
       assert.deepEqual(index.belongings.slice(0, index.C), new Uint8Array([0, 1]));
       assert.deepEqual(index.totalWeights.slice(0, index.C), new Float64Array([3, 9]));
-      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 8]));
+      // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 8]));
 
       // Once more
       index.move(0, 1, 0, 1, 1);
 
       assert.deepEqual(index.totalWeights.slice(0, index.C), new Float64Array([0, 12]));
-      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([0, 12]));
+      // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([0, 12]));
       assert.strictEqual(index.U, 1);
       assert.deepEqual(index.unused.slice(0, index.U), new Uint8Array([0]));
       assert.deepEqual(index.counts.slice(0, index.C), new Uint8Array([0, 2]));
@@ -577,14 +577,14 @@ describe('Neighborhood Indices', function() {
       assert.deepEqual(index.belongings.slice(0, index.C), new Uint8Array([0, 1]));
       assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([2, 5]));
       assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([3, 4]));
-      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 4]));
+      // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 4]));
 
       // Once more
       index.move(0, 0, 1, 0, 0, 0, 1, 1);
 
       assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([0, 7]));
       assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([0, 7]));
-      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([0, 7]));
+      // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([0, 7]));
       assert.strictEqual(index.U, 1);
       assert.deepEqual(index.unused.slice(0, index.U), new Uint8Array([0]));
       assert.deepEqual(index.counts.slice(0, index.C), new Uint8Array([0, 2]));
@@ -822,7 +822,7 @@ describe('Neighborhood Indices', function() {
       index.zoomOut();
 
       assert.deepEqual(index.totalWeights.slice(0, index.C), new Float64Array([6, 6]));
-      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 2]));
+      // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 2]));
     });
 
     it('true delta sanity test for the undirected case.', function() {
@@ -877,7 +877,7 @@ describe('Neighborhood Indices', function() {
 
       var index = new UndirectedLouvainIndex(graph);
 
-      assert.strictEqual(index.internalWeights[0], 2);
+      // assert.strictEqual(index.internalWeights[0], 2);
       assert.strictEqual(index.loops[0], 2);
     });
 
@@ -887,7 +887,7 @@ describe('Neighborhood Indices', function() {
 
       var index = new DirectedLouvainIndex(graph);
 
-      assert.strictEqual(index.internalWeights[0], 1);
+      // assert.strictEqual(index.internalWeights[0], 1);
       assert.strictEqual(index.loops[0], 1);
     });
 
@@ -918,7 +918,7 @@ describe('Neighborhood Indices', function() {
       index.zoomOut();
 
       assert.strictEqual(index.E, 2);
-      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([4, 2]));
+      // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([4, 2]));
       assert.deepEqual(index.totalWeights.slice(0, index.C), new Float64Array([8, 6]));
 
       var UQ = index.modularity();
@@ -941,7 +941,7 @@ describe('Neighborhood Indices', function() {
       index.zoomOut();
 
       assert.strictEqual(index.E, 4);
-      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([3, 2]));
+      // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([3, 2]));
       assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([7, 6]));
       assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([7, 6]));
 
@@ -971,7 +971,7 @@ describe('Neighborhood Indices', function() {
       index.zoomOut();
 
       assert.strictEqual(index.M, 5);
-      assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 1]));
+      // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 1]));
       assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([2, 3]));
       assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([4, 1]));
     });
