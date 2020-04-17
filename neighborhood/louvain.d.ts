@@ -39,13 +39,6 @@ export class UndirectedLouvainIndex {
   modularity(): number;
   delta(index: number, degree: number, targetCommunityDegree: number, targetCommunity: number): number;
   deltaWithOwnCommunity(index: number, degree: number, targetCommunityDegree: number, targetCommunity: number): number;
-  trueDelta(
-    index: number,
-    degree: number,
-    currentCommunityDegree: number,
-    targetCommunityDegree: number,
-    targetCommunity: number
-  ): number;
   fastDelta(index: number, degree: number, targetCommunityDegree: number, targetCommunity: number): number;
   fastDeltaWithOwnCommunity(index: number, degree: number, targetCommunityDegree: number, targetCommunity: number): number;
   collect(level?: number): CommunityMapping;

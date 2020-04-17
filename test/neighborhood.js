@@ -825,52 +825,6 @@ describe('Neighborhood Indices', function() {
       // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 2]));
     });
 
-    it('true delta sanity test for the undirected case.', function() {
-      var graph = fromEdges(Graph.UndirectedGraph, EDGES);
-      var index = new UndirectedLouvainIndex(graph);
-      applyMoves(index, UNDIRECTED_MOVES);
-
-      var Q = index.modularity();
-
-      // Moving node '2' to community '4'
-      var delta = index.trueDelta(1, 3, 2, 1, 4);
-
-      var indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph);
-      indexWithNodeInOtherCommunity.expensiveMove(1, 4);
-      indexWithNodeInOtherCommunity.expensiveMove(0, 4);
-      indexWithNodeInOtherCommunity.expensiveMove(5, 2);
-      indexWithNodeInOtherCommunity.expensiveMove(3, 2);
-
-      var QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.modularity();
-
-      closeTo(Q + delta, QWithNodeInOtherCommunity);
-
-      // Moving node '4' to community '4'
-      delta = index.trueDelta(3, 2, 2, 0, 4);
-
-      indexWithNodeInOtherCommunity = new UndirectedLouvainIndex(graph);
-      indexWithNodeInOtherCommunity.expensiveMove(1, 2);
-      indexWithNodeInOtherCommunity.expensiveMove(0, 4);
-      indexWithNodeInOtherCommunity.expensiveMove(5, 2);
-      indexWithNodeInOtherCommunity.expensiveMove(3, 4);
-
-      QWithNodeInOtherCommunity = indexWithNodeInOtherCommunity.modularity();
-
-      closeTo(Q + delta, QWithNodeInOtherCommunity);
-
-      // Zooming out to test issues related to loops
-      index.zoomOut();
-
-      Q = index.modularity();
-      delta = index.trueDelta(1, 1, 0, 1, 0);
-
-      index.expensiveMove(1, 0);
-
-      var QAfterMerge = index.modularity();
-
-      closeTo(Q + delta, QAfterMerge);
-    });
-
     it('should handle self-loops in the input graph the undirected case.', function() {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
       graph.addEdge(1, 1);

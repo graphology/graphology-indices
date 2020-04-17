@@ -423,31 +423,6 @@ UndirectedLouvainIndex.prototype.deltaWithOwnCommunity = function(i, degree, tar
   );
 };
 
-// NOTE: this function cannot work for self community move without changing
-// the underlying formula. We don't have to use it thusly anyway since
-// ∆Q is 0 in this case.
-// TODO: this formula does not work with resolution != 1
-UndirectedLouvainIndex.prototype.trueDelta = function(i, degree, currentCommunityDegree, targetCommunityDegree, targetCommunity) {
-  var M = this.M;
-
-  var currentCommunity = this.belongings[i],
-      loops = this.loops[i];
-
-  var currentCommunityTotalWeight = this.totalWeights[currentCommunity],
-      targetCommunityTotalWeight = this.totalWeights[targetCommunity];
-
-  return (
-    ((targetCommunityDegree - currentCommunityDegree) / M) +
-    (
-      (loops + degree) * currentCommunityTotalWeight -
-      Math.pow(degree, 2) -
-      Math.pow(loops, 2) -
-      (2 * loops * degree) -
-      (loops + degree) * targetCommunityTotalWeight
-    ) / (2 * Math.pow(M, 2))
-  );
-};
-
 // NOTE: this is just a faster but equivalent version of #.delta
 // It is just off by a constant factor and is just faster to compute
 UndirectedLouvainIndex.prototype.fastDelta = function(i, degree, targetCommunityDegree, targetCommunity) {
