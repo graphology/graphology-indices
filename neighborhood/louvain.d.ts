@@ -27,6 +27,7 @@ export class UndirectedLouvainIndex {
 
   bounds(index: number): [number, number];
   project(): NeighborhoodProjection;
+  isolate(index: number, degree: number): number;
   move(
     index: number,
     degree: number,
@@ -70,6 +71,7 @@ export class DirectedLouvainIndex {
   project(): NeighborhoodProjection;
   projectIn(): NeighborhoodProjection;
   projectOut(): NeighborhoodProjection;
+  isolate(index: number, inDegree: number, outDegree: number): number;
   move(
     index: number,
     inDegree: number,

@@ -1068,5 +1068,51 @@ describe('Neighborhood Indices', function() {
 
       closeTo(directedIndex.modularity(), 0.5918);
     });
+
+    it('should be possible to isolate nodes in the undirected case.', function() {
+      var graph = fromEdges(Graph.UndirectedGraph, EDGES);
+      var rawIndex = new UndirectedLouvainIndex(graph);
+      var index = new UndirectedLouvainIndex(graph);
+      applyMoves(index, UNDIRECTED_MOVES);
+
+      graph.nodes().forEach(function(node, i) {
+        index.isolate(i, graph.degree(node, false));
+      });
+
+      index.isolate(2, graph.degree(3, false));
+
+      var sort = function(a) {
+        return a.slice().sort();
+      };
+
+      ['counts', 'belongings', 'totalWeights'].forEach(function(prop) {
+        assert.deepEqual(sort(rawIndex[prop]), sort(index[prop]));
+      });
+
+      assert.strictEqual(index.U, 0);
+    });
+
+    it('should be possible to isolate nodes in the directed case.', function() {
+      var graph = fromEdges(Graph.DirectedGraph, EDGES);
+      var rawIndex = new DirectedLouvainIndex(graph);
+      var index = new DirectedLouvainIndex(graph);
+      applyMoves(index, DIRECTED_MOVES);
+
+      graph.nodes().forEach(function(node, i) {
+        index.isolate(i, graph.inDegree(node, false), graph.outDegree(node, false));
+      });
+
+      index.isolate(2, graph.inDegree(3, false), graph.outDegree(3, false));
+
+      var sort = function(a) {
+        return a.slice().sort();
+      };
+
+      ['counts', 'belongings', 'totalInWeights', 'totalOutWeights'].forEach(function(prop) {
+        assert.deepEqual(sort(rawIndex[prop]), sort(index[prop]));
+      });
+
+      assert.strictEqual(index.U, 0);
+    });
   });
 });

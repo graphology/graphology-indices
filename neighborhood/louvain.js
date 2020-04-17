@@ -741,6 +741,31 @@ DirectedLouvainIndex.prototype.projectOut = function() {
   return projection;
 };
 
+DirectedLouvainIndex.prototype.isolate = function(i, inDegree, outDegree) {
+  var currentCommunity = this.belongings[i];
+
+  // The node is already isolated
+  if (this.counts[currentCommunity] === 1)
+    return currentCommunity;
+
+  var newCommunity = this.unused[--this.U];
+
+  var loops = this.loops[i];
+
+  this.totalInWeights[currentCommunity] -= inDegree + loops;
+  this.totalInWeights[newCommunity] += inDegree + loops;
+
+  this.totalOutWeights[currentCommunity] -= outDegree + loops;
+  this.totalOutWeights[newCommunity] += outDegree + loops;
+
+  this.belongings[i] = newCommunity;
+
+  this.counts[currentCommunity]--;
+  this.counts[newCommunity]++;
+
+  return newCommunity;
+};
+
 DirectedLouvainIndex.prototype.move = function(
   i,
   inDegree,
