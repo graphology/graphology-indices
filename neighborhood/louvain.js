@@ -362,15 +362,32 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
 };
 
 UndirectedLouvainIndex.prototype.modularity = function() {
+  var ci, cj, i, j, m;
 
   var Q = 0;
   var M2 = this.M * 2;
+  var internalWeights = new Float64Array(this.C);
 
-  for (var i = 0; i < this.C; i++)
+  for (i = 0; i < this.C; i++) {
+    ci = this.belongings[i];
+    internalWeights[ci] += this.loops[i];
+
+    for (j = this.starts[i], m = this.starts[i + 1]; j < m; j++) {
+      cj = this.belongings[this.neighborhood[j]];
+
+      if (ci !== cj)
+        continue;
+
+      internalWeights[ci] += this.weights[j];
+    }
+  }
+
+  for (i = 0; i < this.C; i++) {
     Q += (
-      this.internalWeights[i] / M2 -
+      internalWeights[i] / M2 -
       Math.pow(this.totalWeights[i] / M2, 2) * this.resolution
     );
+  }
 
   return Q;
 };
@@ -937,13 +954,29 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
 };
 
 DirectedLouvainIndex.prototype.modularity = function() {
+  var ci, cj, i, j, m;
 
   var Q = 0;
   var M = this.M;
+  var internalWeights = new Float64Array(this.C);
 
-  for (var i = 0; i < this.C; i++)
+  for (i = 0; i < this.C; i++) {
+    ci = this.belongings[i];
+    internalWeights[ci] += this.loops[i];
+
+    for (j = this.starts[i], m = this.offsets[i]; j < m; j++) {
+      cj = this.belongings[this.neighborhood[j]];
+
+      if (ci !== cj)
+        continue;
+
+      internalWeights[ci] += this.weights[j];
+    }
+  }
+
+  for (i = 0; i < this.C; i++)
     Q += (
-      (this.internalWeights[i] / M) -
+      (internalWeights[i] / M) -
       (this.totalInWeights[i] * this.totalOutWeights[i] / Math.pow(M, 2)) *
       this.resolution
     );

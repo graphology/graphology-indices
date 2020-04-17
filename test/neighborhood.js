@@ -949,7 +949,7 @@ describe('Neighborhood Indices', function() {
 
       closeTo(Q, DQ);
 
-      index.internalWeights[0] += 1;
+      index.loops[0] += 1;
       index.totalInWeights[0] += 1;
       index.totalOutWeights[0] += 1;
       index.M += 1;
