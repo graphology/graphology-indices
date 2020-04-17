@@ -280,7 +280,7 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
       inducedGraph[C] = {
         adj: {},
         totalWeights: this.totalWeights[ci],
-        internalWeights: this.internalWeights[ci]
+        internalWeights: 0
       };
       C++;
     }
@@ -310,14 +310,18 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
   for (i = 0, l = this.C; i < l; i++) {
     ci = this.belongings[i];
 
-    adj = inducedGraph[ci].adj;
+    data = inducedGraph[ci];
+    adj = data.adj;
+    data.internalWeights += this.loops[i];
 
     for (j = this.starts[i], m = this.starts[i + 1]; j < m; j++) {
       n = this.neighborhood[j];
       cj = this.belongings[n];
 
-      if (ci === cj)
+      if (ci === cj) {
+        data.internalWeights += this.weights[j];
         continue;
+      }
 
       if (!(cj in adj))
         adj[cj] = 0;
@@ -854,7 +858,7 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
         outAdj: {},
         totalInWeights: this.totalInWeights[ci],
         totalOutWeights: this.totalOutWeights[ci],
-        internalWeights: this.internalWeights[ci]
+        internalWeights: 0
       };
       C++;
     }
@@ -888,6 +892,7 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
     data = inducedGraph[ci];
     inAdj = data.inAdj;
     outAdj = data.outAdj;
+    data.internalWeights += this.loops[i];
 
     for (j = this.starts[i], m = this.starts[i + 1]; j < m; j++) {
       n = this.neighborhood[j];
@@ -896,8 +901,12 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
 
       adj = out ? outAdj : inAdj;
 
-      if (ci === cj)
+      if (ci === cj) {
+        if (out)
+          data.internalWeights += this.weights[j];
+
         continue;
+      }
 
       if (!(cj in adj))
         adj[cj] = 0;

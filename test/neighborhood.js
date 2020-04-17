@@ -985,7 +985,11 @@ describe('Neighborhood Indices', function() {
       undirectedIndex.zoomOut();
 
       var directedIndex = new DirectedLouvainIndex(directedGraph);
-      applyMoves(directedIndex, DIRECTED_MOVES);
+      directedIndex.expensiveMove(1, 2);
+      directedIndex.expensiveMove(0, 4);
+      directedIndex.expensiveMove(5, 2);
+      directedIndex.expensiveMove(3, 2);
+
       directedIndex.zoomOut();
 
       closeTo(undirectedIndex.modularity(), directedIndex.modularity());
