@@ -8,11 +8,8 @@
  * Most of the rationale is explained in `graphology-metrics`.
  *
  * Note that this index shares a lot with the classic Union-Find data
- * structure. As such, note that its structural integrity is only guaranteed
- * if the number of communities only decreases, never increases, which is the
- * case when applying Louvain's algorithm. It is possible to allow communities
- * to increase back, i.e. by isolating nodes again, but this would require
- * to store a stack of now unused community ids.
+ * structure. It also relies on a unused id stack to make sure we can
+ * increase again the number of communites when isolating nodes.
  *
  * [Articles]
  * M. E. J. Newman, « Modularity and community structure in networks »,
@@ -55,12 +52,9 @@
  * [Notes]:
  * Louvain is a bit unclear on this but delta computation are not derived from
  * Q1 - Q2 but rather between Q when considered node is isolated in its own
- * community versus Q with this node in target community.
- *
- * Thus, and this is where implementation differ, if you allow negative moves,
- * you will need to consider additional possibilities:
- *  - Delta of keeping node in its current community
- *  - Delta of keeping node isolated in its own community
+ * community versus Q with this node in target community. This is in fact
+ * an optimization because the subtract part is constant in the formulae and
+ * does not affect delta comparisons.
  */
 var typed = require('mnemonist/utils/typed-arrays');
 
