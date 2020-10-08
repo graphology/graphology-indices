@@ -1,1 +1,1 @@
-export {neighborhood} from './neighborhood';
+export * from './neighborhood';
