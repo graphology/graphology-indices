@@ -1,6 +1,6 @@
 {
   "name": "graphology-indices",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Miscellaneous indices for graphology.",
   "main": "index.js",
   "files": [
