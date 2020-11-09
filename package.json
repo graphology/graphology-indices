@@ -34,10 +34,11 @@
   "devDependencies": {
     "@yomguithereal/eslint-config": "^4.0.0",
     "chai": "^4.2.0",
-    "eslint": "^6.8.0",
-    "graphology": "^0.16.1",
-    "graphology-operators": "^1.1.0",
-    "mocha": "^7.1.1"
+    "eslint": "^7.13.0",
+    "graphology": "^0.19.1",
+    "graphology-operators": "^1.3.0",
+    "graphology-types": "^0.19.0",
+    "mocha": "^8.2.1"
   },
   "eslintConfig": {
     "extends": "@yomguithereal/eslint-config",
@@ -48,9 +49,11 @@
       "Float64Array": true
     }
   },
+  "peerDependencies": {
+    "graphology-types": ">=0.19.0"
+  },
   "dependencies": {
-    "graphology-types": "^0.16.0",
     "graphology-utils": "^1.7.0",
-    "mnemonist": "^0.35.0"
+    "mnemonist": "^0.38.0"
   }
 }
