@@ -6,7 +6,8 @@
   "files": [
     "*.d.ts",
     "index.js",
-    "neighborhood"
+    "neighborhood",
+    "sorted-components.js"
   ],
   "scripts": {
     "lint": "eslint '**/*.js'",
@@ -46,6 +47,7 @@
       "Set": true,
       "Symbol": true,
       "Uint8Array": true,
+      "Uint32Array": true,
       "Float64Array": true
     }
   },
