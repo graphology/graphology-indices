@@ -345,7 +345,7 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
     this.belongings[ci] = ci;
 
     for (cj in adj) {
-      this.neighborhood[n] = cj;
+      this.neighborhood[n] = +cj;
       this.weights[n] = adj[cj];
 
       E++;
@@ -896,7 +896,7 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
     this.belongings[ci] = ci;
 
     for (cj in outAdj) {
-      this.neighborhood[n] = cj;
+      this.neighborhood[n] = +cj;
       this.weights[n] = outAdj[cj];
 
       E++;
@@ -906,7 +906,7 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
     this.offsets[ci] = n;
 
     for (cj in inAdj) {
-      this.neighborhood[n] = cj;
+      this.neighborhood[n] = +cj;
       this.weights[n] = inAdj[cj];
 
       E++;
