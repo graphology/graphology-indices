@@ -103,6 +103,7 @@ function UndirectedLouvainIndex(graph, options) {
 
   var NeighborhoodPointerArray = typed.getPointerArray(size);
   var NodesPointerArray = typed.getPointerArray(graph.order + 1);
+  // NOTE: this memory optimization can yield overflow deopt when computing deltas
   var WeightsArray = weighted ? Float64Array : typed.getPointerArray(graph.size * 2);
 
   // Properties
@@ -573,6 +574,7 @@ function DirectedLouvainIndex(graph, options) {
 
   var NeighborhoodPointerArray = typed.getPointerArray(size);
   var NodesPointerArray = typed.getPointerArray(graph.order + 1);
+  // NOTE: this memory optimization can yield overflow deopt when computing deltas
   var WeightsArray = weighted ? Float64Array : typed.getPointerArray(graph.size * 2);
 
   // Properties
