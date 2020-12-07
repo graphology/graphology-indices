@@ -99,7 +99,7 @@ function UndirectedLouvainIndex(graph, options) {
   };
 
   // Building the index
-  var size = graph.size * 2 - graph.selfLoopCount * 2;
+  var size = (graph.size - graph.selfLoopCount) * 2;
 
   var NeighborhoodPointerArray = typed.getPointerArray(size);
   var NodesPointerArray = typed.getPointerArray(graph.order + 1);
@@ -570,7 +570,7 @@ function DirectedLouvainIndex(graph, options) {
   };
 
   // Building the index
-  var size = graph.size * 2 - graph.directedSelfLoopCount;
+  var size = (graph.size - graph.selfLoopCount) * 2;
 
   var NeighborhoodPointerArray = typed.getPointerArray(size);
   var NodesPointerArray = typed.getPointerArray(graph.order + 1);
