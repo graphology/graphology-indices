@@ -1098,7 +1098,7 @@ describe('Neighborhood Indices', function() {
       closeTo(delta, isolatedDelta);
     });
 
-    it.only('should work with undirected multi graphs.', function() {
+    it('should work with undirected multi graphs.', function() {
       var graph = fromEdges(Graph.UndirectedGraph, EDGES);
       var index = new UndirectedLouvainIndex(graph);
       applyMoves(index, UNDIRECTED_MOVES);
@@ -1112,7 +1112,7 @@ describe('Neighborhood Indices', function() {
       });
 
       toDuplicate.forEach(function(edge) {
-        multiGraph.addUndirectedEdge(edge[0], edge[1], {weight: edge[2]});
+        multiGraph.addEdge(edge[0], edge[1], {weight: edge[2]});
       });
 
       multiGraph.updateEachEdgeAttributes(function(edge, attr) {
@@ -1122,6 +1122,35 @@ describe('Neighborhood Indices', function() {
 
       var multiIndex = new UndirectedLouvainIndex(multiGraph, {weighted: true});
       applyMoves(multiIndex, UNDIRECTED_MOVES);
+
+      assert.strictEqual(index.M, multiIndex.M);
+      assert.strictEqual(index.modularity(), multiIndex.modularity());
+    });
+
+    it('should work with directed multi graphs.', function() {
+      var graph = fromEdges(Graph.DirectedGraph, EDGES);
+      var index = new DirectedLouvainIndex(graph);
+      applyMoves(index, DIRECTED_MOVES);
+
+      var multiGraph = graph.copy();
+      multiGraph.upgradeToMulti();
+
+      var toDuplicate = [];
+      multiGraph.forEachEdge(function(_, a, s, t) {
+        toDuplicate.push([s, t, a.weight || 1]);
+      });
+
+      toDuplicate.forEach(function(edge) {
+        multiGraph.addEdge(edge[0], edge[1], {weight: edge[2]});
+      });
+
+      multiGraph.updateEachEdgeAttributes(function(edge, attr) {
+        attr.weight = 0.5;
+        return attr;
+      });
+
+      var multiIndex = new DirectedLouvainIndex(multiGraph, {weighted: true});
+      applyMoves(multiIndex, DIRECTED_MOVES);
 
       assert.strictEqual(index.M, multiIndex.M);
       assert.strictEqual(index.modularity(), multiIndex.modularity());
