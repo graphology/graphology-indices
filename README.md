@@ -18,3 +18,4 @@ For now, here are the exposed indices:
 
 * An unweighted and weighted neighborhood index used to speed up computations requiring many successive BSTs in a graph.
 * A directed and undirected index used to track an evolving community structure when running the Louvain community detection algorithm.
+* An indexed view of a graph's connected components sorted by order.
