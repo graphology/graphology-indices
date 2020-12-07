@@ -255,7 +255,7 @@ UndirectedLouvainIndex.prototype.expensiveMove = function(i, ci, dryRun) {
 };
 
 UndirectedLouvainIndex.prototype.zoomOut = function() {
-  var inducedGraph = {},
+  var inducedGraph = new Array(this.C - this.U),
       newLabels = {};
 
   var N = this.nodes.length;
@@ -329,7 +329,7 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
 
   n = 0;
 
-  for (ci in inducedGraph) {
+  for (ci = 0; ci < C; ci++) {
     data = inducedGraph[ci];
     adj = data.adj;
 
@@ -793,7 +793,7 @@ DirectedLouvainIndex.prototype.expensiveMove = function(i, ci, dryRun) {
 };
 
 DirectedLouvainIndex.prototype.zoomOut = function() {
-  var inducedGraph = {},
+  var inducedGraph = new Array(this.C - this.U),
       newLabels = {};
 
   var N = this.nodes.length;
@@ -876,7 +876,7 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
 
   n = 0;
 
-  for (ci in inducedGraph) {
+  for (ci = 0; ci < C; ci++) {
     data = inducedGraph[ci];
     inAdj = data.inAdj;
     outAdj = data.outAdj;
