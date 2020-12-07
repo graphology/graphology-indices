@@ -572,18 +572,18 @@ describe('Neighborhood Indices', function() {
       assert.strictEqual(index.level, 1);
       assert.deepEqual(index.counts.slice(0, index.C), new Uint8Array([1, 1]));
       assert.deepEqual(index.neighborhood.slice(0, index.E), new Uint8Array([1, 0]));
-      assert.deepEqual(index.weights.slice(0, index.E), new Float64Array([1, 1]));
+      assert.deepEqual(index.weights.slice(0, index.E), new Uint8Array([1, 1]));
       assert.deepEqual(index.starts.slice(0, index.C + 1), new Uint8Array([0, 1, 2]));
       assert.deepEqual(index.belongings.slice(0, index.C), new Uint8Array([0, 1]));
-      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([2, 5]));
-      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([3, 4]));
+      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Uint8Array([2, 5]));
+      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Uint8Array([3, 4]));
       // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 4]));
 
       // Once more
       index.move(0, 0, 1, 1);
 
-      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([0, 7]));
-      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([0, 7]));
+      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Uint8Array([0, 7]));
+      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Uint8Array([0, 7]));
       // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([0, 7]));
       assert.strictEqual(index.U, 1);
       assert.deepEqual(index.unused.slice(0, index.U), new Uint8Array([0]));
@@ -896,8 +896,8 @@ describe('Neighborhood Indices', function() {
 
       assert.strictEqual(index.E, 4);
       // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([3, 2]));
-      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([7, 6]));
-      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([7, 6]));
+      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Uint8Array([7, 6]));
+      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Uint8Array([7, 6]));
 
       Q = index.modularity();
 
@@ -926,8 +926,8 @@ describe('Neighborhood Indices', function() {
 
       assert.strictEqual(index.M, 5);
       // assert.deepEqual(index.internalWeights.slice(0, index.C), new Float64Array([2, 1]));
-      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Float64Array([2, 3]));
-      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Float64Array([4, 1]));
+      assert.deepEqual(index.totalInWeights.slice(0, index.C), new Uint8Array([2, 3]));
+      assert.deepEqual(index.totalOutWeights.slice(0, index.C), new Uint8Array([4, 1]));
     });
 
     it('directed modularity should be the same as the mutual directed one.', function() {
