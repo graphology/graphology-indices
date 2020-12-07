@@ -103,6 +103,8 @@ function UndirectedLouvainIndex(graph, options) {
 
   var NeighborhoodPointerArray = typed.getPointerArray(size);
   var NodesPointerArray = typed.getPointerArray(graph.order + 1);
+  var WeightsArray = weighted ? Float64Array : Uint8Array;
+  var AggregatedWeightsArray = weighted ? Float64Array : typed.getPointerArray(graph.size * 2);
 
   // Properties
   this.C = graph.order;
@@ -117,10 +119,10 @@ function UndirectedLouvainIndex(graph, options) {
 
   // Edge-level
   this.neighborhood = new NodesPointerArray(size);
-  this.weights = new Float64Array(size);
+  this.weights = new WeightsArray(size);
 
   // Node-level
-  this.loops = new Float64Array(graph.order);
+  this.loops = new AggregatedWeightsArray(graph.order);
   this.starts = new NeighborhoodPointerArray(graph.order + 1);
   this.belongings = new NodesPointerArray(graph.order);
   this.dendrogram = [];
@@ -129,7 +131,7 @@ function UndirectedLouvainIndex(graph, options) {
   // Community-level
   this.counts = new NodesPointerArray(graph.order);
   this.unused = new NodesPointerArray(graph.order);
-  this.totalWeights = new Float64Array(graph.order);
+  this.totalWeights = new AggregatedWeightsArray(graph.order);
 
   var ids = {};
 
