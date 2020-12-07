@@ -140,15 +140,14 @@ function UndirectedLouvainIndex(graph, options) {
 
   var self = this;
 
-  // TODO: this is implementation specific
-  graph._nodes.forEach(function(nodeData, node) {
+  graph.forEachNode(function(node) {
     self.nodes[i] = node;
 
     // Node map to index
     ids[node] = i;
 
     // Initializing starts
-    n += nodeData.undirectedDegree;
+    n += graph.undirectedDegree(node, false);
     self.starts[i] = n;
 
     // Belongings
@@ -613,18 +612,17 @@ function DirectedLouvainIndex(graph, options) {
 
   var self = this;
 
-  // TODO: this is implementation specific
-  graph._nodes.forEach(function(nodeData, node) {
+  graph.forEachNode(function(node) {
     self.nodes[i] = node;
 
     // Node map to index
     ids[node] = i;
 
     // Initializing starts & offsets
-    n += nodeData.outDegree;
+    n += graph.outDegree(node, false);
     self.starts[i] = n;
 
-    n += nodeData.inDegree;
+    n += graph.inDegree(node, false);
     self.offsets[i] = n;
 
     // Belongings
