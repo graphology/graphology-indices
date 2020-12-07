@@ -99,15 +99,15 @@ function UndirectedLouvainIndex(graph, options) {
   };
 
   // Building the index
-  var upperBound = graph.size * 2;
+  var size = graph.size * 2 - graph.selfLoopCount * 2;
 
-  var NeighborhoodPointerArray = typed.getPointerArray(upperBound);
+  var NeighborhoodPointerArray = typed.getPointerArray(size);
   var NodesPointerArray = typed.getPointerArray(graph.order + 1);
 
   // Properties
   this.C = graph.order;
   this.M = 0;
-  this.E = graph.size * 2;
+  this.E = size;
   this.U = 0;
   this.resolution = resolution;
   this.level = 0;
@@ -116,8 +116,8 @@ function UndirectedLouvainIndex(graph, options) {
   this.keepDendrogram = keepDendrogram;
 
   // Edge-level
-  this.neighborhood = new NodesPointerArray(upperBound);
-  this.weights = new Float64Array(upperBound);
+  this.neighborhood = new NodesPointerArray(size);
+  this.weights = new Float64Array(size);
 
   // Node-level
   this.loops = new Float64Array(graph.order);
@@ -167,7 +167,6 @@ function UndirectedLouvainIndex(graph, options) {
 
     // Self loop?
     if (source === target) {
-      self.E -= 2;
       self.totalWeights[source] += weight * 2;
       self.loops[source] = weight * 2;
     }
@@ -569,15 +568,15 @@ function DirectedLouvainIndex(graph, options) {
   };
 
   // Building the index
-  var upperBound = graph.size * 2;
+  var size = graph.size * 2 - graph.directedSelfLoopCount;
 
-  var NeighborhoodPointerArray = typed.getPointerArray(upperBound);
+  var NeighborhoodPointerArray = typed.getPointerArray(size);
   var NodesPointerArray = typed.getPointerArray(graph.order + 1);
 
   // Properties
   this.C = graph.order;
   this.M = 0;
-  this.E = graph.size * 2;
+  this.E = size;
   this.U = 0;
   this.resolution = resolution;
   this.level = 0;
@@ -587,8 +586,8 @@ function DirectedLouvainIndex(graph, options) {
 
   // Edge-level
   // NOTE: edges are stored out then in, in this order
-  this.neighborhood = new NodesPointerArray(upperBound);
-  this.weights = new Float64Array(upperBound);
+  this.neighborhood = new NodesPointerArray(size);
+  this.weights = new Float64Array(size);
 
   // Node-level
   this.loops = new Float64Array(graph.order);
@@ -642,7 +641,6 @@ function DirectedLouvainIndex(graph, options) {
 
     // Self loop?
     if (source === target) {
-      self.E -= 2;
       self.loops[source] += weight;
       self.totalInWeights[source] += weight;
       self.totalOutWeights[source] += weight;
