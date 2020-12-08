@@ -358,6 +358,8 @@ UndirectedLouvainIndex.prototype.zoomOut = function() {
   this.E = E;
   this.U = 0;
   this.level++;
+
+  return newLabels;
 };
 
 UndirectedLouvainIndex.prototype.modularity = function() {
@@ -919,6 +921,8 @@ DirectedLouvainIndex.prototype.zoomOut = function() {
   this.E = E;
   this.U = 0;
   this.level++;
+
+  return newLabels;
 };
 
 DirectedLouvainIndex.prototype.modularity = function() {
