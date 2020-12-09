@@ -251,6 +251,11 @@ UndirectedLouvainIndex.prototype.computeNodeDegree = function(i) {
   return degree;
 };
 
+UndirectedLouvainIndex.prototype.expensiveIsolate = function(i) {
+  var degree = this.computeNodeDegree(i);
+  this.isolate(i, degree);
+};
+
 UndirectedLouvainIndex.prototype.expensiveMove = function(i, ci) {
   var degree = this.computeNodeDegree(i);
   this.move(i, degree, ci);

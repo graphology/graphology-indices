@@ -35,6 +35,7 @@ export class UndirectedLouvainIndex {
   ): void;
   computeNodeDegree(index: number): number;
   expensiveMove(index: number, targetCommunity: number): void;
+  expensiveIsolate(index: number): void;
   zoomOut(): {[key: string]: number};
   modularity(): number;
   delta(index: number, degree: number, targetCommunityDegree: number, targetCommunity: number): number;
