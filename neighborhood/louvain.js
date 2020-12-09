@@ -767,35 +767,39 @@ DirectedLouvainIndex.prototype.move = function(
     this.unused[this.U++] = currentCommunity;
 };
 
-DirectedLouvainIndex.prototype.expensiveMove = function(i, ci, dryRun) {
-  var o, l, out, weight;
+DirectedLouvainIndex.prototype.computeNodeInDegree = function(i) {
+  var o, l, weight;
 
-  var inDegree = 0,
-      outDegree = 0;
+  var inDegree = 0;
 
-  var s = this.offsets[i];
-
-  for (o = this.starts[i], l = this.starts[i + 1]; o < l; o++) {
-    out = o < s;
+  for (o = this.offsets[i], l = this.starts[i + 1]; o < l; o++) {
     weight = this.weights[o];
 
-    if (out)
-      outDegree += weight;
-    else
-      inDegree += weight;
+    inDegree += weight;
   }
 
-  var args = [
-    i,
-    inDegree,
-    outDegree,
-    ci
-  ];
+  return inDegree;
+};
 
-  if (dryRun)
-    return args;
+DirectedLouvainIndex.prototype.computeNodeOutDegree = function(i) {
+  var o, l, weight;
 
-  this.move.apply(this, args);
+  var outDegree = 0;
+
+  for (o = this.starts[i], l = this.offsets[i]; o < l; o++) {
+    weight = this.weights[o];
+
+    outDegree += weight;
+  }
+
+  return outDegree;
+};
+
+DirectedLouvainIndex.prototype.expensiveMove = function(i, ci) {
+  var inDegree = this.computeNodeInDegree(i),
+      outDegree = this.computeNodeOutDegree(i);
+
+  this.move(i, inDegree, outDegree, ci);
 };
 
 DirectedLouvainIndex.prototype.zoomOut = function() {
