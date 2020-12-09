@@ -253,7 +253,7 @@ UndirectedLouvainIndex.prototype.computeNodeDegree = function(i) {
 
 UndirectedLouvainIndex.prototype.expensiveIsolate = function(i) {
   var degree = this.computeNodeDegree(i);
-  this.isolate(i, degree);
+  return this.isolate(i, degree);
 };
 
 UndirectedLouvainIndex.prototype.expensiveMove = function(i, ci) {
