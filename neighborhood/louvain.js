@@ -428,28 +428,24 @@ UndirectedLouvainIndex.prototype.deltaWithOwnCommunity = function(i, degree, tar
 // NOTE: this is just a faster but equivalent version of #.delta
 // It is just off by a constant factor and is just faster to compute
 UndirectedLouvainIndex.prototype.fastDelta = function(i, degree, targetCommunityDegree, targetCommunity) {
-  var M = this.M;
-
   var targetCommunityTotalWeight = this.totalWeights[targetCommunity];
 
   degree += this.loops[i];
 
   return (
     targetCommunityDegree -
-    (degree * targetCommunityTotalWeight * this.resolution) / (2 * M)
+    (degree * targetCommunityTotalWeight * this.resolution)
   );
 };
 
 UndirectedLouvainIndex.prototype.fastDeltaWithOwnCommunity = function(i, degree, targetCommunityDegree, targetCommunity) {
-  var M = this.M;
-
   var targetCommunityTotalWeight = this.totalWeights[targetCommunity];
 
   degree += this.loops[i];
 
   return (
     targetCommunityDegree -
-    (degree * (targetCommunityTotalWeight - degree) * this.resolution) / (2 * M)
+    (degree * (targetCommunityTotalWeight - degree) * this.resolution)
   );
 };
 
