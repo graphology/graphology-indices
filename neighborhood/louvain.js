@@ -237,7 +237,7 @@ UndirectedLouvainIndex.prototype.move = function(
     this.unused[this.U++] = currentCommunity;
 };
 
-UndirectedLouvainIndex.prototype.expensiveMove = function(i, ci, dryRun) {
+UndirectedLouvainIndex.prototype.computeNodeDegree = function(i) {
   var o, l, weight;
 
   var degree = 0;
@@ -248,12 +248,12 @@ UndirectedLouvainIndex.prototype.expensiveMove = function(i, ci, dryRun) {
     degree += weight;
   }
 
-  var args = [i, degree, ci];
+  return degree;
+};
 
-  if (dryRun)
-    return args;
-
-  this.move.apply(this, args);
+UndirectedLouvainIndex.prototype.expensiveMove = function(i, ci) {
+  var degree = this.computeNodeDegree(i);
+  this.move(i, degree, ci);
 };
 
 UndirectedLouvainIndex.prototype.zoomOut = function() {

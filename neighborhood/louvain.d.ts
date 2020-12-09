@@ -71,8 +71,8 @@ export class DirectedLouvainIndex {
     outDegree: number,
     targetCommunity: number
   ): void;
-  expensiveMove(index: number, targetCommunity: number, dryRun?: boolean): void;
-  expensiveMove(index: number, targetCommunity: number, dryRun: boolean): Array<number>;
+  computeNodeDegree(index: number): number;
+  expensiveMove(index: number, targetCommunity: number): void;
   zoomOut(): {[key: string]: number};
   modularity(): number;
   delta(
